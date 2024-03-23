@@ -24,6 +24,7 @@ namespace Scripts
         {
             _playerInput.Enable();
             _playerInput.Player.Click.started +=OnClick;
+            _playerInput.Player.Click.canceled += OnRelease;
             _playerInput.Player.Drag.performed+= OnDrag;
         }
         private void OnDisable()
@@ -40,7 +41,14 @@ namespace Scripts
             EventManager.Instance.Broadcast(GameEvents.OnTouch, _clickPos);
             _isDragging = true;
         }
-        
+       private void OnRelease(InputAction.CallbackContext context)
+        {
+            if (_isDragging)
+            {
+                EventManager.Instance.Broadcast(GameEvents.OnClick, _clickPos);
+                _isDragging = false;
+            }
+        }
         
         private void OnDrag(InputAction.CallbackContext context)
         {
