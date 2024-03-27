@@ -61,11 +61,11 @@ namespace Scripts
             {
                 if(yDiff > 0)
                 {
-                    EventManager.Instance.Broadcast(GameEvents.OnSwipe, new Vector3Int(0, 1),_clickPos); // Up
+                    EventManager.Instance.Broadcast(GameEvents.OnSwipe, new Vector2Int(0, 1),_clickPos); // Up
                 }
                 else
                 {
-                    EventManager.Instance.Broadcast(GameEvents.OnSwipe, new Vector3Int(0, -1),_clickPos); // Down
+                    EventManager.Instance.Broadcast(GameEvents.OnSwipe, new Vector2Int(0, -1),_clickPos); // Down
                 }
                 _isDragging = false;
             }
@@ -73,11 +73,11 @@ namespace Scripts
             {
                 if(xDiff > 0)
                 {
-                    EventManager.Instance.Broadcast(GameEvents.OnSwipe, new Vector3Int(1, 0),_clickPos); // Right
+                    EventManager.Instance.Broadcast(GameEvents.OnSwipe, new Vector2Int(1, 0),_clickPos); // Right
                 }
                 else
                 {
-                    EventManager.Instance.Broadcast(GameEvents.OnSwipe, new Vector3Int(-1, 0),_clickPos); // Left
+                    EventManager.Instance.Broadcast(GameEvents.OnSwipe, new Vector2Int(-1, 0),_clickPos); // Left
                 }
                 _isDragging = false;
             }
