@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using _Scripts.Core;
+using _Scripts.Managers.Matching;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Rimaethon.Scripts.Managers;
@@ -170,7 +171,102 @@ namespace Scripts
             (_tileItems[pos1.x, pos1.y], _tileItems[pos2.x, pos2.y]) = (_tileItems[pos2.x, pos2.y], _tileItems[pos1.x, pos1.y]);
         }
         
-    
+        private void FixedUpdate()
+{
+    for(int i=width-1;i>=0;i--)
+    {
+        for (int j = height-1; j >=0; j--)
+        {
+            if (_tileItems.CheckMatches(i, j, width, height).Count != 0)
+            {
+                Debug.Log(_tileItems.CheckMatches(i,j,width,height).Count+" "+i+" "+j);
+            }
+
+            if (_tileItems[i, j] == null)
+            {
+                if(j==height-1)
+                {
+                    y[i]++;
+                    _tileItems[i, j] = _objectPool.GetRandomItemFromPool(
+                            grid.GetCellCenterWorld(new Vector3Int(i, j+y[i], 0))).GetComponent<IItem>();
+                    _tileItems[i, j].Transform.parent = transform;
+                        missingItems[i]--;
+                        if(missingItems[i]==0)
+                            y[i]=0;
+                   
+                }else if(_tileItems[i,j+1]!=null )
+                {
+                    if (_tileItems[i, j + 1].IsMovable)
+                    {
+                        _tileItems[i, j] = _tileItems[i, j + 1];
+
+                        _tileItems[i, j + 1] = null;
+                        missingItems[i]++;
+                        
+                    }else if(i>0&&_tileItems[i-1,j+1]!=null&&_tileItems[i-1,j+1].IsMovable)
+                    {
+                        _tileItems[i, j] = _tileItems[i - 1, j + 1];
+                        missingItems[i-1]++;
+
+                        _tileItems[i - 1, j + 1] = null;
+                    }else if (i<width-1&&_tileItems[i+1,j+1]!=null&&_tileItems[i+1,j+1].IsMovable)
+                    {
+
+                        _tileItems[i, j] = _tileItems[i + 1, j + 1];
+                        missingItems[i+1]++;
+
+                        _tileItems[i + 1, j + 1] = null;
+                    }
+                    
+                }
+                lerpingItems.Add(new Vector3Int(i, j));
+
+
+            }else if(Vector3.Distance(_tileItems[i,j].Transform.localPosition,grid.GetCellCenterLocal(new Vector3Int(i,j,0)))>0.07f)
+            {
+                Vector3 currPos = _tileItems[i, j].Transform.localPosition;
+                Vector3 targetPos = grid.GetCellCenterLocal(new Vector3Int(i, j, 0));
+
+                // Calculate the direction vector from the current position to the target position
+
+                _tileItems[i,j].FallSpeed+=_tileItems[i,j].Gravity;
+
+                // Move the item in the direction of the target position
+                if (Mathf.Abs(targetPos.x- currPos.x)>0.07f)
+                {
+                    currPos.x += Mathf.Sign(targetPos.x-currPos.x) * (_tileItems[i, j].FallSpeed * Time.deltaTime)*0.707f;
+                    currPos.y -=(_tileItems[i, j].FallSpeed * Time.deltaTime)*0.707f;
+
+                }else
+                {
+                    currPos.y -= (_tileItems[i, j].FallSpeed * Time.deltaTime);
+
+                }
+                _tileItems[i, j].Transform.localPosition = currPos;
+
+            }else if(Vector3.Distance(_tileItems[i,j].Transform.localPosition,grid.GetCellCenterLocal(new Vector3Int(i,j,0)))>0.01f)
+            {
+                
+
+                _tileItems[i, j].FallSpeed = 0f;
+                _tileItems[i,j].Transform.localPosition =  grid.GetCellCenterLocal(new Vector3Int(i, j, 0));
+                lerpingItems.Remove(new Vector3Int(i, j)); 
+                
+                
+                if(j==height-1&&y[i]>0)
+                {
+                    y[i]--;
+                }
+
+                //Find out how to add a bounce effect
+            }
+           
+            
+           
+        }
+    }
+}
+
         public static List<Vector3Int> CheckHorizontalMatches(IItem[,] board, int itemX, int itemY, int width, int height)
         {
             List<Vector3Int> matchedPositions = new List<Vector3Int>();
