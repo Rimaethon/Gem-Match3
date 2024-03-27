@@ -11,9 +11,7 @@ namespace Scripts
 {
     public class GridManager : MonoBehaviour
     {
-        
         [SerializeField] private Grid grid;
-
         //Pool is only needed for the grid so I'm passing it with serialized field
         [SerializeField] private ObjectPool _objectPool;
         private Camera _camera;
@@ -361,7 +359,31 @@ namespace Scripts
         }
      
 
- 
+        // Screen shake on board but particle effects dont change their position
+        //Board items are also changing their position so making grid their parent might be a good idea
+        //first board goes to -1,-1(left,bottom) and then goes to 0,0
+        public float shakeDuration = 0.5f;
+        public float shakeMagnitude = 0.1f;
+
+        private async UniTaskVoid BoardShake()
+        {
+            Vector3 originalPosition = transform.position;
+            float elapsed = 0.0f;
+            while (elapsed < shakeDuration)
+            {
+                float x = Random.Range(-1f, 1f) * shakeMagnitude;
+                float y = Random.Range(-1f, 1f) * shakeMagnitude;
+
+                transform.position = new Vector3(originalPosition.x+x,originalPosition.y+ y, originalPosition.z);
+
+                elapsed += Time.deltaTime;
+
+                await UniTask.Yield();
+            }
+
+            transform.position = originalPosition;
+        }
+
         
      
 
