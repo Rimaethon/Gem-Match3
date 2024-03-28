@@ -28,7 +28,7 @@ public abstract class ItemBase : MonoBehaviour, IItem
     private float _fallSpeed = 0f;
     public bool IsMoving { get; set; }
     private SpriteRenderer _spriteRenderer;
-    private void Awake()
+    protected virtual void Awake()
     {
         _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         _spriteRenderer.color = _touchedColor;
@@ -39,13 +39,10 @@ public abstract class ItemBase : MonoBehaviour, IItem
 
     [SerializeField] private int _itemType;
     
-    public virtual bool IsDraggable {get=> isDraggable; set=> isDraggable=value ;}
-    private bool isDraggable = true;
     
     public virtual void OnMatch()
     {
         gameObject.SetActive(false);
-        gameObject.transform.localScale = Vector3.one;
         
     }
     private Color _touchedColor= new Color(0.88f,0.88f,0.88f,1f);
@@ -73,6 +70,5 @@ public interface IItem
     public void OnMatch();
     public void OnTouch();
     public void OnClick(IItem[,] board,Vector2Int pos);
-    public bool IsDraggable { get; set; }
     public Transform Transform { get; }
 }

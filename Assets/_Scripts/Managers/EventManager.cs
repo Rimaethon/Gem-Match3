@@ -138,8 +138,7 @@ namespace Rimaethon.Scripts.Managers
                 foreach (var handler in eventHandler)
                 {
                     handler.DynamicInvoke(args);
-                    Debug.Log(
-                        $"Broadcasted event {gameEvents} with arguments {string.Join(", ", args.Select(arg => arg.ToString()))} to handler {handler.Method.Name}");
+                    //Debug.Log($"Broadcasted event {gameEvents} with arguments {string.Join(", ", args.Select(arg => arg.ToString()))} to handler {handler.Method.Name}");
                 }
         }
 
