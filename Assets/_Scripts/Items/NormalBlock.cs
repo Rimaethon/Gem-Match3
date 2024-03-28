@@ -11,8 +11,8 @@ namespace Scripts
             {
                 return;
             }
-                
-            StartCoroutine(ScaleDownAndMatch());
+            base.OnMatch();
+
         }
 
         private IEnumerator ScaleDownAndMatch()
@@ -32,7 +32,6 @@ namespace Scripts
 
             transform.localScale = targetScale;
 
-            base.OnMatch();
         }
         
     }
