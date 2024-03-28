@@ -6,10 +6,10 @@ namespace Scripts
     public class Obstacle:ItemBase
     {
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             IsMovable = false;
-            IsDraggable = false;
             
         }
 
