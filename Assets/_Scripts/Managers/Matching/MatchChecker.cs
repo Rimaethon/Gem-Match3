@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using _Scripts.Utility;
 using UnityEngine;
 
 namespace _Scripts.Managers.Matching
 {
+    
+    
     public static class MatchChecker
     {
         private static List<Vector2Int[]> _shapesRight = new List<Vector2Int[]>
@@ -31,16 +35,16 @@ namespace _Scripts.Managers.Matching
                 new Vector2Int(0, 0),
                 new Vector2Int(1, 0),
                 new Vector2Int(2, 0),
-                new Vector2Int(3, 0),
-                new Vector2Int(3, 1),
+                new Vector2Int(2, 1),
+                new Vector2Int(2, 2),
             },
             new Vector2Int[] // L shape downward tail
             {
                 new Vector2Int(0, 0),
                 new Vector2Int(1, 0),
                 new Vector2Int(2, 0),
-                new Vector2Int(3, 0),
-                new Vector2Int(3, -1),
+                new Vector2Int(2, -1),
+                new Vector2Int(2, -2),
             },
             //since L is not symmetrical we need to add both sides of the L shape
             new Vector2Int[] // L shape upward tail 
@@ -48,24 +52,24 @@ namespace _Scripts.Managers.Matching
                 new Vector2Int(-2, 0),
                 new Vector2Int(-1, 0),
                 new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(1, 1),
+                new Vector2Int(0, 1),
+                new Vector2Int(0, 2),
             },
             new Vector2Int[] // L shape upward tail 
             {
                 new Vector2Int(0, 0),
                 new Vector2Int(1, 0),
-                new Vector2Int(1, 1),
-                new Vector2Int(1, 2),
-                new Vector2Int(1, 3),
+                new Vector2Int(2, 0),
+                new Vector2Int(2, 1),
+                new Vector2Int(2, 2),
             },
             new Vector2Int[] // L shape downward tail
             {
                 new Vector2Int(-2, 0),
                 new Vector2Int(-1, 0),
                 new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(1, -1),
+                new Vector2Int(0, -1),
+                new Vector2Int(0, -2),
             },
              new Vector2Int[] // T shape
             {
@@ -78,11 +82,11 @@ namespace _Scripts.Managers.Matching
           
             new Vector2Int[] // T shape
             {
-                new Vector2Int(-2, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 1),
-                new Vector2Int(1, -1)
+                new Vector2Int(0 ,0),
+                new Vector2Int(0, 1),
+                new Vector2Int(0, -1),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0)
             },
             new Vector2Int[] // Four in a row
             {
@@ -90,6 +94,20 @@ namespace _Scripts.Managers.Matching
                 new Vector2Int(1, 0),
                 new Vector2Int(2, 0),
                 new Vector2Int(3, 0),
+            },
+            new Vector2Int[] // Four in a row
+            {
+                new Vector2Int(-1, 0),
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+            },
+            new Vector2Int[] // Four in a row
+            {
+                new Vector2Int(-2, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
             },
             new Vector2Int[] // Square shape
             {
@@ -116,22 +134,26 @@ namespace _Scripts.Managers.Matching
         private static List<Vector2Int[]> _allShapes = new List<Vector2Int[]>();
 
         private static bool _isRotated;
-        public static List<IItem> CheckMatches(this IItem[,] board, int itemX, int itemY, int width, int height)
+        public static List<Vector2Int> CheckMatches(this IItem[,] board, Vector2Int pos,HashSet<Vector2Int> lerpingItemSet, int width, int height)
         {
             if (!_isRotated)
             {
                 _allShapes= GenerateAllShapes(_shapesRight);
                 _isRotated = true;
             }
-            List<IItem> matchedItems = new List<IItem>();
+            List<Vector2Int> matchedItems = new List<Vector2Int>();
             
             foreach (var shape in _allShapes)
             {
                 
 
-               matchedItems= CheckShape(board, shape, itemX, itemY, width, height);
+               matchedItems= CheckShape(board,lerpingItemSet,shape, pos,width, height);
 
-               if (matchedItems.Count == shape.Length) return matchedItems;
+               if (matchedItems.Count == shape.Length)
+               {
+                   Debug.Log(matchedItems.Count);
+                   return matchedItems;
+               }
                matchedItems.Clear();
 
                
@@ -141,54 +163,31 @@ namespace _Scripts.Managers.Matching
             
         }
         //Actually instead of creating a list it would be better to use a array that is created in the begining but I need to create a structure that handles race conditions that can occur.   
-        public static List<IItem> CheckShape(IItem[,] board, Vector2Int[] shape, int itemX, int itemY, int width, int height)
+        private static List<Vector2Int> CheckShape(IItem[,] board,HashSet<Vector2Int> lerpingItemSet, Vector2Int[] shape, Vector2Int pos, int width, int height)
         {
-            List<IItem> matchedItems = new List<IItem>();
-            if(board[itemX, itemY]==null) return matchedItems;
+            List<Vector2Int> matchedItems = new List<Vector2Int>();
+            if(board.GetItem(pos)==null) return matchedItems;
             int shapeSize = shape.Length;
 
          
             // Iterate over the shape's pattern
             for (int i = 0; i < shapeSize; i++)
             {
-                int x = itemX + shape[i].x;
-                int y = itemY + shape[i].y;
+                int x = pos.x + shape[i].x;
+                int y = pos.y + shape[i].y;
                 if(x>=width || x<0 || y>=height || y<0) return matchedItems;
                 
-                if (board[x,y]==null||board[x, y].ItemType != board[itemX, itemY].ItemType) return matchedItems;
+               if(lerpingItemSet.Contains(new Vector2Int(x,y))&&x!=pos.x&&y!=pos.y) return matchedItems;
+                if (board[x,y]==null||board[x, y].ItemType != board.GetTypeID(pos)) return matchedItems;
 
-                matchedItems.Add(board[x, y]);
+                matchedItems.Add(new Vector2Int(x,y));
             }
 
             // If we've made it this far, the shape matches
             return matchedItems;
         }
         
-
-        
-        public static Vector2Int[] RotateShape(Vector2Int[] shape)
-        {
-            Vector2Int[] rotatedShape = new Vector2Int[shape.Length];
-            for (int i = 0; i < shape.Length; i++)
-            {
-                // Swap x and y, then negate the new y
-                rotatedShape[i] = new Vector2Int(shape[i].y, -shape[i].x);
-            }
-            return rotatedShape;
-        }
-
-        public static Vector2Int[] ReflectShape(Vector2Int[] shape)
-        {
-            Vector2Int[] reflectedShape = new Vector2Int[shape.Length];
-            for (int i = 0; i < shape.Length; i++)
-            {
-                // Negate x
-                reflectedShape[i] = new Vector2Int(-shape[i].x, shape[i].y);
-            }
-            return reflectedShape;
-        }
-
-        public static List<Vector2Int[]> GenerateAllShapes(List<Vector2Int[]> shapes)
+        private static List<Vector2Int[]> GenerateAllShapes(List<Vector2Int[]> shapes)
         {
             List<Vector2Int[]> allShapes = new List<Vector2Int[]>();
 
@@ -215,5 +214,29 @@ namespace _Scripts.Managers.Matching
 
         }
 
+        
+        private static Vector2Int[] RotateShape(Vector2Int[] shape)
+        {
+            Vector2Int[] rotatedShape = new Vector2Int[shape.Length];
+            for (int i = 0; i < shape.Length; i++)
+            {
+                // Swap x and y, then negate the new y
+                rotatedShape[i] = new Vector2Int(shape[i].y, -shape[i].x);
+            }
+            return rotatedShape;
+        }
+
+        private static Vector2Int[] ReflectShape(Vector2Int[] shape)
+        {
+            Vector2Int[] reflectedShape = new Vector2Int[shape.Length];
+            for (int i = 0; i < shape.Length; i++)
+            {
+                // Negate x
+                reflectedShape[i] = new Vector2Int(-shape[i].x, shape[i].y);
+            }
+            return reflectedShape;
+        }
+
+    
     }
 }
