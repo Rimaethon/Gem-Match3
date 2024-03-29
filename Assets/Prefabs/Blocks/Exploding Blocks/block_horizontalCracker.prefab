@@ -200,7 +200,7 @@ Transform:
   - {fileID: 3352952261757989876}
   - {fileID: 5900041504007869663}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8148069471834152812
 MonoBehaviour:
@@ -215,3 +215,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemType: 6
+  leftCracker: {fileID: 8527786532704072524}
+  rightCracker: {fileID: 1874194516534211596}
