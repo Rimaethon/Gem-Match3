@@ -22,5 +22,6 @@ public enum GameEvents
     OnClick,
     OnHorizontalMatch,
     OnBomb,
-    OnTouch
+    OnTouch,
+    OnVerticalMatch
 }

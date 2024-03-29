@@ -5,6 +5,7 @@ namespace Scripts
 {
     public class NormalBlock:ItemBase
     {
+        
         public override void OnMatch()
         {
             if (transform.gameObject.activeSelf == false)
