@@ -38,7 +38,13 @@ namespace Scripts
             EventManager.Instance.AddHandler<Vector2Int, Vector2>(GameEvents.OnSwipe, OnSwipe);
             EventManager.Instance.AddHandler<Vector2>(GameEvents.OnClick, OnClick);
             EventManager.Instance.AddHandler<Vector2>(GameEvents.OnTouch, OnTouch);
+            EventManager.Instance.AddHandler<List<Vector2Int>>(GameEvents.OnBomb, HandleBombMatch);
+            EventManager.Instance.AddHandler<List<Vector2Int>>(GameEvents.OnHorizontalMatch, HandleHorizontalMatch);
+            EventManager.Instance.AddHandler<List<Vector2Int>>(GameEvents.OnVerticalMatch, HandleVerticalMatch);
+            
         }
+
+        
 
         private void OnDisable()
         {
@@ -46,6 +52,54 @@ namespace Scripts
             EventManager.Instance.RemoveHandler<Vector2Int, Vector2>(GameEvents.OnSwipe, OnSwipe);
             EventManager.Instance.RemoveHandler<Vector2>(GameEvents.OnClick, OnClick);
             EventManager.Instance.RemoveHandler<Vector2>(GameEvents.OnTouch, OnTouch);
+            EventManager.Instance.RemoveHandler<List<Vector2Int>>(GameEvents.OnBomb, HandleBombMatch);
+            EventManager.Instance.RemoveHandler<List<Vector2Int>>(GameEvents.OnHorizontalMatch, HandleHorizontalMatch);
+            EventManager.Instance.RemoveHandler<List<Vector2Int>>(GameEvents.OnVerticalMatch, HandleVerticalMatch);
+        }
+
+        private void HandleVerticalMatch(List<Vector2Int> positions)
+        {
+            for (int i=1;i<positions.Count;i++)
+            {
+                if (_tileItems.GetItem(positions[i]) != null)
+                {
+                    _tileItems.GetItem(positions[i]).OnClick(_tileItems,positions[i]);
+                    
+                }
+            }
+            HandleMatchWithDelay(positions).Forget();
+            _objectPool.GetParticleEffectFromPool(7,grid.GetCellCenterWorldVector2(positions[0]));
+        }
+
+
+        private void HandleBombMatch(List<Vector2Int> positions)
+        {
+            for (int i=1;i<positions.Count;i++)
+            {
+                if (_tileItems.GetItem(positions[i]) != null)
+                {
+                    _tileItems.GetItem(positions[i]).OnClick(_tileItems,positions[i]);
+                    
+                }
+            }
+            _tileItems.GetItem(positions[0]).OnMatch();
+            _tileItems[positions[0].x,positions[0].y]=null;
+            HandleMatchWithDelay(positions,0,0.3f).Forget();
+            _objectPool.GetParticleEffectFromPool(5,grid.GetCellCenterWorldVector2(positions[0]));
+            BoardShake().Forget();
+        }
+        private void HandleHorizontalMatch(List<Vector2Int> positions)
+        {
+            for (int i=1;i<positions.Count;i++)
+            {
+                if (_tileItems.GetItem(positions[i]) != null)
+                {
+                    _tileItems.GetItem(positions[i]).OnClick(_tileItems,positions[i]);
+                    
+                }
+            }
+            HandleMatchWithDelay(positions,0.05f,0.2f).Forget();
+            _objectPool.GetParticleEffectFromPool(6,grid.GetCellCenterWorldVector2(positions[0]));
         }
 
         
@@ -145,13 +199,13 @@ namespace Scripts
                 
                 if (firstCellMatches.Count >= 3)
                 {
-                    await HandleMatchWithDelay(firstCellMatches, 0, 0);
+                    await HandleMatch(firstCellMatches,firstCellPos);
                 }
                 
                 if(secondCellMatches.Count>=3)
                 {
-                    await HandleMatchWithDelay(secondCellMatches, 0, 0);
-
+                  
+                    await HandleMatch(secondCellMatches,secondCellPos);
                 }
             }
             _isSwiping = false;
@@ -161,6 +215,26 @@ namespace Scripts
             lerpingItems.Remove(secondCellPos);
             OnTouch(clickPos);
             
+        }
+        
+        private async UniTask HandleMatch(List<Vector2Int> matchedItems,Vector2Int targetPos)
+        {
+            if (matchedItems.Count==3)
+            {
+                await HandleMatchWithDelay(matchedItems,0,0);
+            }else if (matchedItems.Count == 4)
+            {
+                await LerpAllItemsToPosition(matchedItems,targetPos);
+                _objectPool.GetParticleEffectFromPool(8,grid.GetCellCenterWorldVector2(targetPos));
+                _tileItems[targetPos.x, targetPos.y]= _objectPool.GetItemFromPool(6,grid.GetCellCenterWorld(new Vector3Int(targetPos.x, targetPos.y, 0))).GetComponent<IItem>();
+                _tileItems[targetPos.x, targetPos.y].Transform.parent = transform;
+            }else if (matchedItems.Count == 5)
+            {
+                await LerpAllItemsToPosition(matchedItems,targetPos);
+                _objectPool.GetParticleEffectFromPool(8,grid.GetCellCenterWorldVector2(targetPos));
+                _tileItems[targetPos.x, targetPos.y]= _objectPool.GetItemFromPool(5,grid.GetCellCenterWorld(new Vector3Int(targetPos.x, targetPos.y, 0))).GetComponent<IItem>();
+                _tileItems[targetPos.x, targetPos.y].Transform.parent = transform;
+            }
         }
         private bool IsMovable(Vector2Int pos)
         {
@@ -313,6 +387,14 @@ namespace Scripts
                             Debug.Log(_tileItems[x,y].Transform.localPosition+" "+grid.GetCellCenterLocal(new Vector3Int(x, y, 0)));
                             lerpingItems.Remove(new Vector2Int(x, y)); 
                             _tileItems[x, y].SortingOrder = 4;
+                            
+                            List<Vector2Int> cellMatches=_tileItems.CheckMatches(new Vector2Int(x,y),lerpingItems, width, height);
+                            
+                            if (cellMatches.Count >= 3)
+                            {
+                                HandleMatch(cellMatches,new Vector2Int(x,y)).Forget();
+                            }
+                                
 
                         }else
                         {
@@ -329,8 +411,36 @@ namespace Scripts
 
 
 
+        private async UniTask LerpAllItemsToPosition(List<Vector2Int> combinedItems, Vector2Int targetPos, float lerpSpeed = 0.15f)
+        {
+            // Convert the target position to world coordinates
+            Vector2 targetPosWorld = grid.GetCellCenterLocalVector2(targetPos);
 
+            // Create a list to store all the lerp tasks
+            List<UniTask> lerpTasks = new List<UniTask>();
 
+            foreach (var item in combinedItems)
+            {
+                if (_tileItems[item.x, item.y] != null)
+                {
+                            // Start the lerp and add the task to the list
+                            lerpTasks.Add(_tileItems[item.x, item.y].Transform.DOLocalMove(targetPosWorld, lerpSpeed).ToUniTask());
+                }
+            }
+
+            // Wait for all the lerp tasks to complete
+            await UniTask.WhenAll(lerpTasks);
+            foreach (var item in combinedItems)
+            {
+                if (_tileItems[item.x, item.y] != null)
+                {
+                    _tileItems[item.x, item.y].OnMatch();
+                    _tileItems[item.x, item.y] = null;
+                }
+            }
+            
+            
+        }
         private async UniTask HandleMatchWithDelay(List<Vector2Int> matchedItems, float delayBetweenMatches = 0.1f,float delayToFillBoard=0.1f)
         {
             foreach (var item in matchedItems)
@@ -340,6 +450,7 @@ namespace Scripts
                     Debug.Log("There is a null item in the matched items");
                     return;
                 }
+                lerpingItems.Add(item);
                 _tileItems[item.x, item.y].OnMatch();
                 _objectPool.GetParticleEffectFromPool(_tileItems.GetTypeID(item), grid.GetCellCenterWorldVector2(item));
                 await UniTask.Delay((int)(delayBetweenMatches * 1000));
@@ -349,7 +460,6 @@ namespace Scripts
             {
                 _tileItems[item.x, item.y] = null;
                 missingItems[item.x]++;
-                lerpingItems.Add(item);
 
 
             }
