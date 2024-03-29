@@ -17,12 +17,13 @@ public abstract class ItemBase : MonoBehaviour, IItem
      set=> _fallSpeed=Mathf.Clamp(value,0,6f);
     }
 
-    public int SortingOrder { get=> _spriteRenderer.sortingOrder; set=> _spriteRenderer.sortingOrder=value; }
+    public virtual int SortingOrder { get=> _spriteRenderer.sortingOrder; set=> _spriteRenderer.sortingOrder=value; }
 
     public bool IsMovable { get=> _isMovable; set=> _isMovable=value; }
     private bool _isMovable = true;
     
     public float Gravity => _gravity;
+    protected Color _touchedColor= new Color(0.88f,0.88f,0.88f,1f);
 
     private float _gravity = 0.4f;
     private float _fallSpeed = 0f;
@@ -30,8 +31,12 @@ public abstract class ItemBase : MonoBehaviour, IItem
     private SpriteRenderer _spriteRenderer;
     protected virtual void Awake()
     {
-        _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-        _spriteRenderer.color = _touchedColor;
+        if (gameObject.TryGetComponent<SpriteRenderer>(out  _spriteRenderer))
+        {
+            _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+            _spriteRenderer.color = _touchedColor;
+        }
+       
 
     }
 
@@ -45,10 +50,12 @@ public abstract class ItemBase : MonoBehaviour, IItem
         gameObject.SetActive(false);
         
     }
-    private Color _touchedColor= new Color(0.88f,0.88f,0.88f,1f);
-    public void OnTouch()
+    public virtual void OnTouch()
     {
-        _spriteRenderer.color = _spriteRenderer.color==_touchedColor?Color.white:_touchedColor;
+        if (_spriteRenderer != null)
+        {
+            _spriteRenderer.color = _spriteRenderer.color==_touchedColor?Color.white:_touchedColor;           
+        }
     }
 
     public virtual void OnClick(IItem[,] board,Vector2Int pos)
