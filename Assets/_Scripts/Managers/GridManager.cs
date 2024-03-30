@@ -26,13 +26,13 @@ namespace Scripts
         //Im only using local position to 
         private Vector2[,] _cellPositions;
         private bool _isSwiping;
-
+        
         private HashSet<Vector2Int> lerpingItems=new HashSet<Vector2Int>();
         private HashSet<Vector2Int> swappingItems=new HashSet<Vector2Int>();
         private RandomBoardGenerator _randomBoardGenerator;
         
-        
         private int[] missingItems=new int[8];
+        
         private void OnEnable()
         {
             EventManager.Instance.AddHandler<Vector2Int, Vector2>(GameEvents.OnSwipe, OnSwipe);
@@ -144,7 +144,7 @@ namespace Scripts
             }
           
         }
-
+        
 
         private void OnClick(Vector2 clickPos)
         {
@@ -221,7 +221,7 @@ namespace Scripts
         {
             if (matchedItems.Count==3)
             {
-                await HandleMatchWithDelay(matchedItems,0,0);
+                await HandleMatchWithDelay(matchedItems,0.1f,0.1f);
             }else if (matchedItems.Count == 4)
             {
                 await LerpAllItemsToPosition(matchedItems,targetPos);
@@ -266,146 +266,160 @@ namespace Scripts
             (_tileItems[pos1.x, pos1.y], _tileItems[pos2.x, pos2.y]) = (_tileItems[pos2.x, pos2.y], _tileItems[pos1.x, pos1.y]);
         }
         
-        private void FixedUpdate()
+         private void FixedUpdate()
         {
             for (int x = 0; x < width; x++)
             {
-               
-
-                int spawnOffset = missingItems[x] ;
-                for (int y = 0; y<height; y++)
+                int spawnOffset = missingItems[x];
+                for (int y = 0; y < height; y++)
                 {
-
-                    if (_tileItems[x, y] == null)
+                    if (_tileItems[x, y] != null)
                     {
-                        int posToCheck = y+1;
-                        while (posToCheck < height)
-                        {
-                            if (_tileItems[x, posToCheck] == null)
-                            {
-                                posToCheck++;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                        int yOffset = spawnOffset - missingItems[x];
-
-                        if (posToCheck == height)
-                        {
-                            _tileItems[x, y] = _objectPool.GetRandomItemFromPool(
-                                grid.GetCellCenterWorld(new Vector3Int(x, posToCheck+yOffset, 0))).GetComponent<IItem>();
-                            Debug.Log(x+" "+y+" has a pos of "+grid.GetCellCenterWorld(new Vector3Int(x, posToCheck+yOffset, 0)));
-                            _tileItems[x, y].Transform.parent = transform;
-                            missingItems[x]--;
-                        }else if(_tileItems[x,posToCheck]!=null )
-                        {
-                            if (_tileItems[x,posToCheck].IsMovable
-                                &&Mathf.Abs(_tileItems[x,posToCheck].Transform.localPosition.x-grid.GetCellCenterLocal(new Vector3Int(x,posToCheck,0)).x)<0.01f)
-                                
-                            {
-                                _tileItems[x, y] = _tileItems[x, posToCheck];
-
-                                _tileItems[x, posToCheck] = null;
-                                
-                            }else if(x>0&&_tileItems[x-1,y+1]!=null&&_tileItems[x-1,y]!=null&&_tileItems[x-1,y+1].IsMovable
-                                     &&!lerpingItems.Contains(new Vector2Int(x-1,y+1))&&!lerpingItems.Contains(new Vector2Int(x-1,y)))
-                            {
-                                if (y > 0 && _tileItems[x - 1, y - 1] != null)
-                                {
-                                    if(_tileItems[x,y-1]!=null&&_tileItems[x,y-1].Transform.localPosition==grid.GetCellCenterLocal(new Vector3Int(x,y-1))&&!lerpingItems.Contains(new Vector2Int(x-1,y-1)))
-                                    {
-                                        _tileItems[x, y] = _tileItems[x - 1,y+1];
-                                        missingItems[x-1]++;
-
-                                        _tileItems[x - 1, y+1] = null;
-                                    }
-                                }
-                                else
-                                {
-                                    _tileItems[x, y] = _tileItems[x - 1,y+1];
-                                    missingItems[x-1]++;
-
-                                    _tileItems[x - 1, y+1] = null;
-                                }
-                                
-                            }else if (x<width-1&&_tileItems[x+1,y+1]!=null&&_tileItems[x+1,y]!=null&&_tileItems[x+1,y+1].IsMovable
-                                      &&!lerpingItems.Contains(new Vector2Int(x+1,y+1))&&!lerpingItems.Contains(new Vector2Int(x+1,y)))
-                            {
-
-                                if (y > 0 && _tileItems[x + 1, y - 1] != null)
-                                {
-                                    if(_tileItems[x,y-1]!=null&&(_tileItems[x,y-1].Transform.localPosition==grid.GetCellCenterLocal(new Vector3Int(x,y-1))&&!lerpingItems.Contains(new Vector2Int(x+1,y-1))))
-                                    {
-                                        _tileItems[x, y] = _tileItems[x + 1,y+1];
-                                        missingItems[x+1]++;
-
-                                        _tileItems[x + 1, y+1] = null;
-                                    }
-                                }
-                                else
-                                {
-                                    _tileItems[x, y] = _tileItems[x + 1,y+1];
-                                    missingItems[x+1]++;
-
-                                    _tileItems[x + 1, y+1] = null;
-                                }
-                            }
-                            
-                        }
-                        if(_tileItems[x,y]!=null)_tileItems[x, y].SortingOrder = 5;
-
-
-                    }else if(Vector3.Distance(_tileItems[x,y].Transform.localPosition,grid.GetCellCenterLocal(new Vector3Int(x,y,0)))>0.01f&&!swappingItems.Contains(new Vector2Int(x,y)))
-                    {
-                        Vector3 currPos = _tileItems[x, y].Transform.localPosition;
-                        Vector3 targetPos = grid.GetCellCenterLocal(new Vector3Int(x, y, 0));
-
-                        // Calculate the direction vector from the current position to the target position
-
-                        _tileItems[x,y].FallSpeed+=_tileItems[x,y].Gravity;
-                        
-                        // Move the item in the direction of the target position
-                        if (Mathf.Abs(targetPos.x- currPos.x)>0.01f&&Mathf.Abs(targetPos.y- currPos.y)<0.5f)
-                        {
-                            currPos.x += Mathf.Sign(targetPos.x-currPos.x) *(_tileItems[x, y].FallSpeed * Time.deltaTime);
-                            currPos.y -=(_tileItems[x, y].FallSpeed * Time.deltaTime);
-                         
-
-                        }else
-                        {
-                            currPos.y -= (_tileItems[x, y].FallSpeed * Time.deltaTime);
-
-                        }
-                        if(Vector3.Distance(grid.GetCellCenterLocal(new Vector3Int(x, y, 0)),currPos)<0.01f||grid.GetCellCenterLocal(new Vector3Int(x, y, 0)).y>currPos.y)
-                        {
-                            Debug.Log("Lerping is done since " + Vector3.Distance(grid.GetCellCenterLocal(new Vector3Int(x, y, 0)),currPos)+" "+x+" "+y);
-                            _tileItems[x, y].FallSpeed = 0f;
-                            _tileItems[x,y].Transform.localPosition =  grid.GetCellCenterLocal(new Vector3Int(x, y, 0));
-                            Debug.Log(_tileItems[x,y].Transform.localPosition+" "+grid.GetCellCenterLocal(new Vector3Int(x, y, 0)));
-                            lerpingItems.Remove(new Vector2Int(x, y)); 
-                            _tileItems[x, y].SortingOrder = 4;
-                            
-                            List<Vector2Int> cellMatches=_tileItems.CheckMatches(new Vector2Int(x,y),lerpingItems, width, height);
-                            
-                            if (cellMatches.Count >= 3)
-                            {
-                                HandleMatch(cellMatches,new Vector2Int(x,y)).Forget();
-                            }
-                                
-
-                        }else
-                        {
-                            _tileItems[x, y].Transform.localPosition = currPos;
-                        }
-                       
-
+                        HandleNonEmptyTile(x, y);
+                        continue;
                     }
-                    
-                   
+
+                    int posToCheck = FindNextNonEmptyPosition(x, y);
+                    int yOffset = spawnOffset - missingItems[x];
+
+                    if (posToCheck == height)
+                    {
+                        SpawnNewItem(x, y, posToCheck + yOffset);
+                        continue;
+                    }
+
+                    if (_tileItems[x, posToCheck] != null && IsMovable(new Vector2Int(x, posToCheck)))
+                    {
+                        MoveItem(x, y, posToCheck);
+                        continue;
+                    }
+
+                    if (x > 0 && CanMoveFromLeft(x, y))
+                    {
+                        MoveItemFromLeft(x, y);
+                        continue;
+                    }
+
+                    if (x < width - 1 && CanMoveFromRight(x, y))
+                    {
+                        MoveItemFromRight(x, y);
+                    }
                 }
+            }
+        }
+
+        private int FindNextNonEmptyPosition(int x, int y)
+        {
+            int posToCheck = y + 1;
+            while (posToCheck < height && _tileItems[x, posToCheck] == null)
+            {
+                posToCheck++;
+            }
+            return posToCheck;
+        }
+
+        private void SpawnNewItem(int x, int y, int yOffset)
+        {
+            _tileItems[x, y] = _objectPool.GetRandomItemFromPool(
+                grid.GetCellCenterWorld(new Vector3Int(x, yOffset, 0))).GetComponent<IItem>();
+            _tileItems[x, y].Transform.parent = transform;
+            missingItems[x]--;
+        }
+
+        private void MoveItem(int x, int y, int posToCheck)
+        {
+            _tileItems[x, y] = _tileItems[x, posToCheck];
+            _tileItems[x, posToCheck] = null;
+        }
+
+        private bool CanMoveFromLeft(int x, int y)
+        {
+            return _tileItems[x - 1, y + 1] != null && _tileItems[x - 1, y] != null && IsMovable(new Vector2Int(x - 1, y + 1)) &&
+                   !lerpingItems.Contains(new Vector2Int(x - 1, y + 1)) && !lerpingItems.Contains(new Vector2Int(x - 1, y));
+        }
+
+        private void MoveItemFromLeft(int x, int y)
+        {
+            _tileItems[x, y] = _tileItems[x - 1, y + 1];
+            missingItems[x - 1]++;
+            _tileItems[x - 1, y + 1] = null;
+        }
+
+        private bool CanMoveFromRight(int x, int y)
+        {
+            return _tileItems[x + 1, y + 1] != null && _tileItems[x + 1, y] != null && IsMovable(new Vector2Int(x + 1, y + 1)) &&
+                   !lerpingItems.Contains(new Vector2Int(x + 1, y + 1)) && !lerpingItems.Contains(new Vector2Int(x + 1, y));
+        }
+
+        private void MoveItemFromRight(int x, int y)
+        {
+            _tileItems[x, y] = _tileItems[x + 1, y + 1];
+            missingItems[x + 1]++;
+            _tileItems[x + 1, y + 1] = null;
+        }
+
+        private void HandleNonEmptyTile(int x, int y)
+        {
+            if (IsItemMoving(x, y) && !swappingItems.Contains(new Vector2Int(x, y)))
+            {
+                MoveItemTowardsTarget(x, y);
+            }
+        }
+
+        private bool IsItemMoving(int x, int y)
+        {
+            return Vector3.Distance(_tileItems[x, y].Transform.localPosition, grid.GetCellCenterLocal(new Vector3Int(x, y, 0))) > 0.01f;
+        }
+
+        private void MoveItemTowardsTarget(int x, int y)
+        {
+            Vector3 currPos = _tileItems[x, y].Transform.localPosition;
+            Vector3 targetPos = grid.GetCellCenterLocal(new Vector3Int(x, y, 0));
+
+            _tileItems[x, y].FallSpeed += _tileItems[x, y].Gravity;
+
+            if (ShouldMoveDiagonally(currPos, targetPos))
+            {
+                currPos.x += Mathf.Sign(targetPos.x - currPos.x) * (_tileItems[x, y].FallSpeed * Time.deltaTime);
+                currPos.y -= (_tileItems[x, y].FallSpeed * Time.deltaTime);
+            }
+            else
+            {
+                currPos.y -= (_tileItems[x, y].FallSpeed * Time.deltaTime);
+            }
+
+            if (IsItemCloseToTarget(currPos, targetPos))
+            {
+                FinishItemMovement(x, y, currPos);
+            }
+            else
+            {
+                _tileItems[x, y].Transform.localPosition = currPos;
+            }
+        }
+
+        private bool ShouldMoveDiagonally(Vector3 currPos, Vector3 targetPos)
+        {
+            return Mathf.Abs(targetPos.x - currPos.x) > 0.01f && Mathf.Abs(targetPos.y - currPos.y) < 0.5f;
+        }
+
+        private bool IsItemCloseToTarget(Vector3 currPos, Vector3 targetPos)
+        {
+            return Vector3.Distance(targetPos, currPos) < 0.01f || targetPos.y > currPos.y;
+        }
+
+        private void FinishItemMovement(int x, int y, Vector3 currPos)
+        {
+            _tileItems[x, y].FallSpeed = 0f;
+            _tileItems[x, y].Transform.localPosition = grid.GetCellCenterLocal(new Vector3Int(x, y, 0));
+            lerpingItems.Remove(new Vector2Int(x, y));
+            _tileItems[x, y].SortingOrder = 4;
+
+            List<Vector2Int> cellMatches = _tileItems.CheckMatches(new Vector2Int(x, y), lerpingItems, width, height);
+
+            if (cellMatches.Count >= 3)
+            {
+                HandleMatch(cellMatches, new Vector2Int(x, y)).Forget();
             }
         }
 

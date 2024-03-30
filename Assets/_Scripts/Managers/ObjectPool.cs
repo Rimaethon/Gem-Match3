@@ -49,7 +49,6 @@ public class ObjectPool : MonoBehaviour
         else
         {
             GameObject prefab = itemDatabase.GetParticleEffect(itemID);
-            prefab.GetComponent<ParticleEffectHandler>().objectPool = this;
             Quaternion rotation = prefab.transform.rotation;
             GameObject effect=Instantiate(prefab, position, rotation);
             return effect;
