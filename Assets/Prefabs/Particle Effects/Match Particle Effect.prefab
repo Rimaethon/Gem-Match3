@@ -4909,6 +4909,7 @@ GameObject:
   - component: {fileID: 8099534365724066161}
   - component: {fileID: 7162401399125872261}
   - component: {fileID: 810957006208802901}
+  - component: {fileID: -7296795526534375053}
   m_Layer: 0
   m_Name: Match Particle Effect
   m_TagString: Untagged
@@ -4942,7 +4943,7 @@ ParticleSystem:
   serializedVersion: 8
   lengthInSec: 0.7
   simulationSpeed: 1
-  stopAction: 0
+  stopAction: 1
   cullingMode: 1
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
@@ -9815,3 +9816,16 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &-7296795526534375053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9146961813432507192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4615fe93acfd1f4b911c88ab720b43d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particleEffectID: 0

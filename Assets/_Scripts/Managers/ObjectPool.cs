@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Rimaethon.Scripts.Utility;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class ObjectPool : MonoBehaviour
+public class ObjectPool : Singleton<ObjectPool>
 {
     
     private Dictionary<int, Stack<GameObject>> items;
@@ -9,7 +12,9 @@ public class ObjectPool : MonoBehaviour
     
     [SerializeField] private ItemDatabaseSO itemDatabase;
 
-    private void Awake()
+  
+
+    private void Start()
     {
         items = new Dictionary<int, Stack<GameObject>>();
         particleEffects= new Dictionary<int, Stack<GameObject>>();
@@ -21,7 +26,6 @@ public class ObjectPool : MonoBehaviour
         {
             particleEffects[i] = new Stack<GameObject>();
         }
-
     }
 
     public GameObject GetItemFromPool(int itemID, Vector3 position)
@@ -29,7 +33,10 @@ public class ObjectPool : MonoBehaviour
       
         if (items[itemID].Count > 0)
         {
-            return items[itemID].Pop();
+            GameObject item = items[itemID].Pop();
+            item.transform.position = position;
+            item.SetActive(true);
+            return item;
         }
         else
         {
@@ -44,19 +51,20 @@ public class ObjectPool : MonoBehaviour
         {
             GameObject particleEffect = particleEffects[itemID].Pop();
             particleEffect.transform.position = position;
+            particleEffect.SetActive(true);
             return particleEffect;
         }
         else
         {
             GameObject prefab = itemDatabase.GetParticleEffect(itemID);
-            Quaternion rotation = prefab.transform.rotation;
-            GameObject effect=Instantiate(prefab, position, rotation);
+            GameObject effect=Instantiate(prefab, position, prefab.transform.rotation);
             return effect;
         }
     }
    
     public void ReturnParticleEffectToPool(GameObject item, int itemID)
     {
+        item.SetActive(false);
         particleEffects[itemID].Push(item);
     }
     public GameObject GetRandomItemFromPool(Vector3 position)
@@ -66,6 +74,7 @@ public class ObjectPool : MonoBehaviour
         {
             GameObject item = items[randomItemID].Pop();
             item.transform.position = position;
+            item.SetActive(true);
             return item;
         }
         else

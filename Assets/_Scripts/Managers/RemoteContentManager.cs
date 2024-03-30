@@ -34,6 +34,7 @@ namespace DefaultNamespace
                     Debug.Log(responseBody);
                 }
             });
+            await UniTask.Yield();
           
         }
         

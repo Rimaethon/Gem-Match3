@@ -10,8 +10,8 @@ public class UniversalCounter : MonoBehaviour
 {
     private const string API_URL = "http://worldtimeapi.org/api/ip";
     private (int[], int[]) currentDateTime;
-    private string path = "Assets/Data/User Data/";
-    private string levelName = "TimeDependentData";
+    //private string path = "Assets/Data/User Data/";
+    //private string levelName = "TimeDependentData";
 
   
     private void OnDisable()

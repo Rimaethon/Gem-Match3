@@ -12,7 +12,7 @@ namespace Scripts
     public class SceneController : PersistentSingleton<SceneController>
     {
 
-        [SerializeField] private string filePath = "Assets/Data/Level Data/Level ";
+       // [SerializeField] private string filePath = "Assets/Data/Level Data/Level ";
         private LevelData _levelData;
 
     
