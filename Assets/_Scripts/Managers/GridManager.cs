@@ -1,12 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using _Scripts.Core;
 using _Scripts.Managers.Matching;
 using _Scripts.Utility;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Rimaethon.Scripts.Managers;
+using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 using Sequence = DG.Tweening.Sequence;
 using Vector3Int = UnityEngine.Vector3Int;
 
@@ -27,20 +32,18 @@ namespace Scripts
         private Vector2[,] _cellPositions;
         private bool _isSwiping;
         
-        private HashSet<Vector2Int> lerpingItems=new HashSet<Vector2Int>();
-        private HashSet<Vector2Int> swappingItems=new HashSet<Vector2Int>();
         private RandomBoardGenerator _randomBoardGenerator;
         
-        private int[] missingItems=new int[8];
+       private bool[] isTopCellFit=new bool[8];
         
         private void OnEnable()
         {
             EventManager.Instance.AddHandler<Vector2Int, Vector2>(GameEvents.OnSwipe, OnSwipe);
             EventManager.Instance.AddHandler<Vector2>(GameEvents.OnClick, OnClick);
             EventManager.Instance.AddHandler<Vector2>(GameEvents.OnTouch, OnTouch);
-            EventManager.Instance.AddHandler<List<Vector2Int>>(GameEvents.OnBomb, HandleBombMatch);
-            EventManager.Instance.AddHandler<List<Vector2Int>>(GameEvents.OnHorizontalMatch, HandleHorizontalMatch);
-            EventManager.Instance.AddHandler<List<Vector2Int>>(GameEvents.OnVerticalMatch, HandleVerticalMatch);
+            EventManager.Instance.AddHandler<HashSet<Vector2Int>,Vector2Int>(GameEvents.OnBomb, HandleBombMatch);
+            EventManager.Instance.AddHandler<HashSet<Vector2Int>,Vector2Int>(GameEvents.OnHorizontalMatch, HandleHorizontalMatch);
+            EventManager.Instance.AddHandler<HashSet<Vector2Int>,Vector2Int>(GameEvents.OnVerticalMatch, HandleVerticalMatch);
             
         }
 
@@ -52,57 +55,61 @@ namespace Scripts
             EventManager.Instance.RemoveHandler<Vector2Int, Vector2>(GameEvents.OnSwipe, OnSwipe);
             EventManager.Instance.RemoveHandler<Vector2>(GameEvents.OnClick, OnClick);
             EventManager.Instance.RemoveHandler<Vector2>(GameEvents.OnTouch, OnTouch);
-            EventManager.Instance.RemoveHandler<List<Vector2Int>>(GameEvents.OnBomb, HandleBombMatch);
-            EventManager.Instance.RemoveHandler<List<Vector2Int>>(GameEvents.OnHorizontalMatch, HandleHorizontalMatch);
-            EventManager.Instance.RemoveHandler<List<Vector2Int>>(GameEvents.OnVerticalMatch, HandleVerticalMatch);
+            EventManager.Instance.RemoveHandler<HashSet<Vector2Int>,Vector2Int>(GameEvents.OnBomb, HandleBombMatch);
+            EventManager.Instance.RemoveHandler<HashSet<Vector2Int>,Vector2Int>(GameEvents.OnHorizontalMatch, HandleHorizontalMatch);
+            EventManager.Instance.RemoveHandler<HashSet<Vector2Int>,Vector2Int>(GameEvents.OnVerticalMatch, HandleVerticalMatch);
+            _cts.Cancel();
         }
-
-        private void HandleVerticalMatch(List<Vector2Int> positions)
+        private void OnApplicationQuit()
         {
-            for (int i=1;i<positions.Count;i++)
+            _cts.Cancel();
+        }
+        private void HandleVerticalMatch(HashSet<Vector2Int> positions,Vector2Int targetPos)
+        {
+            HashSet<Vector2Int> positionsToDestroy = new HashSet<Vector2Int>();
+            positionsToDestroy.Add(targetPos);
+            positionsToDestroy.UnionWith(positions);
+            foreach (Vector2Int pos in positions)
             {
-                if (_tileItems.GetItem(positions[i]) != null)
+                if (_tileItems.GetItem(pos) != null)
                 {
-                    _tileItems.GetItem(positions[i]).OnClick(_tileItems,positions[i]);
-                    
+                    positionsToDestroy.UnionWith(_tileItems.GetItem(pos).OnClick(_tileItems,pos,false));
                 }
             }
-            HandleMatchWithDelay(positions).Forget();
-            _objectPool.GetParticleEffectFromPool(7,grid.GetCellCenterWorldVector2(positions[0]));
+            HandleMatchWithDelay(positionsToDestroy,0.05f,0.2f).Forget();
         }
-
-
-        private void HandleBombMatch(List<Vector2Int> positions)
+        private void HandleHorizontalMatch(HashSet<Vector2Int>  positions,Vector2Int targetPos)
         {
-            for (int i=1;i<positions.Count;i++)
+            HashSet<Vector2Int> positionsToDestroy = new HashSet<Vector2Int>();
+            positionsToDestroy.Add(targetPos);
+            positionsToDestroy.UnionWith(positions);
+            foreach (Vector2Int pos in positions)
             {
-                if (_tileItems.GetItem(positions[i]) != null)
+                if (_tileItems.GetItem(pos) != null)
                 {
-                    _tileItems.GetItem(positions[i]).OnClick(_tileItems,positions[i]);
-                    
+                    positionsToDestroy.UnionWith(_tileItems.GetItem(pos).OnClick(_tileItems,pos,false));
                 }
             }
-            _tileItems.GetItem(positions[0]).OnMatch();
-            _tileItems[positions[0].x,positions[0].y]=null;
-            HandleMatchWithDelay(positions,0,0.3f).Forget();
-            _objectPool.GetParticleEffectFromPool(5,grid.GetCellCenterWorldVector2(positions[0]));
+            HandleMatchWithDelay(positionsToDestroy,0.05f,0.2f).Forget();
+        }
+
+        private void HandleBombMatch(HashSet<Vector2Int>  positions,Vector2Int targetPos)
+        {
+            HashSet<Vector2Int> positionsToDestroy = new HashSet<Vector2Int>();
+            positionsToDestroy.Add(targetPos);
+            positionsToDestroy.UnionWith(positions);
+            foreach (Vector2Int pos in positions)
+            {
+                if (_tileItems.GetItem(pos) != null)
+                {
+                    positionsToDestroy.UnionWith(_tileItems.GetItem(pos).OnClick(_tileItems,pos,false));
+                }
+            }
+            HandleMatchWithDelay(positionsToDestroy,0,0.1f).Forget();
             BoardShake().Forget();
         }
-        private void HandleHorizontalMatch(List<Vector2Int> positions)
-        {
-            for (int i=1;i<positions.Count;i++)
-            {
-                if (_tileItems.GetItem(positions[i]) != null)
-                {
-                    _tileItems.GetItem(positions[i]).OnClick(_tileItems,positions[i]);
-                    
-                }
-            }
-            HandleMatchWithDelay(positions,0.05f,0.2f).Forget();
-            _objectPool.GetParticleEffectFromPool(6,grid.GetCellCenterWorldVector2(positions[0]));
-        }
 
-        
+   
         private void OnTouch(Vector2 touchPos)
         {
             Vector3Int firstCellPos = grid.WorldToCell(touchPos);
@@ -124,8 +131,10 @@ namespace Scripts
             _randomBoardGenerator = new RandomBoardGenerator();
             gameBoard = _randomBoardGenerator.GenerateRandomBoard(width, height,itemTypeStart,itemTypeEnd);
             Generate();
-        }
+            UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
 
+        }
+        private CancellationTokenSource _cts;
         private void Generate()
         {
 
@@ -142,6 +151,9 @@ namespace Scripts
                 
 
             }
+            _cts = new CancellationTokenSource();
+            MovementUpdate(_cts.Token).Forget();
+            MatchCheckingUpdate(_cts.Token).Forget();
           
         }
         
@@ -151,48 +163,47 @@ namespace Scripts
             Vector2Int firstCellPos = grid.WorldToCellVector2Int(clickPos);
             if (!IsMovable(firstCellPos))
                 return;
-            _tileItems.GetItem(firstCellPos).OnClick(_tileItems,firstCellPos);
+            _tileItems.GetItem(firstCellPos).OnClick(_tileItems,firstCellPos,true);
             OnTouch(clickPos);
         }
 
         private async void  OnSwipe(Vector2Int direction, Vector2 clickPos)
         {
 
-            if (_isSwiping)
-            {
-                Debug.Log("Im swiping");
-                return;
-            }
             Vector2Int firstCellPos = grid.WorldToCellVector2Int(clickPos);
             Vector2Int secondCellPos = firstCellPos + direction;
 
-            if (!IsMovable(firstCellPos) || !IsMovable(secondCellPos))
+            if (!IsMovable(firstCellPos) || !IsMovable(secondCellPos)||IsItemMoving(firstCellPos.x,firstCellPos.y)||IsItemMoving(secondCellPos.x,secondCellPos.y))
             {
-                Debug.Log(lerpingItems.Contains(firstCellPos));
-                Debug.Log(lerpingItems.Contains(secondCellPos));
                 
                 Debug.Log("Pos is not movable");
                 return;
             }
-            _isSwiping = true;
-
-            Debug.Log(lerpingItems.Contains(firstCellPos));
-            swappingItems.Add(firstCellPos);
-            swappingItems.Add(secondCellPos);
-            lerpingItems.Add(firstCellPos);
-            lerpingItems.Add(secondCellPos);
             _tileItems[firstCellPos.x, firstCellPos.y].SortingOrder= 5;
             _tileItems[secondCellPos.x, secondCellPos.y].SortingOrder = 4;
-            await ChangeItemPositions(firstCellPos, secondCellPos);
-            
-            List<Vector2Int> firstCellMatches=_tileItems.CheckMatches(firstCellPos,lerpingItems, width, height);
-            List<Vector2Int> secondCellMatches=_tileItems.CheckMatches(secondCellPos,lerpingItems, width, height);
+           
+            _tileItems[firstCellPos.x, firstCellPos.y].MovementQueue.Enqueue(secondCellPos);
+            _tileItems[secondCellPos.x, secondCellPos.y].MovementQueue.Enqueue(firstCellPos);
+            while(_tileItems[firstCellPos.x,firstCellPos.y].MovementQueue.Count>0||_tileItems[secondCellPos.x,secondCellPos.y].MovementQueue.Count>0)
+            {
+                await UniTask.Yield();
+            }
+            SwapItemsInArray(firstCellPos,secondCellPos);
+            List<Vector2Int> firstCellMatches=_tileItems.CheckMatches(firstCellPos,width, height);
+            List<Vector2Int> secondCellMatches=_tileItems.CheckMatches(secondCellPos, width, height);
             
             
             
             if (firstCellMatches.Count<3 && secondCellMatches.Count<3)
             {
-                await ChangeItemPositions(secondCellPos, firstCellPos); 
+                _tileItems[firstCellPos.x,firstCellPos.y].MovementQueue.Enqueue(secondCellPos);
+                _tileItems[secondCellPos.x,secondCellPos.y].MovementQueue.Enqueue(firstCellPos);
+                while(_tileItems[firstCellPos.x,firstCellPos.y].MovementQueue.Count>0||_tileItems[secondCellPos.x,secondCellPos.y].MovementQueue.Count>0)
+                {
+                    await UniTask.Yield();
+                }
+                SwapItemsInArray(firstCellPos,secondCellPos);
+                
             }
             else
             {
@@ -208,11 +219,8 @@ namespace Scripts
                     await HandleMatch(secondCellMatches,secondCellPos);
                 }
             }
-            _isSwiping = false;
-            swappingItems.Remove(firstCellPos);
-            swappingItems.Remove(secondCellPos);
-            lerpingItems.Remove(firstCellPos);
-            lerpingItems.Remove(secondCellPos);
+
+
             OnTouch(clickPos);
             
         }
@@ -221,33 +229,30 @@ namespace Scripts
         {
             if (matchedItems.Count==3)
             {
-                await HandleMatchWithDelay(matchedItems,0.1f,0.1f);
+                await HandleMatchWithDelay(matchedItems,0f,0f);
+                Debug.Log($"HandleMatch called with target position {targetPos} and matched items {string.Join(", ", matchedItems)}");
+
             }else if (matchedItems.Count == 4)
             {
-                await LerpAllItemsToPosition(matchedItems,targetPos);
+                 await LerpAllItemsToPosition(matchedItems,targetPos,0.1f,0f);
                 _objectPool.GetParticleEffectFromPool(8,grid.GetCellCenterWorldVector2(targetPos));
-                _tileItems[targetPos.x, targetPos.y]= _objectPool.GetItemFromPool(6,grid.GetCellCenterWorld(new Vector3Int(targetPos.x, targetPos.y, 0))).GetComponent<IItem>();
+                _tileItems[targetPos.x, targetPos.y]= _objectPool.GetItemFromPool(7,grid.GetCellCenterWorld(new Vector3Int(targetPos.x, targetPos.y, 0))).GetComponent<IItem>();
                 _tileItems[targetPos.x, targetPos.y].Transform.parent = transform;
             }else if (matchedItems.Count == 5)
             {
-                await LerpAllItemsToPosition(matchedItems,targetPos);
+                await LerpAllItemsToPosition(matchedItems,targetPos,0f,0.1f);
                 _objectPool.GetParticleEffectFromPool(8,grid.GetCellCenterWorldVector2(targetPos));
                 _tileItems[targetPos.x, targetPos.y]= _objectPool.GetItemFromPool(5,grid.GetCellCenterWorld(new Vector3Int(targetPos.x, targetPos.y, 0))).GetComponent<IItem>();
                 _tileItems[targetPos.x, targetPos.y].Transform.parent = transform;
             }
         }
-        private bool IsMovable(Vector2Int pos)
-        {
-            return IsInBoundaries(pos) && _tileItems[pos.x,pos.y]!=null && !lerpingItems.Contains(pos) &&
-                   _tileItems[pos.x, pos.y].IsMovable;
-        }
-
+        
         private bool IsInBoundaries(Vector2Int pos)
         {
             return pos.x >= 0 && pos.y >= 0 && pos.x < width && pos.y < height;
         }
 
-        private async UniTask ChangeItemPositions(Vector2Int pos1, Vector2Int pos2, float lerpSpeed = 0.15f)
+        /*private async UniTask ChangeItemPositions(Vector2Int pos1, Vector2Int pos2, float lerpSpeed = 0.15f)
         {
             Vector2 pos1InitialPosition = grid.GetCellCenterLocalVector2(pos1);
             Vector2 pos2InitialPosition = grid.GetCellCenterLocalVector2(pos2);
@@ -259,6 +264,11 @@ namespace Scripts
             SwapItemsInArray(pos1, pos2);
           
            
+        }*/
+        
+        private bool IsItemMoving(int x, int y)
+        {
+            return _tileItems[x,y]!=null&&_tileItems[x, y].MovementQueue.Count > 0;
         }
       
         private void SwapItemsInArray(Vector2Int pos1, Vector2Int pos2)
@@ -266,25 +276,89 @@ namespace Scripts
             (_tileItems[pos1.x, pos1.y], _tileItems[pos2.x, pos2.y]) = (_tileItems[pos2.x, pos2.y], _tileItems[pos1.x, pos1.y]);
         }
         
-         private void FixedUpdate()
+         private async UniTaskVoid MatchCheckingUpdate(CancellationToken token)
         {
-            for (int x = 0; x < width; x++)
+            while (!token.IsCancellationRequested)
             {
-                int spawnOffset = missingItems[x];
-                for (int y = 0; y < height; y++)
+                try
+                {
+                    await CheckMatchesAsync();
+                }
+                catch (Exception ex) when (!(ex is OperationCanceledException))
+                {
+                    // Handle any exceptions here
+                    Debug.LogError(ex);
+                }
+
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
+            }
+        }
+        private async UniTaskVoid MovementUpdate(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    await MoveItemsAsync();
+                }
+                catch (Exception ex) when (!(ex is OperationCanceledException))
+                {
+                    // Handle any exceptions here
+                    Debug.LogError(ex);
+                }
+
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
+            }
+        }
+
+        private async UniTask CheckMatchesAsync()
+        {
+            for (int x = width-1; x >=0; x--)
+            {
+                for (int y = height-1; y >=0 ; y--)
+                {
+                    if (!IsItemMoving(x, y)) continue;
+                    Vector3 currPos = _tileItems[x, y].Transform.localPosition;
+
+                    Vector3 targetPos = grid.GetCellCenterLocalVector2(_tileItems[x,y].MovementQueue.Peek());
+
+                    if (IsItemCloseToTarget(currPos, targetPos))
+                    {
+                        await FinishItemMovement(x, y, currPos);
+                            
+                    }
+                }
+            }
+            
+           
+        }
+
+        private async UniTask MoveItemsAsync()
+        {
+            
+            for (int x = width-1; x >=0; x--)
+            {
+                
+                for (int y = height-1; y >=0 ; y--)
                 {
                     if (_tileItems[x, y] != null)
                     {
-                        HandleNonEmptyTile(x, y);
+                        if (IsItemMoving(x, y))
+                        {
+                            await MoveItemTowardsTarget(x, y);
+                        }
                         continue;
                     }
 
                     int posToCheck = FindNextNonEmptyPosition(x, y);
-                    int yOffset = spawnOffset - missingItems[x];
 
                     if (posToCheck == height)
                     {
-                        SpawnNewItem(x, y, posToCheck + yOffset);
+                        if (!isTopCellFit[x])
+                        {
+                            SpawnNewItem(x, y, height);
+                            isTopCellFit[x] = true;
+                        }
                         continue;
                     }
 
@@ -305,13 +379,68 @@ namespace Scripts
                         MoveItemFromRight(x, y);
                     }
                 }
+
+                
+            }
+        }
+
+        private async UniTask MoveItemTowardsTarget(int x, int y)
+        {
+            Vector3 currPos = _tileItems[x, y].Transform.localPosition;
+            Vector3 targetPos = grid.GetCellCenterLocalVector2(_tileItems[x,y].MovementQueue.Peek());
+            _tileItems[x, y].FallSpeed+=_tileItems[x, y].Gravity;
+            if(y>0&&_tileItems[x,y-1]!=null&&_tileItems[x,y-1].FallSpeed>_tileItems[x,y].FallSpeed)
+            {
+                _tileItems[x, y].FallSpeed = _tileItems[x, y-1].FallSpeed-_tileItems[x, y].Gravity;
+            }
+            // Calculate the maximum distance the item can move in this frame
+            float maxDistance = _tileItems[x, y].FallSpeed * Time.deltaTime;
+            Debug.Log($"MoveItemTowardsTarget called for tile at position ({x}, {y})"+_tileItems[x,y].Transform.localPosition+" "+targetPos+" "+maxDistance);
+
+            // Move the item towards the target
+            Vector3 newPos = Vector3.MoveTowards(currPos, targetPos, maxDistance);
+
+            // Update the item's position
+            _tileItems[x, y].Transform.localPosition = newPos;
+        }
+        private bool IsMovable(Vector2Int pos)
+        {
+            return IsInBoundaries(pos) && _tileItems[pos.x,pos.y]!=null&&_tileItems[pos.x, pos.y].IsMovable;
+        }
+
+
+        private async UniTask FinishItemMovement(int x, int y, Vector3 currPos)
+        {
+            
+            if(_tileItems[x,y].MovementQueue.Peek().y==height-1)
+            {
+                isTopCellFit[x] = false;
+            }
+
+            _tileItems[x, y].Transform.localPosition = grid.GetCellCenterLocalVector2(_tileItems[x,y].MovementQueue.Dequeue());
+            Debug.Log($"FinishItemMovement called for tile at position ({x}, {y})"+_tileItems[x,y].Transform.localPosition);
+
+            if (_tileItems[x,y].MovementQueue.Count == 0)
+            {
+                _tileItems[x, y].FallSpeed = 0f;
+                _tileItems[x, y].SortingOrder = 4;
+
+                List<Vector2Int> cellMatches =
+                    _tileItems.CheckMatches(new Vector2Int(x, y),width, height);
+                Debug.Log("CheckMatchesAsync called for tile at position (" + x + ", " + y +" "+cellMatches.Count+" matches found"+_tileItems[x,y].Transform.localPosition);
+
+                if (cellMatches.Count >= 3)
+                {
+                    Debug.Log(x+" "+y+" "+cellMatches.Count+" matches found");
+                    await HandleMatch(cellMatches, new Vector2Int(x, y));
+                }
             }
         }
 
         private int FindNextNonEmptyPosition(int x, int y)
         {
             int posToCheck = y + 1;
-            while (posToCheck < height && _tileItems[x, posToCheck] == null)
+            while (posToCheck < height && (_tileItems[x, posToCheck] == null))
             {
                 posToCheck++;
             }
@@ -320,163 +449,201 @@ namespace Scripts
 
         private void SpawnNewItem(int x, int y, int yOffset)
         {
-            _tileItems[x, y] = _objectPool.GetRandomItemFromPool(
+            _tileItems[x, y]=_objectPool.GetRandomItemFromPool(
                 grid.GetCellCenterWorld(new Vector3Int(x, yOffset, 0))).GetComponent<IItem>();
             _tileItems[x, y].Transform.parent = transform;
-            missingItems[x]--;
+            if (y != height - 1)
+            {
+                _tileItems[x,y].MovementQueue.Enqueue(new Vector2Int(x, height-1));
+            }
+
+            _tileItems[x,y].MovementQueue.Enqueue(new Vector2Int(x, y));
         }
 
         private void MoveItem(int x, int y, int posToCheck)
         {
-            _tileItems[x, y] = _tileItems[x, posToCheck];
+            if (!_tileItems[x,posToCheck].MovementQueue.Contains(new Vector2Int(x, y)))
+            {
+                _tileItems[x,posToCheck].MovementQueue.Enqueue(new Vector2Int(x, y));
+            }
+            _tileItems[x,y]=_tileItems[x, posToCheck];
             _tileItems[x, posToCheck] = null;
         }
 
         private bool CanMoveFromLeft(int x, int y)
         {
-            return _tileItems[x - 1, y + 1] != null && _tileItems[x - 1, y] != null && IsMovable(new Vector2Int(x - 1, y + 1)) &&
-                   !lerpingItems.Contains(new Vector2Int(x - 1, y + 1)) && !lerpingItems.Contains(new Vector2Int(x - 1, y));
+            return !IsItemMoving(x - 1, y) && !IsItemMoving(x - 1, y + 1) &&_tileItems[x-1,y+1]!=null&& _tileItems[x - 1, y + 1].IsMovable;
         }
 
         private void MoveItemFromLeft(int x, int y)
         {
-            _tileItems[x, y] = _tileItems[x - 1, y + 1];
-            missingItems[x - 1]++;
-            _tileItems[x - 1, y + 1] = null;
+            if(!_tileItems[x-1,y+1].MovementQueue.Contains(new Vector2Int(x, y)))
+            {
+                _tileItems[x-1,y+1].MovementQueue.Enqueue(new Vector2Int(x , y ));
+
+                _tileItems[x, y] = _tileItems[x - 1, y + 1];
+                if(y==height-1)
+                {
+                    isTopCellFit[x] = false;
+                }
+                _tileItems[x - 1, y + 1] = null;
+
+            }
+            
         }
 
         private bool CanMoveFromRight(int x, int y)
         {
-            return _tileItems[x + 1, y + 1] != null && _tileItems[x + 1, y] != null && IsMovable(new Vector2Int(x + 1, y + 1)) &&
-                   !lerpingItems.Contains(new Vector2Int(x + 1, y + 1)) && !lerpingItems.Contains(new Vector2Int(x + 1, y));
+            return !IsItemMoving(x + 1, y) && !IsItemMoving(x + 1, y + 1) &&_tileItems[x+1,y+1]!=null&&  _tileItems[x + 1, y + 1].IsMovable;
+
         }
 
         private void MoveItemFromRight(int x, int y)
         {
-            _tileItems[x, y] = _tileItems[x + 1, y + 1];
-            missingItems[x + 1]++;
-            _tileItems[x + 1, y + 1] = null;
+            if(!_tileItems[x+1,y+1].MovementQueue.Contains(new Vector2Int(x, y)))
+            {
+                _tileItems[x+1,y+1].MovementQueue.Enqueue(new Vector2Int(x, y));
+                _tileItems[x, y] = _tileItems[x + 1, y + 1];
+                if(y==height-1)
+                {
+                    isTopCellFit[x] = false;
+                }
+                _tileItems[x + 1, y + 1] = null;
+            }
+    
+         
         }
 
-        private void HandleNonEmptyTile(int x, int y)
-        {
-            if (IsItemMoving(x, y) && !swappingItems.Contains(new Vector2Int(x, y)))
-            {
-                MoveItemTowardsTarget(x, y);
-            }
-        }
+      
 
-        private bool IsItemMoving(int x, int y)
-        {
-            return Vector3.Distance(_tileItems[x, y].Transform.localPosition, grid.GetCellCenterLocal(new Vector3Int(x, y, 0))) > 0.01f;
-        }
-
-        private void MoveItemTowardsTarget(int x, int y)
-        {
-            Vector3 currPos = _tileItems[x, y].Transform.localPosition;
-            Vector3 targetPos = grid.GetCellCenterLocal(new Vector3Int(x, y, 0));
-
-            _tileItems[x, y].FallSpeed += _tileItems[x, y].Gravity;
-
-            if (ShouldMoveDiagonally(currPos, targetPos))
-            {
-                currPos.x += Mathf.Sign(targetPos.x - currPos.x) * (_tileItems[x, y].FallSpeed * Time.deltaTime);
-                currPos.y -= (_tileItems[x, y].FallSpeed * Time.deltaTime);
-            }
-            else
-            {
-                currPos.y -= (_tileItems[x, y].FallSpeed * Time.deltaTime);
-            }
-
-            if (IsItemCloseToTarget(currPos, targetPos))
-            {
-                FinishItemMovement(x, y, currPos);
-            }
-            else
-            {
-                _tileItems[x, y].Transform.localPosition = currPos;
-            }
-        }
-
-        private bool ShouldMoveDiagonally(Vector3 currPos, Vector3 targetPos)
-        {
-            return Mathf.Abs(targetPos.x - currPos.x) > 0.01f && Mathf.Abs(targetPos.y - currPos.y) < 0.5f;
-        }
-
+  
         private bool IsItemCloseToTarget(Vector3 currPos, Vector3 targetPos)
         {
-            return Vector3.Distance(targetPos, currPos) < 0.01f || targetPos.y > currPos.y;
+            return Mathf.Abs(targetPos.y - currPos.y) < 0.05f&&Mathf.Abs(targetPos.x - currPos.x) < 0.05f;
         }
 
-        private void FinishItemMovement(int x, int y, Vector3 currPos)
+       
+
+      
+        private async UniTask WaitForQueueToEmpty(IItem item)
         {
-            _tileItems[x, y].FallSpeed = 0f;
-            _tileItems[x, y].Transform.localPosition = grid.GetCellCenterLocal(new Vector3Int(x, y, 0));
-            lerpingItems.Remove(new Vector2Int(x, y));
-            _tileItems[x, y].SortingOrder = 4;
-
-            List<Vector2Int> cellMatches = _tileItems.CheckMatches(new Vector2Int(x, y), lerpingItems, width, height);
-
-            if (cellMatches.Count >= 3)
+            while (item.MovementQueue.Count > 0)
             {
-                HandleMatch(cellMatches, new Vector2Int(x, y)).Forget();
+                await UniTask.Yield();
             }
         }
-
-
-
-        private async UniTask LerpAllItemsToPosition(List<Vector2Int> combinedItems, Vector2Int targetPos, float lerpSpeed = 0.15f)
+        private async UniTask LerpAllItemsToPosition(List<Vector2Int> combinedItems, Vector2Int targetPos, float lerpSpeed = 0.15f,float delayAfterLerp=0.1f)
         {
-            // Convert the target position to world coordinates
-            Vector2 targetPosWorld = grid.GetCellCenterLocalVector2(targetPos);
-
-            // Create a list to store all the lerp tasks
-            List<UniTask> lerpTasks = new List<UniTask>();
 
             foreach (var item in combinedItems)
             {
                 if (_tileItems[item.x, item.y] != null)
                 {
-                            // Start the lerp and add the task to the list
-                            lerpTasks.Add(_tileItems[item.x, item.y].Transform.DOLocalMove(targetPosWorld, lerpSpeed).ToUniTask());
+                    _tileItems[item.x, item.y].MovementQueue.Enqueue(targetPos);
+
                 }
             }
 
-            // Wait for all the lerp tasks to complete
-            await UniTask.WhenAll(lerpTasks);
+            await UniTask.Delay((int)(delayAfterLerp * 1000));
             foreach (var item in combinedItems)
             {
+                if(item.y==height-1)
+                {
+                    isTopCellFit[item.x] = false;
+                }
                 if (_tileItems[item.x, item.y] != null)
                 {
+                    _tileItems[item.x,item.y].MovementQueue.Clear();
                     _tileItems[item.x, item.y].OnMatch();
                     _tileItems[item.x, item.y] = null;
+                    
                 }
+               
             }
             
             
         }
+        
+        private SemaphoreSlim _matchSemaphoreHash = new SemaphoreSlim(1, 1);
+
+        private async UniTask HandleMatchWithDelay(HashSet<Vector2Int> matchedItems, float delayBetweenMatches = 0.1f,float delayToFillBoard=0.1f)
+        {
+            await _matchSemaphoreHash.WaitAsync();
+            try
+            {
+                foreach (var item in matchedItems)
+                {
+                    if (_tileItems[item.x, item.y] == null)
+                    {
+                        return;
+                    }
+                    _tileItems[item.x, item.y].OnMatch();
+                    _objectPool.GetParticleEffectFromPool(_tileItems.GetTypeID(item), grid.GetCellCenterWorldVector2(item));
+                    Debug.Log($"HandleMatchWithDelay called with matched items {string.Join(", ", matchedItems)}, delayBetweenMatches {delayBetweenMatches}, and delayToFillBoard {delayToFillBoard}");
+                    await UniTask.Delay((int)(delayBetweenMatches * 1000));
+                }
+                await UniTask.Delay((int)(delayToFillBoard * 1000));
+                foreach (var item in matchedItems)
+                {
+                    _tileItems[item.x, item.y] = null;
+                    if(item.y==height-1)
+                    {
+                        isTopCellFit[item.x] = false;
+                    }
+                    
+                      
+                   
+                }
+            }
+            finally
+            {
+                _matchSemaphoreHash.Release();
+            }
+                
+           
+           
+        }
+        private SemaphoreSlim _matchSemaphore = new SemaphoreSlim(1, 1);
+
         private async UniTask HandleMatchWithDelay(List<Vector2Int> matchedItems, float delayBetweenMatches = 0.1f,float delayToFillBoard=0.1f)
         {
-            foreach (var item in matchedItems)
+            await _matchSemaphore.WaitAsync();
+
+
+            try
             {
-                if (_tileItems[item.x, item.y] == null)
+                foreach (var item in matchedItems)
                 {
-                    Debug.Log("There is a null item in the matched items");
-                    return;
+                    if (_tileItems[item.x, item.y] == null)
+                    {
+                        return;
+                    }
+
+                    _tileItems[item.x, item.y].OnMatch();
+                    _objectPool.GetParticleEffectFromPool(_tileItems.GetTypeID(item),
+                        grid.GetCellCenterWorldVector2(item));
+                    Debug.Log(
+                        $"HandleMatchWithDelay called with matched items {string.Join(", ", matchedItems)}, delayBetweenMatches {delayBetweenMatches}, and delayToFillBoard {delayToFillBoard}");
+                    await UniTask.Delay((int)(delayBetweenMatches * 1000));
                 }
-                lerpingItems.Add(item);
-                _tileItems[item.x, item.y].OnMatch();
-                _objectPool.GetParticleEffectFromPool(_tileItems.GetTypeID(item), grid.GetCellCenterWorldVector2(item));
-                await UniTask.Delay((int)(delayBetweenMatches * 1000));
+
+                await UniTask.Delay((int)(delayToFillBoard * 1000));
+                foreach (var item in matchedItems)
+                {
+                    _tileItems[item.x, item.y] = null;
+                    if (item.y == height - 1)
+                    {
+                        isTopCellFit[item.x] = false;
+                    }
+                }
             }
-            await UniTask.Delay((int)(delayToFillBoard * 1000));
-            foreach (var item in matchedItems)
+            finally
             {
-                _tileItems[item.x, item.y] = null;
-                missingItems[item.x]++;
-
-
+                _matchSemaphore.Release();
             }
+           
+           
+           
         }
   
 
@@ -494,9 +661,7 @@ namespace Scripts
             {
                 float x = Random.Range(-1f, 1f) * shakeMagnitude;
                 float y = Random.Range(-1f, 1f) * shakeMagnitude;
-
                 transform.position = new Vector3(originalPosition.x+x,originalPosition.y+ y, originalPosition.z);
-
                 elapsed += Time.deltaTime;
 
                 await UniTask.Yield();
@@ -506,4 +671,5 @@ namespace Scripts
         }
      
     }
+    
 }
