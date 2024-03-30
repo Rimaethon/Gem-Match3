@@ -134,7 +134,7 @@ namespace _Scripts.Managers.Matching
         private static List<Vector2Int[]> _allShapes = new List<Vector2Int[]>();
 
         private static bool _isRotated;
-        public static List<Vector2Int> CheckMatches(this IItem[,] board, Vector2Int pos,HashSet<Vector2Int> lerpingItemSet, int width, int height)
+        public static List<Vector2Int> CheckMatches(this IItem[,] board,Vector2Int pos,int width, int height)
         {
             if (!_isRotated)
             {
@@ -147,11 +147,10 @@ namespace _Scripts.Managers.Matching
             {
                 
 
-               matchedItems= CheckShape(board,lerpingItemSet,shape, pos,width, height);
+               matchedItems= CheckShape(board,shape, pos,width, height);
 
                if (matchedItems.Count == shape.Length)
                {
-                   Debug.Log(matchedItems.Count);
                    return matchedItems;
                }
                matchedItems.Clear();
@@ -163,7 +162,7 @@ namespace _Scripts.Managers.Matching
             
         }
         //Actually instead of creating a list it would be better to use a array that is created in the begining but I need to create a structure that handles race conditions that can occur.   
-        private static List<Vector2Int> CheckShape(IItem[,] board,HashSet<Vector2Int> lerpingItemSet, Vector2Int[] shape, Vector2Int pos, int width, int height)
+        private static List<Vector2Int> CheckShape(IItem[,] board, Vector2Int[] shape, Vector2Int pos, int width, int height)
         {
             List<Vector2Int> matchedItems = new List<Vector2Int>();
             if(board.GetItem(pos)==null) return matchedItems;
@@ -177,8 +176,8 @@ namespace _Scripts.Managers.Matching
                 int y = pos.y + shape[i].y;
                 if(x>=width || x<0 || y>=height || y<0) return matchedItems;
                 
-               if(lerpingItemSet.Contains(new Vector2Int(x,y))&&x!=pos.x&&y!=pos.y) return matchedItems;
-                if (board[x,y]==null||board[x, y].ItemType != board.GetTypeID(pos)) return matchedItems;
+               if(board[x,y]==null||(board[x,y].MovementQueue.Count>0&&!(x==pos.x&&y==pos.y))) return new List<Vector2Int>();
+                if (board[x, y].ItemType != board.GetTypeID(pos)) return new List<Vector2Int>();
 
                 matchedItems.Add(new Vector2Int(x,y));
             }
@@ -186,7 +185,7 @@ namespace _Scripts.Managers.Matching
             // If we've made it this far, the shape matches
             return matchedItems;
         }
-        
+  
         private static List<Vector2Int[]> GenerateAllShapes(List<Vector2Int[]> shapes)
         {
             List<Vector2Int[]> allShapes = new List<Vector2Int[]>();
