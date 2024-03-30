@@ -42,9 +42,9 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 229553674323387788}
   serializedVersion: 8
-  lengthInSec: 3
+  lengthInSec: 1.2
   simulationSpeed: 1
-  stopAction: 0
+  stopAction: 1
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
@@ -117,7 +117,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -4899,5 +4899,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4615fe93acfd1f4b911c88ab720b43d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectPool: {fileID: 0}
   particleEffectID: 0
