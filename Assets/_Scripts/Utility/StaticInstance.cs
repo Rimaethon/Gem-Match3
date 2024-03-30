@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Rimaethon.Scripts.Utility
@@ -19,11 +20,7 @@ namespace Rimaethon.Scripts.Utility
 
                 _instance = FindObjectOfType<T>();
 
-
-                if (_instance == null && !IsApplicationQuitting)
-                    Debug.LogError($"Instance of type {typeof(T)} could not be found.");
-                Debug.Log($"Instance of type {typeof(T)} found.");
-
+                if (_instance != null) return _instance;
                 return _instance;
             }
             protected set => _instance = value;
@@ -35,10 +32,6 @@ namespace Rimaethon.Scripts.Utility
             InitializeInstance();
         }
 
-        protected virtual void OnApplicationQuit()
-        {
-            IsApplicationQuitting = true;
-        }
 
         private void InitializeInstance()
         {
@@ -64,6 +57,7 @@ namespace Rimaethon.Scripts.Utility
     {
         protected override void Awake()
         {
+            base.Awake();
             if (this is T instance)
             {
                 if (Instance != null && Instance != this)
