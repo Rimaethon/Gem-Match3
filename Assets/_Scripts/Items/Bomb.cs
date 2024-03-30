@@ -8,12 +8,12 @@ namespace Scripts
     public class Bomb:ItemBase
     {
 
-        public override void OnClick(IItem[,] board, Vector2Int pos)
+        public override HashSet<Vector2Int> OnClick(IItem[,] board, Vector2Int pos,bool isTouch)
         {
+            base.OnClick(board, pos,isTouch);
+            HashSet<Vector2Int> positions = new HashSet<Vector2Int>();
             int boardWidth = board.GetLength(0);
             int boardHeight = board.GetLength(1);
-            List<Vector2Int> positions = new List<Vector2Int>();
-            positions.Add(new Vector2Int(pos.x, pos.y));
             for (int x = pos.x - 2; x <= pos.x + 2; x++)
             {
                 for (int y = pos.y - 2; y <= pos.y + 2; y++)
@@ -26,7 +26,12 @@ namespace Scripts
                  
                 }
             }
-            EventManager.Instance.Broadcast(GameEvents.OnBomb, positions);
+
+            if (isTouch)
+            {
+                EventManager.Instance.Broadcast(GameEvents.OnBomb, positions, pos);
+            }
+            return positions;
         }
         public override void OnMatch()
         {

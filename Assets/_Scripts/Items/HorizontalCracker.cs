@@ -41,28 +41,38 @@ namespace Scripts
                 leftCracker.color = _touchedColor;
                 rightCracker.color = _touchedColor;
             }
+            base.Awake();
         }
 
-        public override void OnClick(IItem[,] board, Vector2Int pos)
+        public override HashSet<Vector2Int> OnClick(IItem[,] board, Vector2Int pos,bool isTouch=true)
         {
+            base.OnClick(board, pos,isTouch);
+
+
             int boardWidth = board.GetLength(0);
-            List<Vector2Int> positions = new List<Vector2Int>();
+            HashSet<Vector2Int> positions = new HashSet<Vector2Int>();
+
             int index = 0;
-            positions.Add(new Vector2Int(pos.x, pos.y));
             index++;
             while (index < boardWidth)
             { 
-                if(pos.x+index<boardWidth)
+                
+                if(pos.x+index<boardWidth&&board[pos.x+index,pos.y]!=null)
                 {
                     positions.Add(new Vector2Int(pos.x + index, pos.y));
                 }
-                if(pos.x-index>=0)
+          
+                if(pos.x-index>=0&&board[pos.x-index,pos.y]!=null)
                 {
                     positions.Add(new Vector2Int(pos.x- index, pos.y ));
                 }
                 index++;
             }
-            EventManager.Instance.Broadcast(GameEvents.OnHorizontalMatch, positions);
+            if (isTouch)
+            {
+                EventManager.Instance.Broadcast(GameEvents.OnHorizontalMatch, positions, pos);
+            }
+            return positions;
         }
         
         public override void OnMatch()

@@ -41,34 +41,37 @@ namespace Scripts
                 leftCracker.color = _touchedColor;
                 rightCracker.color = _touchedColor;
             }
+            base.Awake();
         }
 
-        public override void OnClick(IItem[,] board, Vector2Int pos)
+        public override HashSet<Vector2Int> OnClick(IItem[,] board, Vector2Int pos,bool isTouch)
         {
+            base.OnClick(board, pos,isTouch);
             int boardHeight = board.GetLength(1);
-            List<Vector2Int> positions = new List<Vector2Int>();
+            HashSet<Vector2Int> positions = new HashSet<Vector2Int>();
             int index = 0;
-            positions.Add(new Vector2Int(pos.x, pos.y));
             index++;
             while (index < boardHeight)
             { 
-                if(pos.y+index<boardHeight)
+                if(pos.y+index<boardHeight&&board[pos.x,pos.y+index]!=null)
                 {
                     positions.Add(new Vector2Int(pos.x, pos.y + index));
                 }
-                if(pos.y-index>=0)
+           
+                if(pos.y-index>=0&&board[pos.x,pos.y-index]!=null)
                 {
                     positions.Add(new Vector2Int(pos.x, pos.y - index));
                 }
+       
                 index++;
             }
-            EventManager.Instance.Broadcast(GameEvents.OnVerticalMatch, positions);
+            if (isTouch)
+            {
+                EventManager.Instance.Broadcast(GameEvents.OnVerticalMatch, positions, pos);
+            }
+            return positions;
         }
         
-        public override void OnMatch()
-        {
-            base.OnMatch();
-            Debug.Log("Vertical Cracker Matched");
-        }
+     
     }
 }
