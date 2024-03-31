@@ -1,43 +1,89 @@
-﻿using Unity.Burst.Intrinsics;
+﻿using System.Collections.Generic;
+using Scripts;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 namespace _Scripts.Utility
 {
     public static class ArrayExtensions
     {
-        public static IItem GetItem(this IItem[,] array, Vector2Int position)
+        
+        public static Cell GetCell(this Board board, int x,int y)
+        {
+            return board.Cells[x, y];
+        }
+        public static Cell GetCell(this Board board, Vector2Int position)
+        {
+            
+            return board.Cells[position.x, position.y];
+        }
+        public static Cell GetCell(this Cell[,] array, int x,int y)
+        {
+            return array[x, y];
+        }
+        public static Cell GetCell(this Cell[,] array, Vector2Int position)
         {
             return array[position.x, position.y];
         }
-        public static float GetDistance(this IItem[,] array,Vector2[,] cellPositions,int x, int y)
-        {
-            return Vector2.Distance(array[x,y].Transform.localPosition, cellPositions[x,y]);
-        }
-   
-        public static int GetTypeID(this IItem[,] array, Vector2Int position)
-        {
-            return array[position.x, position.y].ItemType;
-        }
-
-        public static void Set(this IItem[,] array, Vector3Int position, IItem value)
-        {
-            array[position.x, position.y]= value;
-        }
         
-        public static Vector2 GetCellCenterLocalVector2(this Grid grid, Vector2Int position)
+        public static float GetBoardBoundaryLeftX(this Cell[,] array)
         {
-            return new Vector2(grid.GetCellCenterLocal(new Vector3Int(position.x,position.y,0)).x,grid.GetCellCenterLocal(new Vector3Int(position.x,position.y,0)).y);
+            return LevelGrid.Instance.GetCellCenterWorld(array[0,0].CellPosition).x-LevelGrid.Grid.cellSize.x;
         }
-        public static Vector2 GetCellCenterWorldVector2(this Grid grid, Vector2Int position)
+        public static float GetBoardBoundaryRightX(this Cell[,] array)
         {
-            return new Vector2(grid.GetCellCenterWorld(new Vector3Int(position.x,position.y,0)).x,grid.GetCellCenterWorld(new Vector3Int(position.x,position.y,0)).y);
+            return LevelGrid.Instance.GetCellCenterWorld(array[array.GetLength(0)-1,0].CellPosition).x+LevelGrid.Grid.cellSize.x;
+        }
+        public static float GetBoardBoundaryTopY(this Cell[,] array)
+        {
+            return LevelGrid.Instance.GetCellCenterWorld(array[0,array.GetLength(1)-1].CellPosition).y+LevelGrid.Grid.cellSize.y;
+        }
+        public static float GetBoardBoundaryBottomY(this Cell[,] array)
+        {
+            return LevelGrid.Instance.GetCellCenterWorld(array[0,0].CellPosition).y-LevelGrid.Grid.cellSize.y;
+        }
+        public static IItem GetItem(this Cell[,] array, int x,int y)
+        {
+            if(array.GetCell(x,y).HasItem)
+            {
+                return array.GetCell(x,y).Item;
+            }
+          
+            return null;
+        }
+        public static IItem GetItem(this Cell[,] array, Vector2Int position)
+        {
+            if(array.IsInBoundaries(position)&&array.GetCell(position).HasItem)
+            {
+                return array.GetCell(position).Item;
+            }
+
+            return null;
+        }
+        public static bool IsInBoundaries(this Cell[,] array, Vector2Int pos)
+        {
+            return pos.x >= 0 && pos.x < array.GetLength(0)&& pos.y >= 0 && pos.y < array.GetLength(1);
+        }
+        public static IItem GetItem(this Board board, int x,int y)
+        {
+            if(board.Cells.GetCell(x,y).HasItem)
+            {
+                return board.Cells.GetCell(x,y).Item;
+            }
+          
+            return null;
+        }
+        public static IItem GetItem(this Board board ,Vector2Int position)
+        {
+            if(IsInBoundaries(board.Cells,position)&&board.Cells.GetCell(position).HasItem)
+            {
+                return board.Cells.GetCell(position).Item;
+            }
+
+            return null;
         }
 
-
-        public static Vector2Int WorldToCellVector2Int(this Grid grid, Vector2 pos)
-        {
-            return new Vector2Int(grid.WorldToCell(pos).x, grid.WorldToCell(pos).y);
-        }
         
+
     }
 }
