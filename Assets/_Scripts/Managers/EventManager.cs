@@ -36,11 +36,10 @@ namespace Rimaethon.Scripts.Managers
 
         }
 
-        protected override void OnApplicationQuit()
+        private void OnApplicationQuit()
         {
             _eventHandlers.Clear();
             Debug.LogWarning("Event Manager is cleared");
-            base.OnApplicationQuit();
         }
 
         #endregion

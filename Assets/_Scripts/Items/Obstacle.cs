@@ -9,14 +9,13 @@ namespace Scripts
         protected override void Awake()
         {
             base.Awake();
-            IsMovable = false;
+            _isMovable = false;
             
         }
 
         public override void OnMatch()
         {
             base.OnMatch();
-            Debug.Log("Obstacle Matched");
         }
     }
 }
