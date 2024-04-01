@@ -1,0 +1,39 @@
+{
+    "$id": 0,
+    "$type": "0|Data.UserData, Assembly-CSharp",
+    "currentLevel": 1,
+    "coinCount": 3000,
+    "heartCount": 5,
+    "starCount": 0,
+    "BoosterCounts": {
+        "$id": 1,
+        "$type": "1|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[System.Int32, mscorlib]], mscorlib",
+        "comparer": {
+            "$id": 2,
+            "$type": "2|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32, mscorlib]], mscorlib"
+        },
+        "$rlength": 5,
+        "$rcontent": [
+            {
+                "$k": 100,
+                "$v": 10
+            },
+            {
+                "$k": 101,
+                "$v": 10
+            },
+            {
+                "$k": 102,
+                "$v": 10
+            },
+            {
+                "$k": 103,
+                "$v": 10
+            },
+            {
+                "$k": 104,
+                "$v": 10
+            }
+        ]
+    }
+}
