@@ -1,38 +1,49 @@
-﻿using Data;
+﻿using System;
+using Data;
+using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Rimaethon.Runtime.UI
 {
     public class LevelButton: UIButton
     {
-        private int levelIndex=1;
         [SerializeField] TextMeshProUGUI levelText;
-        private string levelName="Level ";
-        private void OnEnable()
-        {
-            EventManager.Instance.AddHandler<PlayerGameData>(GameEvents.OnDataInitialization, GetCurrentLevel);
-        }
-        private void OnDisable()
-        {
+        [SerializeField] private Sprite greyButtonImage;
+        
+        private Button _button;
+        private int _levelIndex=1;
+        private const string LevelName = "Level ";
+        private bool _isLevelExist;
 
-            if(EventManager.Instance==null)return;
-            EventManager.Instance.RemoveHandler<PlayerGameData>(GameEvents.OnDataInitialization, GetCurrentLevel);
-        }
-
-        private void GetCurrentLevel(PlayerGameData data)
+        private void Start()
         {
-            levelIndex= data.Level;
-            levelText.text = levelName + levelIndex;
+            _button = GetComponent<Button>();
+            if (levelText == null || _button == null)
+            {
+                Debug.LogError("Level Button is missing components");
+                return;                
+            }
+            _levelIndex = SaveManager.Instance.GetLevelIndex();
+            levelText.text = LevelName+_levelIndex;
+            _isLevelExist = SaveManager.Instance.DoesLevelExist(_levelIndex);
+            if (!_isLevelExist)
+            {
+                _button.GetComponent<Image>().sprite = greyButtonImage;
+                levelText.color = Color.grey;
+            }
         }
-  
 
+   
         protected override void DoOnClick()
         {
-            EventManager.Instance.Broadcast(GameEvents.OnLevelButtonPressed, levelIndex);
-        
+            if(!_isLevelExist)
+                return;
+            EventManager.Instance.Broadcast(GameEvents.OnLevelButtonPressed, _levelIndex);
 
         }
+      
     }
 }
