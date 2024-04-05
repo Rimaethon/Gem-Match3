@@ -15,7 +15,6 @@ public enum GameEvents
     OnLevelStart,
     OnLevelEnd,
     OnButtonClick,
-    OnDataInitialization,
     OnGameStart,
     OnGameSceneLoaded,
     OnMenuSceneLoaded,
@@ -23,5 +22,19 @@ public enum GameEvents
     OnHorizontalMatch,
     OnBomb,
     OnTouch,
-    OnVerticalMatch
+    OnVerticalMatch,
+    OnFlyingRocket,
+    OnItemMovementEnd,
+    AddMatchToHandle,
+    OnBoardShake,
+    AddItemToRemoveFromBoard,
+    AddItemToAddToBoard,
+    OnSuccessfulSwap,
+    OnNoMovesLeft,
+    OnGoalDestroyed,
+    OnBoardLock,
+    OnBoardUnlock,
+    OnGoalInitialization,
+    FindGoals,
+    AddActionToHandle
 }
