@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7e2750e050ed3e04aaae906a94d7dc40
+guid: b889473ea5dec4f43909d61b3d30c040
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -48,10 +48,10 @@ TextureImporter:
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 1275
+  spritePixelsToUnits: 300
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
-  alphaUsage: 1
+  alphaUsage: 2
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
@@ -69,10 +69,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 512
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -84,7 +84,7 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 12
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -123,106 +123,211 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Bombs_0
+      name: CoinShadows_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 27
-        width: 525
-        height: 614
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 66c3cff53d2c03a41ae3862e1b04aa01
-      internalID: 958387753
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Bombs_1
-      rect:
-        serializedVersion: 2
-        x: 606
-        y: 20
-        width: 569
-        height: 282
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a6215ae880c2b6e45a37866b91619586
-      internalID: -1802278014
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Bombs_2
-      rect:
-        serializedVersion: 2
-        x: 1215
+        x: 12
         y: 0
-        width: 288
-        height: 617
+        width: 98
+        height: 128
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 58d95bd862322944c89a5cf686e2cfde
-      internalID: -7108317
+      spriteID: 9924834a526ef81498116c6b37f3388d
+      internalID: -1657041498
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Bombs_3
+      name: CoinShadows_1
       rect:
         serializedVersion: 2
-        x: 1503
+        x: 112
         y: 0
-        width: 287
-        height: 617
+        width: 98
+        height: 128
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d628c3423eaf7bb4c9c91307d3c286d9
-      internalID: -1799629221
+      spriteID: 5f6d2ffe42b3abb42855b80caecf0e3a
+      internalID: -1534043939
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Bombs_4
+      name: CoinShadows_2
       rect:
         serializedVersion: 2
-        x: 606
-        y: 302
-        width: 569
-        height: 298
+        x: 212
+        y: 0
+        width: 98
+        height: 128
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0ef383b6163c8b24e97d582e9a38f4d8
-      internalID: 1510225374
+      spriteID: 78f3e2a3f2066694ab4c57056bee0572
+      internalID: 2077513328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CoinShadows_3
+      rect:
+        serializedVersion: 2
+        x: 312
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de6a43741812bea409db657a15450085
+      internalID: 881030601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CoinShadows_4
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4da16b9e96ec03f47bdff361a3fa358e
+      internalID: -1812365860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CoinShadows_5
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 858b55e48b917444fa6f074d88424a73
+      internalID: -1170071381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CoinShadows_6
+      rect:
+        serializedVersion: 2
+        x: 612
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5bc30fd29edcab748a4223638a305796
+      internalID: 71525432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CoinShadows_7
+      rect:
+        serializedVersion: 2
+        x: 712
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08243a261aa0e2b4b86c2a8e1aa09a1e
+      internalID: -1790774577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CoinShadows_8
+      rect:
+        serializedVersion: 2
+        x: 812
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4683a744eeecbd94ab7fc7c3a448fd39
+      internalID: 188645154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CoinShadows_9
+      rect:
+        serializedVersion: 2
+        x: 912
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77330827f43e85a4491c954c460fe6bb
+      internalID: -1544305020
       vertices: []
       indices: 
       edges: []
@@ -238,11 +343,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Bombs_0: 958387753
-      Bombs_1: -1802278014
-      Bombs_2: -7108317
-      Bombs_3: -1799629221
-      Bombs_4: 1510225374
+      CoinShadows_0: -1657041498
+      CoinShadows_1: -1534043939
+      CoinShadows_2: 2077513328
+      CoinShadows_3: 881030601
+      CoinShadows_4: -1812365860
+      CoinShadows_5: -1170071381
+      CoinShadows_6: 71525432
+      CoinShadows_7: -1790774577
+      CoinShadows_8: 188645154
+      CoinShadows_9: -1544305020
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

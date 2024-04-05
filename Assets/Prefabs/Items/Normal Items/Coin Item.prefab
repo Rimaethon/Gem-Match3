@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6216174407490266803}
   - component: {fileID: 2891176900031449123}
   m_Layer: 0
-  m_Name: block_yellow
+  m_Name: Coin Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53,7 +53,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 2
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 533ec90b18acd094ea07c7bc465a86f4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -74,12 +74,12 @@ SpriteRenderer:
   m_SortingLayerID: -2132334949
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 21300000, guid: c35f0b494ccc0df44b77fb921248c5f2, type: 3}
+  m_Sprite: {fileID: 1865731847, guid: 66fe3c9c512ec1a42b968fc9d460b637, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.0625, y: 0.0625}
+  m_Size: {x: 0.40285715, y: 0.18285714}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -97,4 +97,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf4d4e7181a446e9e0ac3ba67ef6271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemType: 3
+  _position: {x: 0, y: 0}
+  _targetPosition: {x: 0, y: 0}
+  _itemID: 8
+  isFallAble: 1
+  _isMatchable: 1
+  _isSwappable: 1
+  _isExploding: 0
+  _isActive: 1
+  _fallSpeed: 0
+  _isHighlightAble: 1

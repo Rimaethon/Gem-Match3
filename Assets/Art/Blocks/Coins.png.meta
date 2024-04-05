@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: aef8076d55f2eb64eb8e4a7dbe19c3e4
+guid: 66fe3c9c512ec1a42b968fc9d460b637
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 1100
+  spritePixelsToUnits: 275
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,10 +69,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -84,7 +84,7 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 12
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -111,7 +111,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -123,265 +123,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Stone_0
+      name: Coins_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 423
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 46263db86248f0b48872904f29eb9eff
-      internalID: 1509429896
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_1
-      rect:
-        serializedVersion: 2
-        x: 124
-        y: 423
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7bce7403ba3ec3541aa0b88f0e0e16ac
-      internalID: 737103405
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_2
-      rect:
-        serializedVersion: 2
-        x: 248
-        y: 423
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 661d5141d605c7344a3376513887e0d6
-      internalID: 1797255268
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_3
-      rect:
-        serializedVersion: 2
-        x: 372
-        y: 423
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 329643ae2e0d614449c02e746aa36607
-      internalID: 1681663447
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_4
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 282
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1e4d0d53d0f1a724798cc7da3bc655c4
-      internalID: 670228920
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_5
-      rect:
-        serializedVersion: 2
-        x: 124
-        y: 282
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f91dfea10efe6ec44bb461f532fe6b67
-      internalID: 213155364
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_6
-      rect:
-        serializedVersion: 2
-        x: 248
-        y: 282
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 94bd09e63615958468ad2cc2fefc3a8d
-      internalID: -2088503017
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_7
-      rect:
-        serializedVersion: 2
-        x: 372
-        y: 282
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 57fcdb243d89b184b88f3de43919f892
-      internalID: 928581870
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_8
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 141
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 96f6485fab3b520449a40982f97bac7e
-      internalID: 61787220
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_9
-      rect:
-        serializedVersion: 2
-        x: 124
-        y: 141
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e9ab425b48ab61e45aec89ddab8ef92f
-      internalID: -1306798839
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_10
-      rect:
-        serializedVersion: 2
-        x: 248
-        y: 141
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2adf9beb7de12914a84a74aa6094eedf
-      internalID: 1311530145
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_11
-      rect:
-        serializedVersion: 2
-        x: 372
-        y: 141
-        width: 124
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1a7992ff476908346aae0a82ecd53739
-      internalID: 1303477129
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Stone_12
-      rect:
-        serializedVersion: 2
-        x: 0
+        x: 12
         y: 0
-        width: 124
-        height: 141
+        width: 98
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -389,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5649707f241df444ab0c622e2b77235d
-      internalID: 752134571
+      spriteID: 508d38f9b84b58f40b72b37bdc19cc1a
+      internalID: 1865731847
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_13
+      name: Coins_1
       rect:
         serializedVersion: 2
-        x: 124
+        x: 112
         y: 0
-        width: 124
-        height: 141
+        width: 98
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -410,20 +158,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a9e7a7194cc31f243ac072c6d41a29d4
-      internalID: -47386028
+      spriteID: 6bc6aea7ad364844bb8e3175a2b7a76e
+      internalID: -407191095
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_14
+      name: Coins_2
       rect:
         serializedVersion: 2
-        x: 248
+        x: 212
         y: 0
-        width: 124
-        height: 141
+        width: 98
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -431,20 +179,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 04736dfa4408d2741b57beaaee6155f3
-      internalID: -662997585
+      spriteID: c3e426edcf49e6c48923895af60a5687
+      internalID: -850444825
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stone_15
+      name: Coins_3
       rect:
         serializedVersion: 2
-        x: 372
+        x: 312
         y: 0
-        width: 124
-        height: 141
+        width: 98
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -452,8 +200,134 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d5b887ff87e80d04d8b4938d8b6635ba
-      internalID: -1892383752
+      spriteID: eeced1bf1bf5afd4b815a9222ca6e7c3
+      internalID: 1785662578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coins_4
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76c91eaf87205f24dba3f76b7d8d1870
+      internalID: 945246149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coins_5
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91259455c05d2f54ba2fde1f68537354
+      internalID: -1276050176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coins_6
+      rect:
+        serializedVersion: 2
+        x: 612
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a0d8fd1f815a2e94b8ae1be8c05f34c0
+      internalID: 2078426633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coins_7
+      rect:
+        serializedVersion: 2
+        x: 712
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88fec22f057f2f14d8ce5e398cbfef20
+      internalID: -339570023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coins_8
+      rect:
+        serializedVersion: 2
+        x: 812
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: adee78ab94a75e941906e2d5de91dcde
+      internalID: -328491301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Coins_9
+      rect:
+        serializedVersion: 2
+        x: 912
+        y: 0
+        width: 98
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f1f2221ced9ea945ac95d6e5aec344d
+      internalID: 252210301
       vertices: []
       indices: 
       edges: []
@@ -469,22 +343,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Stone_0: 1509429896
-      Stone_1: 737103405
-      Stone_10: 1311530145
-      Stone_11: 1303477129
-      Stone_12: 752134571
-      Stone_13: -47386028
-      Stone_14: -662997585
-      Stone_15: -1892383752
-      Stone_2: 1797255268
-      Stone_3: 1681663447
-      Stone_4: 670228920
-      Stone_5: 213155364
-      Stone_6: -2088503017
-      Stone_7: 928581870
-      Stone_8: 61787220
-      Stone_9: -1306798839
+      Coins_0: 1865731847
+      Coins_1: -407191095
+      Coins_2: -850444825
+      Coins_3: 1785662578
+      Coins_4: 945246149
+      Coins_5: -1276050176
+      Coins_6: 2078426633
+      Coins_7: -339570023
+      Coins_8: -328491301
+      Coins_9: 252210301
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
