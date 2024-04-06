@@ -1,90 +1,154 @@
-using System;
-using System.Collections.Generic;
-using DG.Tweening;
+using Rimaethon.Scripts.Managers;
+using Scripts;
 using UnityEngine;
 
 public abstract class ItemBase : MonoBehaviour, IItem
 {
-
-    public int ItemType
+    #region Properties
+    public  int ItemID
     {
-        get => _itemType;
-        set => _itemType = value;
+        get => _itemID;
+        set => _itemID = value;
     }
-
-    public Queue<Vector2Int> MovementQueue { get; set; }
-
     public float FallSpeed
     {
-     get => _fallSpeed;
-     set=> _fallSpeed=Mathf.Clamp(value,0,5f);
+        get => _fallSpeed;
+        set=> _fallSpeed=Mathf.Clamp(value,0,5f);
+    }
+    public bool IsActive
+    {
+        get => _isActive;
+        set=> _isActive=value; 
+    }
+    public bool IsFallAble 
+    { 
+        get=> isFallAble;
+        set=> isFallAble=value;
+    }
+    public bool IsMatchable
+    {
+        get=> _isMatchable;
+        set=> _isMatchable=value;
+    }
+  
+    public bool IsSwappable
+    {
+        get=> _isSwappable;
+        set=> _isSwappable=value;
+    }
+    public bool IsSwapping
+    {
+        get; 
+        set;
+    }
+    public Vector2Int SwappingFrom
+    {
+        get;
+        set;
+    }
+    public bool IsMoving
+    {
+        get;
+        set;
+    }
+    public Vector2Int TargetToMove
+    {
+        get => _targetPosition;
+        set=> _targetPosition=value;
     }
 
-    public virtual int SortingOrder { get=> _spriteRenderer.sortingOrder; set=> _spriteRenderer.sortingOrder=value; }
-
-    public bool IsMovable { get=> _isMovable; set=> _isMovable=value; }
-    protected bool _isMovable = true;
-    
+    public Vector2Int Position
+    {
+        get=> _position;
+        set=> _position=value;
+    }
     public float Gravity => _gravity;
-    protected Color _touchedColor= new Color(0.88f,0.88f,0.88f,1f);
+    public bool IsBooster => _isBooster;
+    public Transform Transform => transform;
+    public bool IsHighlightAble => _isHighlightAble;
 
-    private float _gravity = 0.3f;
-    private float _fallSpeed = 0f;
-    public bool IsMoving { get; set; }
+    public Board Board
+    {
+        get;
+        set;
+    }
+    public bool IsExploding=>_isExploding;
+    public bool IsMatching { get; set; }
+
+    #endregion
+    
+    #region Fields
+    public Vector2Int _position;
+
+    [SerializeField] private Vector2Int _targetPosition;
+    [SerializeField] protected int _itemID;
+    [SerializeField] protected bool isFallAble = true;
+    [SerializeField] protected bool _isMatchable = true;
+    [SerializeField] protected bool _isSwappable = true;
+    [SerializeField] protected bool _isExploding = false;
+    [SerializeField] protected bool _isActive = true;
+    [SerializeField] private float _fallSpeed;
+    [SerializeField] protected bool _isHighlightAble = true;
+    protected bool _isBooster = false;
+    protected Color _unTouchedColor= new Color(0.88f,0.88f,0.88f,1f);
+    private readonly float _gravity = 0.7f; 
+    private Material _material;
+    private MaterialPropertyBlock _materialPropertyBlock;
     private SpriteRenderer _spriteRenderer;
+    protected IItem Item;
+    protected bool _isClicked;
+    #endregion
+
+    public virtual void SetSortingOrder(int order)
+    {
+        _spriteRenderer.sortingOrder = order;
+    }
+
+   
+
     protected virtual void Awake()
     {
-        if (gameObject.TryGetComponent<SpriteRenderer>(out  _spriteRenderer))
+        Item = GetComponent<IItem>();
+        _materialPropertyBlock = new MaterialPropertyBlock();
+        if (gameObject.TryGetComponent(out _spriteRenderer))
         {
             _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-            _spriteRenderer.color = _touchedColor;
+            _spriteRenderer.GetPropertyBlock(_materialPropertyBlock);
+            _spriteRenderer.color = _unTouchedColor;
         }
-        MovementQueue = new Queue<Vector2Int>();
-
     }
 
-    public Transform Transform => transform;
-    public bool HasBeenClicked { get; set; }
 
-    [SerializeField] private int _itemType;
-    
-    
-    public virtual void OnMatch()
+    public void Highlight(float value)
     {
-        gameObject.SetActive(false);
-        HasBeenClicked = false;
-        
+        value=value>=0.5f?1f:0f;
+        _spriteRenderer.GetPropertyBlock(_materialPropertyBlock);
+        _materialPropertyBlock.SetFloat("_IsOutlineEnabled",value);
+        _spriteRenderer.SetPropertyBlock(_materialPropertyBlock);
     }
+    public virtual void OnExplode()
+    {
+    }
+
+    public virtual void OnRemove()
+    {
+
+    }
+
     public virtual void OnTouch()
     {
-        if (_spriteRenderer != null)
-        {
-            _spriteRenderer.color = _spriteRenderer.color==_touchedColor?Color.white:_touchedColor;           
-        }
     }
-
-    public virtual HashSet<Vector2Int> OnClick(IItem[,] board,Vector2Int pos,bool isTouch)
+    public virtual void OnMatch()
     {
-
-        HasBeenClicked = true;
-        return new HashSet<Vector2Int>();
     }
-        
 
+    public virtual void OnClick(Board board, Vector2Int pos)
+    {
+    }
+
+    public virtual void OnSwap(IItem item, IItem otherItem)
+    {
+    }
 }
 
-public interface IItem
-{
-    public int ItemType { get; set; }
-    public Queue<Vector2Int> MovementQueue { get; set; }
-    public bool IsMoving { get; set; }
-    public float FallSpeed { get; set; }
-    public int SortingOrder { get; set; }
-    public bool IsMovable { get; set; }
-    public float Gravity { get; }
-    public void OnMatch();
-    public void OnTouch();
-    public HashSet<Vector2Int> OnClick(IItem[,] board,Vector2Int pos,bool isTouch);
-    public Transform Transform { get; }
-    bool HasBeenClicked { get; set; }
-}
+
