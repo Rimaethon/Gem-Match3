@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1128444514621516591}
   - component: {fileID: 112332074050328778}
   m_Layer: 0
-  m_Name: block_blue
+  m_Name: Blue Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53,7 +53,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 2
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 533ec90b18acd094ea07c7bc465a86f4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -97,4 +97,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf4d4e7181a446e9e0ac3ba67ef6271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemType: 0
+  _position: {x: 0, y: 0}
+  _targetPosition: {x: 0, y: 0}
+  _itemID: 0
+  isFallAble: 1
+  _isMatchable: 1
+  _isSwappable: 1
+  _isExploding: 0
+  _isActive: 1
+  _fallSpeed: 0
+  _isHighlightAble: 1
