@@ -1,91 +1,132 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Rimaethon.Scripts.Utility;
+using Scripts;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class ObjectPool : Singleton<ObjectPool>
 {
-    
-    private Dictionary<int, Stack<GameObject>> items;
-    private Dictionary<int, Stack<GameObject>> particleEffects;
-    
     [SerializeField] private ItemDatabaseSO itemDatabase;
-
-  
-
-    private void Start()
+    private readonly Dictionary<int, Stack<GameObject>> _normalItems= new Dictionary<int, Stack<GameObject>>();
+    private readonly Dictionary<int, Stack<GameObject>> _boosters= new Dictionary<int, Stack<GameObject>>();
+    private readonly Dictionary<int, Stack<GameObject>> _normalItemParticleEffects= new Dictionary<int, Stack<GameObject>>();
+    private readonly Dictionary<int, Stack<GameObject>> _boosterParticleEffects= new Dictionary<int, Stack<GameObject>>();
+    private readonly Stack<GameObject> _boosterCreationEffects = new Stack<GameObject>();
+    private readonly Stack<GameObject> _matchEffects = new Stack<GameObject>();
+    protected override void Awake()
     {
-        items = new Dictionary<int, Stack<GameObject>>();
-        particleEffects= new Dictionary<int, Stack<GameObject>>();
-        for (int i = 0; i < itemDatabase.BoardElements.Count; i++)
+        base.Awake();
+        foreach (int key in itemDatabase.NormalItems.Keys)
         {
-            items[i] = new Stack<GameObject>();
+            _normalItems.Add(key,new Stack<GameObject>());
+            _normalItemParticleEffects.Add(key,new Stack<GameObject>());
         }
-        for (int i = 0; i < itemDatabase.ParticleEffects.Count; i++)
+        foreach (int key in itemDatabase.Boosters.Keys)
         {
-            particleEffects[i] = new Stack<GameObject>();
+            _boosters.Add(key,new Stack<GameObject>());
+            _boosterParticleEffects.Add(key,new Stack<GameObject>());
         }
+       
     }
-
-    public GameObject GetItemFromPool(int itemID, Vector3 position)
+    
+    private IItem GetItemFromPool(Dictionary<int, Stack<GameObject>> pool, int itemID, Vector3 position,GameObject prefab,Board board)
     {
-      
-        if (items[itemID].Count > 0)
+        if (pool[itemID].Count > 0)
         {
-            GameObject item = items[itemID].Pop();
+            IItem item = pool[itemID].Pop().GetComponent<IItem>();
+            
+            item.Transform.position = position;
+            item.Transform.gameObject.SetActive(true);
+            item.Board = board;
+            return item;
+        }
+        IItem newItem = Instantiate(prefab, position, prefab.transform.rotation).GetComponent<IItem>();
+        newItem.Board = board;
+        return newItem;
+    }
+    private GameObject GetParticleEffectFromPool(Dictionary<int, Stack<GameObject>> pool, int itemID, Vector3 position,GameObject prefab,Quaternion rotation=default)
+    {
+        if (pool[itemID].Count > 0)
+        {
+            GameObject item = pool[itemID].Pop();
             item.transform.position = position;
+            item.transform.rotation = rotation;
             item.SetActive(true);
             return item;
         }
-        else
-        {
-            GameObject prefab = Instantiate(itemDatabase.GetBoardElement(itemID), position, Quaternion.identity);
-            return prefab;
-        }
+        return Instantiate(prefab, position,rotation);
     }
-    
-    public GameObject GetParticleEffectFromPool(int itemID, Vector3 position)
+
+    private void ReturnItemToPool(Dictionary<int, Stack<GameObject>> pool, IItem item, int itemID)
     {
-        if (particleEffects[itemID].Count > 0)
-        {
-            GameObject particleEffect = particleEffects[itemID].Pop();
-            particleEffect.transform.position = position;
-            particleEffect.SetActive(true);
-            return particleEffect;
-        }
-        else
-        {
-            GameObject prefab = itemDatabase.GetParticleEffect(itemID);
-            GameObject effect=Instantiate(prefab, position, prefab.transform.rotation);
-            return effect;
-        }
+        item.Transform.parent=gameObject.transform;
+        item.Transform.gameObject.SetActive(false);
+        pool[itemID].Push(item.Transform.gameObject);
     }
-   
-    public void ReturnParticleEffectToPool(GameObject item, int itemID)
+    private void ReturnParticleEffectToPool(Dictionary<int, Stack<GameObject>> pool, GameObject item, int itemID)
     {
         item.SetActive(false);
-        particleEffects[itemID].Push(item);
+        pool[itemID].Push(item);
     }
-    public GameObject GetRandomItemFromPool(Vector3 position)
+    public GameObject GetBoosterCreationEffect(Vector3 position)
     {
-        int randomItemID = Random.Range(0, 4);
-        if (items[randomItemID].Count > 0)
+        if (_boosterCreationEffects.Count > 0)
         {
-            GameObject item = items[randomItemID].Pop();
+            GameObject item = _boosterCreationEffects.Pop();
             item.transform.position = position;
             item.SetActive(true);
             return item;
         }
-        else
+        return Instantiate(itemDatabase.boosterCreationEffect, position, Quaternion.identity);
+    }
+    public GameObject GetMatchEffect(Vector3 position)
+    {
+        if (_matchEffects.Count > 0)
         {
-            GameObject prefab = Instantiate(itemDatabase.GetBoardElement(randomItemID), position, Quaternion.identity);
-            return prefab;
+            GameObject item = _matchEffects.Pop();
+            item.SetActive(true);
+            return item;
         }
+        return Instantiate(itemDatabase.matchEffect, position, Quaternion.identity);
+    }
+    public IItem GetItemGameObject(int itemID, Vector3 position,Board board)
+    {
+        return GetItemFromPool(_normalItems, itemID, position, itemDatabase.GetNormalItem(itemID),board);
+    }
+    public IItem GetBoosterGameObject(int itemID, Vector3 position,Board board)
+    {
+        return GetItemFromPool(_boosters, itemID, position, itemDatabase.GetBooster(itemID),board);
+    }
+    public GameObject GetItemParticleEffect(int itemID, Vector3 position)
+    {
+        return GetParticleEffectFromPool(_normalItemParticleEffects, itemID, position, itemDatabase.GetNormalItemParticleEffect(itemID));
+    }
+   
+    public GameObject GetBoosterParticleEffect(int itemID, Vector3 position,Quaternion rotation= default)
+    {
+        GameObject item = GetParticleEffectFromPool(_boosterParticleEffects, itemID, position, itemDatabase.GetBoosterParticleEffect(itemID),rotation);
+        return item;
     }
 
-    public void ReturnItemToPool(GameObject item, int itemID)
+    public Sprite GetItemSprite(int itemID)
     {
-        items[itemID].Push(item);
+        return itemDatabase.NormalItems[itemID].ItemSprite;
     }
+    public void ReturnParticleEffect(GameObject item, int itemID)
+    {
+        ReturnParticleEffectToPool(_normalItemParticleEffects, item, itemID);
+    }
+    public void ReturnBoosterParticleEffect(GameObject item, int itemID)
+    {
+        ReturnParticleEffectToPool(_boosterParticleEffects, item, itemID);
+    }
+
+    public void ReturnItem(IItem item, int itemID)
+    {
+        if(item.IsBooster)
+            ReturnItemToPool(_boosters, item, itemID);
+        else
+            ReturnItemToPool(_normalItems, item, itemID);
+    }
+
+    
 }
