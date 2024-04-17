@@ -20,7 +20,7 @@ SpriteAtlasImporter:
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 2
-    compressionQuality: 50
+    compressionQuality: 100
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
@@ -29,7 +29,7 @@ SpriteAtlasImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   packingSettings:
     serializedVersion: 2
-    padding: 8
+    padding: 2
     blockOffset: 1
     allowAlphaSplitting: 0
     enableRotation: 1
