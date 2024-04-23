@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using _Scripts.Utility;
+using Scripts;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
-using Unity.Profiling;
 using UnityEngine;
-using UnityEngine.Profiling;
-using UnityEngine.Timeline;
 using Random = Unity.Mathematics.Random;
 
 namespace _Scripts.Core
@@ -14,9 +12,8 @@ namespace _Scripts.Core
     // This class can also be adjusted for making levels harder with generating less one swap matchable doublets
     public class RandomBoardGenerator
     {
-        static readonly ProfilerMarker myMarker = new ProfilerMarker("GenerateRandomBoard");
         [BurstCompile]
-        public int[,] GenerateRandomBoard(int width=8, int height=10,int minTypeID=0,int maxTypeID=4)
+        public Board GenerateRandomBoard(int width=8, int height=10,int minTypeID=0,int maxTypeID=4)
         {
             var job = new GenerateBoardJob
             {
@@ -26,24 +23,27 @@ namespace _Scripts.Core
                 Random = new Random((uint)DateTime.Now.Ticks),
                 MinTypeID = minTypeID,
                 MaxTypeID = maxTypeID,
-                Marker = myMarker,
             };
-
             job.Schedule().Complete();
-
-            int[,] result = new int[width, height];
-            for (int i = 0; i < width; i++)
+            int[,] itemTypeArray = new int[width, height];
+            Board board = new Board(width, height);
+            for (int x = 0; x < width; x++)
             {
-                for (int j = 0; j < height; j++)
+                for (int y = 0; y < height; y++)
                 {
-                    result[i, j] = job.Board[j * width + i];
+                    itemTypeArray[x, y] = job.Board[y * width + x];
+                    board.GetCell(x, y).SetItem( ObjectPool.Instance
+                        .GetItemGameObject(itemTypeArray[x, y], LevelGrid.Grid.GetCellCenterWorld(new Vector3Int(x, y, 0)),board));
+                    board.GetCell(x,y).UnderLayItem=ObjectPool.Instance.GetItemGameObject(6, LevelGrid.Grid.GetCellCenterWorld(new Vector3Int(x, y, 0)),board);
+                    board.GetItem(x,y).Transform.parent = LevelGrid.Grid.transform;
+                    board.GetCell(x,y).UnderLayItem.Transform.parent = LevelGrid.Grid.transform;
                 }
             }
-
+       
             job.Board.Dispose();
-            return result;
+            return board;
         }
-
+        
         [BurstCompile]
         struct GenerateBoardJob : IJob
         {
@@ -53,19 +53,14 @@ namespace _Scripts.Core
             public Random Random;
             public int MinTypeID;
             public int MaxTypeID;
-            
-            public ProfilerMarker Marker;
             public void Execute()
             {
-                Marker.Begin();
                 do
                 {
                     GenerateBoardWithNoTriplets(Width,Height, Random,MinTypeID,MaxTypeID, ref Board);
                 } while (!HasMatchableSwap(Board,Width,Height));
-                Marker.End();
             }
         }
-        
         [BurstCompile]
         private static void GenerateBoardWithNoTriplets(int width, int height, Random random,int minTypeID,int maxTypeID, ref NativeArray<int> board)
         {
@@ -86,8 +81,6 @@ namespace _Scripts.Core
                 }
             }
         }
-
-        
         
         // Check if there is a matchable swap with swapping every two adjacent cells and checking for triplets
         [BurstCompile]
@@ -126,57 +119,6 @@ namespace _Scripts.Core
 
             return false;
         }
-        
- 
-    
-         
-        [BurstCompile]
-public static string HasShape(NativeArray<int> board, int x, int y, int width, int height)
-{
-    int value = board[y * width + x];
-
-    // Check for square
-    if (x < width - 1 && y < height - 1 && board[(y * width) + x + 1] == value && board[((y + 1) * width) + x] == value && board[((y + 1) * width) + x + 1] == value)
-    {
-        return "Square";
-    }
-
-    // Check for triplet
-    if ((x >= 2 && board[y * width + x - 1] == value && board[y * width + x - 2] == value) ||
-        (x < width - 2 && board[y * width + x + 1] == value && board[y * width + x + 2] == value) ||
-        (y >= 2 && board[(y - 1) * width + x] == value && board[(y - 2) * width + x] == value) ||
-        (y < height - 2 && board[(y + 1) * width + x] == value && board[(y + 2) * width + x] == value))
-    {
-        // Check for quadruplet
-        if ((x >= 3 && board[y * width + x - 3] == value) ||
-            (x < width - 3 && board[y * width + x + 3] == value) ||
-            (y >= 3 && board[(y - 3) * width + x] == value) ||
-            (y < height - 3 && board[(y + 3) * width + x] == value))
-        {
-            // Check for L shape
-            if ((x >= 2 && y < height - 2 && board[(y + 1) * width + x] == value && board[(y + 2) * width + x] == value) ||
-                (x < width - 2 && y < height - 2 && board[(y + 1) * width + x] == value && board[(y + 2) * width + x] == value) ||
-                (x >= 2 && y >= 2 && board[(y - 1) * width + x] == value && board[(y - 2) * width + x] == value) ||
-                (x < width - 2 && y >= 2 && board[(y - 1) * width + x] == value && board[(y - 2) * width + x] == value))
-            {
-                return "L";
-            }
-
-            // Check for T shape
-            if (x >= 1 && x < width - 1 && y < height - 2 && board[(y + 1) * width + x - 1] == value && board[(y + 1) * width + x + 1] == value)
-            {
-                return "T";
-            }
-
-            return "Quadruplet";
-        }
-
-        return "Triplet";
-    }
-
-    return "None";
-}
-
         // Check if there is a triplet at the given cell
         [BurstCompile]
         private static bool HasTriplet(NativeArray<int> board, int x, int y, int width, int height)
@@ -187,7 +129,5 @@ public static string HasShape(NativeArray<int> board, int x, int y, int width, i
                    (y >= 2 && board[(y - 1) * width + x] == value && board[(y - 2) * width + x] == value) ||
                    (y < height - 2 && board[(y + 1) * width + x] == value && board[(y + 2) * width + x] == value);
         }
-        
-        
     }
 }
