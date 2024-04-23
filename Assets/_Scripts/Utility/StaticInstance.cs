@@ -10,7 +10,6 @@ namespace Rimaethon.Scripts.Utility
     {
         private static T _instance;
 
-        private static bool IsApplicationQuitting { get; set; }
 
         public static T Instance
         {
