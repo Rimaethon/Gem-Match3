@@ -82,6 +82,20 @@ namespace _Scripts.Utility
 
             return null;
         }
+        #region Directions
+
+        public static List<Vector2Int> GetFourDirections(this Vector2Int pos)
+        {
+            return new List<Vector2Int>()
+            {
+                new Vector2Int(pos.x, pos.y + 1), // Up
+                new Vector2Int(pos.x, pos.y - 1), // Down
+                new Vector2Int(pos.x + 1, pos.y), // Right
+                new Vector2Int(pos.x - 1, pos.y)  // Left
+            };
+        }
+
+        #endregion
 
         
 
