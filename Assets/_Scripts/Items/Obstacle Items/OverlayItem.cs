@@ -1,7 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using DG.Tweening;
-using Rimaethon.Scripts.Managers;
-using UnityEngine;
 
 namespace Scripts
 {
@@ -15,7 +12,6 @@ namespace Scripts
             _isSwappable = false;
             
         }
-
         public override void OnExplode()
         {
             if(IsExploding)
@@ -28,8 +24,5 @@ namespace Scripts
             ObjectPool.Instance.GetItemParticleEffect(_itemID, Transform.position);
             await UniTask.Delay(200);
         }
-       
-    
-
     }
 }
