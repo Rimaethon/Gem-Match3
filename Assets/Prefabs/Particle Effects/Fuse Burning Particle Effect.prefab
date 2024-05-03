@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3729539522000247820}
   - component: {fileID: 5632902665848135409}
   - component: {fileID: 2508867155157138714}
-  - component: {fileID: 5562987278491177195}
   m_Layer: 0
   m_Name: Fuse Burning Particle Effect
   m_TagString: Untagged
@@ -33,7 +32,7 @@ Transform:
   m_Children:
   - {fileID: 1283447459907455429}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &5632902665848135409
 ParticleSystem:
@@ -52,7 +51,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -225,7 +224,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 0, a: 1}
+      maxColor: {r: 1, g: 0.56246287, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -4867,7 +4866,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9aaa13d175bcf1c4b8acc4d930ee06ee, type: 2}
+  - {fileID: 2100000, guid: 4887458cce4074f4c97e4a1aba2b8c97, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4918,19 +4917,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &5562987278491177195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4223668344376414930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d547bfef05b44f2181da6b11a4dcb5de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ItemID: 0
 --- !u!1 &5737613651800088150
 GameObject:
   m_ObjectHideFlags: 0
