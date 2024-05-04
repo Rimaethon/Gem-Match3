@@ -16,18 +16,29 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
+    - {fileID: 3978578806553807151, guid: 878d7d95840b0b346a07bde45c2b9834, type: 3}
+    - {fileID: 1214563583559880, guid: c66611e80e0f0b94f8ac7cbf47890e12, type: 3}
+    - {fileID: 6514944981746915707, guid: 1aa4cdde3545319419819afc6b460823, type: 3}
+    - {fileID: 1533465312867451794, guid: eb4b2136f0f14954fbe01466e3d80693, type: 3}
+    - {fileID: 1990393155706812226, guid: 74fc0f7e92228d947a70601bbd480a8f, type: 3}
+    - {fileID: 2515264487670889158, guid: 882535ea0b5620f4c926c7012be156ec, type: 3}
+    - {fileID: 5567215433007069355, guid: cb1a36a90ed81134abe8b47603ed877b, type: 3}
     - {fileID: 21300000, guid: 67af65161383af74d8435e8c388e0b16, type: 3}
     - {fileID: 3304270746874537042, guid: 777fbe847b9ddcd4d890422a41a78c1a, type: 3}
     - {fileID: 935673518588396646, guid: 483f3abd5dfac7d46bcede3c84fa0c27, type: 3}
+    - {fileID: 5567215433007069355, guid: d9a87adba72892d458fde7c5d9e0310d, type: 3}
     - {fileID: 21300000, guid: fab9c83060e42a14d85c621a4a9788d5, type: 3}
     - {fileID: 6667250810578166995, guid: 947a8c8da8406064384ff430b995253a, type: 3}
     - {fileID: 2781045896915869856, guid: 306a6f50a320cd54892dbb58195cdef6, type: 3}
+    - {fileID: 5567215433007069355, guid: c9814b2be88d8e24689961947a269438, type: 3}
     - {fileID: 21300000, guid: 961f19c65950d1d4abe73b7b90c0b966, type: 3}
     - {fileID: 6086393222268175619, guid: e52703f092ec14346b7fd27bbbd19e80, type: 3}
     - {fileID: 7234773570434344085, guid: 79408c4bad422bd43a17e509cf542974, type: 3}
+    - {fileID: 5567215433007069355, guid: 65749ea87ebcc344497b86f49d577b28, type: 3}
     - {fileID: 21300000, guid: c35f0b494ccc0df44b77fb921248c5f2, type: 3}
     - {fileID: 7929980009253728503, guid: 82236b88dae871942ad825a51fa5b61c, type: 3}
     - {fileID: 4908884431838206753, guid: af990bbdb5cffa049a1e93f8614cac46, type: 3}
+    - {fileID: 5567215433007069355, guid: d75773ebbe8ebce40a0dfe04f0466cf5, type: 3}
     - {fileID: 1509429896, guid: 58e1e070b085d0645af5768e8e07fbaa, type: 3}
     - {fileID: 5796264548630047562, guid: 0536ffc5edb957a49805eb443c6d6184, type: 3}
     - {fileID: 7587840567769524199, guid: 49fc16e750d96764ba78c3ec4cdc46d7, type: 3}
@@ -43,6 +54,10 @@ MonoBehaviour:
     - {fileID: 21300000, guid: a4086a10650f88242a34ad5929670453, type: 3}
     - {fileID: 7929980009253728503, guid: df537b6e129028548a939143abb1330b, type: 3}
     - {fileID: 2781045896915869856, guid: 2f24ea1fe95a509429a191a95fd6dec4, type: 3}
+    - {fileID: 5567215433007069355, guid: 30c45893f5622b54089b59dbe3f9512d, type: 3}
+    - {fileID: 21300000, guid: bb49f880e8c22fb42a7e76728b4ccfca, type: 3}
+    - {fileID: 1686487362287818488, guid: 697a319672dfe654d93d3417fbd622dc, type: 3}
+    - {fileID: 5567215433007069355, guid: 77b7aebcb1a4cad4685eff75581f9e08, type: 3}
     - {fileID: 21300000, guid: d89399d1184f82544b126207ec136f98, type: 3}
     - {fileID: 9056264563140947642, guid: 2d149b8a5ed070b42b637cbc3f370343, type: 3}
     - {fileID: 3554953795121660056, guid: af4793f6cf1f539478a1597864c20db9, type: 3}
@@ -57,12 +72,46 @@ MonoBehaviour:
     - {fileID: 21300000, guid: f869212b8f9fa8d4a8d0f872d875264a, type: 3}
     - {fileID: 431645920056868989, guid: 215bb2e3d8de60a4c834208847432642, type: 3}
     - {fileID: 2326884788012227041, guid: 46b42da7a8435444992b5675c157d650, type: 3}
+    - {fileID: 21300000, guid: aa293492684576b419a4bc74e55f6474, type: 3}
+    - {fileID: 9056264563140947642, guid: aefe060701ab34c4bb1f21cfbf00a9b9, type: 3}
+    - {fileID: 5305396102082233989, guid: 1410659d84b36484e873328d4afcf41e, type: 3}
+    - {fileID: 21300000, guid: 1b7ac1da0dfb62e4c9bb24018f07d09c, type: 3}
+    - {fileID: 9056264563140947642, guid: f5980d8d09c914349b9b26a8ae7472f3, type: 3}
+    - {fileID: 5305396102082233989, guid: 750eb78cb1d9a70458d8cbc9389f11bf, type: 3}
+    - {fileID: 21300000, guid: c37cc9ae094b64c4993053612d642769, type: 3}
+    - {fileID: 9056264563140947642, guid: 9f56de9ebd8f87c4e906ebfa0557b5b6, type: 3}
+    - {fileID: 5305396102082233989, guid: b96ec73fa6a94f947a7103ab21e54f5d, type: 3}
+    - {fileID: 21300000, guid: f3761d340eaa44f4caa3d90046a3285a, type: 3}
+    - {fileID: 9056264563140947642, guid: 3707f1752bc130e4c9aa612ab516d127, type: 3}
+    - {fileID: 5305396102082233989, guid: e6849dd0f609f1c44a5c88aa6f1589b8, type: 3}
     - {fileID: 21300000, guid: 8d4143eaffcbd3a46be481f71da33711, type: 3}
+    - {fileID: 21300000, guid: 255d0f70cd77df7428523c5ef88204a3, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: boosterCreationEffect
+      Entry: 10
+      Data: 0
+    - Name: matchEffect
+      Entry: 10
+      Data: 1
+    - Name: missileHitEffect
+      Entry: 10
+      Data: 2
+    - Name: missileExplosionEffect
+      Entry: 10
+      Data: 3
+    - Name: LightBallLightBallExplosionEffect
+      Entry: 10
+      Data: 4
+    - Name: TntTntExplosionEffect
+      Entry: 10
+      Data: 5
+    - Name: starParticleEffect
+      Entry: 10
+      Data: 6
     - Name: NormalItems
       Entry: 7
       Data: 0|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[_Scripts.Data_Classes.ItemData,
@@ -76,7 +125,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 9
+      Data: 10
     - Name: 
       Entry: 7
       Data: 
@@ -88,16 +137,16 @@ MonoBehaviour:
       Data: 2|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 0
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 7
     - Name: ItemPrefab
       Entry: 10
-      Data: 1
+      Data: 8
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 2
+      Data: 9
+    - Name: UITrailEffect
+      Entry: 10
+      Data: 10
     - Name: ItemAction
       Entry: 7
       Data: 3|Scripts.BoosterActions.MatchItemAction, Assembly-CSharp
@@ -121,16 +170,16 @@ MonoBehaviour:
       Data: 4|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 3
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 11
     - Name: ItemPrefab
       Entry: 10
-      Data: 4
+      Data: 12
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 5
+      Data: 13
+    - Name: UITrailEffect
+      Entry: 10
+      Data: 14
     - Name: ItemAction
       Entry: 7
       Data: 5|Scripts.BoosterActions.MatchItemAction, Assembly-CSharp
@@ -154,16 +203,16 @@ MonoBehaviour:
       Data: 6|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 6
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 15
     - Name: ItemPrefab
       Entry: 10
-      Data: 7
+      Data: 16
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 8
+      Data: 17
+    - Name: UITrailEffect
+      Entry: 10
+      Data: 18
     - Name: ItemAction
       Entry: 7
       Data: 7|Scripts.BoosterActions.MatchItemAction, Assembly-CSharp
@@ -187,16 +236,16 @@ MonoBehaviour:
       Data: 8|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 9
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 19
     - Name: ItemPrefab
       Entry: 10
-      Data: 10
+      Data: 20
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 11
+      Data: 21
+    - Name: UITrailEffect
+      Entry: 10
+      Data: 22
     - Name: ItemAction
       Entry: 7
       Data: 9|Scripts.BoosterActions.MatchItemAction, Assembly-CSharp
@@ -220,16 +269,16 @@ MonoBehaviour:
       Data: 10|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 12
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 23
     - Name: ItemPrefab
       Entry: 10
-      Data: 13
+      Data: 24
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 14
+      Data: 25
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
     - Name: ItemAction
       Entry: 7
       Data: 11|Scripts.BoosterActions.MatchItemAction, Assembly-CSharp
@@ -253,16 +302,16 @@ MonoBehaviour:
       Data: 12|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 15
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 26
     - Name: ItemPrefab
       Entry: 10
-      Data: 16
+      Data: 27
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 17
+      Data: 28
+    - Name: UITrailEffect
+      Entry: 10
+      Data: 28
     - Name: ItemAction
       Entry: 6
       Data: 
@@ -283,16 +332,16 @@ MonoBehaviour:
       Data: 13|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 18
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 29
     - Name: ItemPrefab
       Entry: 10
-      Data: 19
+      Data: 30
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 20
+      Data: 31
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
     - Name: ItemAction
       Entry: 6
       Data: 
@@ -313,16 +362,16 @@ MonoBehaviour:
       Data: 14|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 21
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 32
     - Name: ItemPrefab
       Entry: 10
-      Data: 22
+      Data: 33
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 23
+      Data: 34
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
     - Name: ItemAction
       Entry: 6
       Data: 
@@ -343,19 +392,52 @@ MonoBehaviour:
       Data: 15|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 24
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 35
     - Name: ItemPrefab
       Entry: 10
-      Data: 25
+      Data: 36
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 26
+      Data: 37
+    - Name: UITrailEffect
+      Entry: 10
+      Data: 38
     - Name: ItemAction
       Entry: 7
       Data: 16|Scripts.BoosterActions.MatchItemAction, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 9
+    - Name: $v
+      Entry: 7
+      Data: 17|_Scripts.Data_Classes.ItemData, Assembly-CSharp
+    - Name: ItemSprite
+      Entry: 10
+      Data: 39
+    - Name: ItemPrefab
+      Entry: 10
+      Data: 40
+    - Name: ItemParticleEffect
+      Entry: 10
+      Data: 41
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
+    - Name: ItemAction
+      Entry: 7
+      Data: 18|Scripts.BoosterActions.GeneratorItemAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -373,14 +455,14 @@ MonoBehaviour:
       Data: 
     - Name: Boosters
       Entry: 7
-      Data: 17|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[_Scripts.Data_Classes.ItemData,
+      Data: 19|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[_Scripts.Data_Classes.ItemData,
         Assembly-CSharp]], mscorlib
     - Name: comparer
       Entry: 9
       Data: 1
     - Name: 
       Entry: 12
-      Data: 5
+      Data: 9
     - Name: 
       Entry: 7
       Data: 
@@ -389,22 +471,22 @@ MonoBehaviour:
       Data: 100
     - Name: $v
       Entry: 7
-      Data: 18|_Scripts.Data_Classes.ItemData, Assembly-CSharp
+      Data: 20|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 27
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 42
     - Name: ItemPrefab
       Entry: 10
-      Data: 28
+      Data: 43
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 29
+      Data: 44
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
     - Name: ItemAction
       Entry: 7
-      Data: 19|Scripts.BoosterActions.TNTBoosterAction, Assembly-CSharp
+      Data: 21|Scripts.BoosterActions.TNTBoosterAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -422,22 +504,22 @@ MonoBehaviour:
       Data: 101
     - Name: $v
       Entry: 7
-      Data: 20|_Scripts.Data_Classes.ItemData, Assembly-CSharp
+      Data: 22|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 30
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 45
     - Name: ItemPrefab
       Entry: 10
-      Data: 31
+      Data: 46
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 32
+      Data: 47
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
     - Name: ItemAction
       Entry: 7
-      Data: 21|Scripts.BoosterActions.HorizontalRocketBoosterAction, Assembly-CSharp
+      Data: 23|Scripts.BoosterActions.HorizontalRocketBoosterAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -455,22 +537,22 @@ MonoBehaviour:
       Data: 102
     - Name: $v
       Entry: 7
-      Data: 22|_Scripts.Data_Classes.ItemData, Assembly-CSharp
+      Data: 24|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 33
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 48
     - Name: ItemPrefab
       Entry: 10
-      Data: 34
+      Data: 49
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 32
+      Data: 47
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
     - Name: ItemAction
       Entry: 7
-      Data: 23|Scripts.BoosterActions.VerticalRocketBoosterAction, Assembly-CSharp
+      Data: 25|Scripts.BoosterActions.VerticalRocketBoosterAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -488,22 +570,28 @@ MonoBehaviour:
       Data: 103
     - Name: $v
       Entry: 7
-      Data: 24|_Scripts.Data_Classes.ItemData, Assembly-CSharp
+      Data: 26|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 35
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 50
     - Name: ItemPrefab
       Entry: 10
-      Data: 36
+      Data: 51
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 37
+      Data: 52
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
     - Name: ItemAction
       Entry: 7
-      Data: 25|Scripts.BoosterActions.LightBallBoosterAction, Assembly-CSharp
+      Data: 27|Scripts.BoosterActions.LightBallBoosterAction, Assembly-CSharp
+    - Name: ItemsToExplode
+      Entry: 6
+      Data: 
+    - Name: _noTargetTime
+      Entry: 4
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -521,24 +609,147 @@ MonoBehaviour:
       Data: 104
     - Name: $v
       Entry: 7
-      Data: 26|_Scripts.Data_Classes.ItemData, Assembly-CSharp
+      Data: 28|_Scripts.Data_Classes.ItemData, Assembly-CSharp
     - Name: ItemSprite
       Entry: 10
-      Data: 38
-    - Name: ItemHealth
-      Entry: 3
-      Data: 1
+      Data: 53
     - Name: ItemPrefab
       Entry: 10
-      Data: 39
+      Data: 54
     - Name: ItemParticleEffect
       Entry: 10
-      Data: 40
+      Data: 55
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
     - Name: ItemAction
       Entry: 7
-      Data: 27|Scripts.BoosterActions.MissileBoosterAction, Assembly-CSharp
+      Data: 29|Scripts.BoosterActions.MissileBoosterAction, Assembly-CSharp
+    - Name: _isHitInitiated
+      Entry: 5
+      Data: false
     - Name: 
       Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 105
+    - Name: $v
+      Entry: 7
+      Data: 30|_Scripts.Data_Classes.ItemData, Assembly-CSharp
+    - Name: ItemSprite
+      Entry: 10
+      Data: 56
+    - Name: ItemPrefab
+      Entry: 10
+      Data: 57
+    - Name: ItemParticleEffect
+      Entry: 10
+      Data: 58
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
+    - Name: ItemAction
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 106
+    - Name: $v
+      Entry: 7
+      Data: 31|_Scripts.Data_Classes.ItemData, Assembly-CSharp
+    - Name: ItemSprite
+      Entry: 10
+      Data: 59
+    - Name: ItemPrefab
+      Entry: 10
+      Data: 60
+    - Name: ItemParticleEffect
+      Entry: 10
+      Data: 61
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
+    - Name: ItemAction
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 107
+    - Name: $v
+      Entry: 7
+      Data: 32|_Scripts.Data_Classes.ItemData, Assembly-CSharp
+    - Name: ItemSprite
+      Entry: 10
+      Data: 62
+    - Name: ItemPrefab
+      Entry: 10
+      Data: 63
+    - Name: ItemParticleEffect
+      Entry: 10
+      Data: 64
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
+    - Name: ItemAction
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 108
+    - Name: $v
+      Entry: 7
+      Data: 33|_Scripts.Data_Classes.ItemData, Assembly-CSharp
+    - Name: ItemSprite
+      Entry: 10
+      Data: 65
+    - Name: ItemPrefab
+      Entry: 10
+      Data: 66
+    - Name: ItemParticleEffect
+      Entry: 10
+      Data: 67
+    - Name: UITrailEffect
+      Entry: 6
+      Data: 
+    - Name: ItemAction
+      Entry: 6
       Data: 
     - Name: 
       Entry: 8
@@ -554,15 +765,15 @@ MonoBehaviour:
       Data: 
     - Name: BoosterMergeAction
       Entry: 7
-      Data: 28|System.Collections.Generic.List`1[[System.Tuple`3[[System.Int32, mscorlib],[System.Int32,
-        mscorlib],[Scripts.BoosterActions.IItemMerge, Assembly-CSharp]], mscorlib]],
+      Data: 34|System.Collections.Generic.List`1[[System.Tuple`3[[System.Int32, mscorlib],[System.Int32,
+        mscorlib],[Scripts.BoosterActions.IItemMergeAction, Assembly-CSharp]], mscorlib]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 14
+      Data: 15
     - Name: 
       Entry: 7
-      Data: 29|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 35|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -572,7 +783,7 @@ MonoBehaviour:
       Data: 100
     - Name: m_Item3
       Entry: 7
-      Data: 30|_Scripts.Items.ItemActions.MergeActions.TntTntMerge, Assembly-CSharp
+      Data: 36|_Scripts.Items.ItemActions.MergeActions.TntTntMergeAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -581,7 +792,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 31|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 37|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -591,7 +802,7 @@ MonoBehaviour:
       Data: 101
     - Name: m_Item3
       Entry: 7
-      Data: 32|Scripts.BoosterActions.MergeActions.TNTRocketMerge, Assembly-CSharp
+      Data: 38|Scripts.BoosterActions.MergeActions.TNTRocketMergeAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -600,7 +811,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 33|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 39|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -610,7 +821,7 @@ MonoBehaviour:
       Data: 102
     - Name: m_Item3
       Entry: 7
-      Data: 34|Scripts.BoosterActions.MergeActions.TNTRocketMerge, Assembly-CSharp
+      Data: 40|Scripts.BoosterActions.MergeActions.TNTRocketMergeAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -619,26 +830,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 35|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
-        Assembly-CSharp]], mscorlib
-    - Name: m_Item1
-      Entry: 3
-      Data: 100
-    - Name: m_Item2
-      Entry: 3
-      Data: 103
-    - Name: m_Item3
-      Entry: 7
-      Data: 36|Scripts.BoosterActions.MergeActions.LightBallTNTMerge, Assembly-CSharp
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 37|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 41|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -648,7 +840,7 @@ MonoBehaviour:
       Data: 104
     - Name: m_Item3
       Entry: 7
-      Data: 38|Scripts.BoosterActions.MergeActions.TntMissileMerge, Assembly-CSharp
+      Data: 42|Scripts.BoosterActions.MergeActions.MissileTntMergeAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -657,7 +849,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 39|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 43|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -667,7 +859,7 @@ MonoBehaviour:
       Data: 101
     - Name: m_Item3
       Entry: 7
-      Data: 40|Scripts.BoosterActions.MergeActions.RocketRocketMerge, Assembly-CSharp
+      Data: 44|Scripts.BoosterActions.MergeActions.RocketRocketMergeAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -676,7 +868,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 41|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 45|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -686,7 +878,7 @@ MonoBehaviour:
       Data: 102
     - Name: m_Item3
       Entry: 7
-      Data: 42|Scripts.BoosterActions.MergeActions.RocketRocketMerge, Assembly-CSharp
+      Data: 46|Scripts.BoosterActions.MergeActions.RocketRocketMergeAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -695,26 +887,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 43|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
-        Assembly-CSharp]], mscorlib
-    - Name: m_Item1
-      Entry: 3
-      Data: 101
-    - Name: m_Item2
-      Entry: 3
-      Data: 103
-    - Name: m_Item3
-      Entry: 7
-      Data: 44|Scripts.BoosterActions.MergeActions.LightBallRocketMerge, Assembly-CSharp
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 45|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 47|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -724,7 +897,8 @@ MonoBehaviour:
       Data: 104
     - Name: m_Item3
       Entry: 7
-      Data: 46|_Scripts.Items.ItemActions.MergeActions.MissileRocketMerge, Assembly-CSharp
+      Data: 48|_Scripts.Items.ItemActions.MergeActions.MissileHorizontalRocketMergeAction,
+        Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -733,7 +907,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 47|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 49|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -743,7 +917,7 @@ MonoBehaviour:
       Data: 102
     - Name: m_Item3
       Entry: 7
-      Data: 48|Scripts.BoosterActions.MergeActions.RocketRocketMerge, Assembly-CSharp
+      Data: 50|Scripts.BoosterActions.MergeActions.RocketRocketMergeAction, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -752,26 +926,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 49|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
-        Assembly-CSharp]], mscorlib
-    - Name: m_Item1
-      Entry: 3
-      Data: 102
-    - Name: m_Item2
-      Entry: 3
-      Data: 103
-    - Name: m_Item3
-      Entry: 7
-      Data: 50|Scripts.BoosterActions.MergeActions.LightBallRocketMerge, Assembly-CSharp
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 51|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 51|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -781,7 +936,8 @@ MonoBehaviour:
       Data: 104
     - Name: m_Item3
       Entry: 7
-      Data: 52|_Scripts.Items.ItemActions.MergeActions.MissileRocketMerge, Assembly-CSharp
+      Data: 52|_Scripts.Items.ItemActions.MergeActions.MissileVerticalRocketMergeAction,
+        Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -790,7 +946,64 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 53|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 53|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
+        Assembly-CSharp]], mscorlib
+    - Name: m_Item1
+      Entry: 3
+      Data: 103
+    - Name: m_Item2
+      Entry: 3
+      Data: 100
+    - Name: m_Item3
+      Entry: 7
+      Data: 54|Scripts.BoosterActions.MergeActions.LightBallTNTMergeAction, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 55|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
+        Assembly-CSharp]], mscorlib
+    - Name: m_Item1
+      Entry: 3
+      Data: 103
+    - Name: m_Item2
+      Entry: 3
+      Data: 101
+    - Name: m_Item3
+      Entry: 7
+      Data: 56|Scripts.BoosterActions.MergeActions.LightBallRocketMergeAction, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 57|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
+        Assembly-CSharp]], mscorlib
+    - Name: m_Item1
+      Entry: 3
+      Data: 103
+    - Name: m_Item2
+      Entry: 3
+      Data: 102
+    - Name: m_Item3
+      Entry: 7
+      Data: 58|Scripts.BoosterActions.MergeActions.LightBallRocketMergeAction, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 59|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -800,7 +1013,8 @@ MonoBehaviour:
       Data: 103
     - Name: m_Item3
       Entry: 7
-      Data: 54|_Scripts.Items.ItemActions.MergeActions.LightBallLightBallMerge, Assembly-CSharp
+      Data: 60|_Scripts.Items.ItemActions.MergeActions.LightBallLightBallMergeAction,
+        Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -809,7 +1023,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 55|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMerge,
+      Data: 61|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
         Assembly-CSharp]], mscorlib
     - Name: m_Item1
       Entry: 3
@@ -819,7 +1033,28 @@ MonoBehaviour:
       Data: 104
     - Name: m_Item3
       Entry: 7
-      Data: 56|_Scripts.Items.ItemActions.MergeActions.LightBallMissileMerge, Assembly-CSharp
+      Data: 62|_Scripts.Items.ItemActions.MergeActions.LightBallMissileMergeAction,
+        Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 63|System.Tuple`3[[System.Int32, mscorlib],[System.Int32, mscorlib],[Scripts.BoosterActions.IItemMergeAction,
+        Assembly-CSharp]], mscorlib
+    - Name: m_Item1
+      Entry: 3
+      Data: 104
+    - Name: m_Item2
+      Entry: 3
+      Data: 104
+    - Name: m_Item3
+      Entry: 7
+      Data: 64|_Scripts.Items.ItemActions.MergeActions.MissileMissileMergeAction,
+        Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -834,11 +1069,11 @@ MonoBehaviour:
       Data: 
     - Name: Boards
       Entry: 7
-      Data: 57|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[_Scripts.Data_Classes.BoardSpriteSaveData,
+      Data: 65|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[_Scripts.Data_Classes.BoardSpriteSaveData,
         Assembly-CSharp]], mscorlib
     - Name: comparer
       Entry: 7
-      Data: 58|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
+      Data: 66|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
         mscorlib]], mscorlib
     - Name: 
       Entry: 8
@@ -854,7 +1089,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 7
-      Data: 59|_Scripts.Data_Classes.BoardSpriteSaveData, Assembly-CSharp
+      Data: 67|_Scripts.Data_Classes.BoardSpriteSaveData, Assembly-CSharp
     - Name: Width
       Entry: 3
       Data: 8
@@ -863,7 +1098,7 @@ MonoBehaviour:
       Data: 10
     - Name: BlankCells
       Entry: 7
-      Data: 60|System.Collections.Generic.HashSet`1[[UnityEngine.Vector2Int, UnityEngine.CoreModule]],
+      Data: 68|System.Collections.Generic.HashSet`1[[UnityEngine.Vector2Int, UnityEngine.CoreModule]],
         System.Core
     - Name: 
       Entry: 12
@@ -876,7 +1111,7 @@ MonoBehaviour:
       Data: 
     - Name: Sprite
       Entry: 10
-      Data: 41
+      Data: 68
     - Name: 
       Entry: 8
       Data: 
@@ -889,5 +1124,35 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  boosterCreationEffect: {fileID: 3978578806553807151, guid: 878d7d95840b0b346a07bde45c2b9834, type: 3}
-  matchEffect: {fileID: 1214563583559880, guid: c66611e80e0f0b94f8ac7cbf47890e12, type: 3}
+    - Name: Backgrounds
+      Entry: 7
+      Data: 69|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[UnityEngine.Sprite,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 70|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 10
+      Data: 69
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
