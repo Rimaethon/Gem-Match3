@@ -8,8 +8,8 @@ namespace _Scripts.Core
 {
     public class ItemActionHandler
     {
-        private readonly HashSet<IItemAction> _actionsToExecute = new HashSet<IItemAction>();
-        private readonly HashSet<IItemAction> _actionsToExecuteThisFrame = new HashSet<IItemAction>();
+        private List<IItemAction> _actionsToExecute = new List<IItemAction>();
+        private List<IItemAction> _actionsToExecuteThisFrame;
         private Board _board;
         public ItemActionHandler (Board board)
         {
@@ -20,23 +20,29 @@ namespace _Scripts.Core
         
         private void AddActionToHandle(IItemAction itemPos)
         {
+            itemPos.InitializeAction();
             _actionsToExecute.Add(itemPos);
-            
+            itemPos = null;
         }
 
         public void HandleActions()
         {
-            _actionsToExecuteThisFrame.UnionWith(_actionsToExecute);
-            
-            foreach (IItemAction itemPos in _actionsToExecuteThisFrame)
+           _actionsToExecuteThisFrame = new List<IItemAction>(_actionsToExecute);
+            for (int i=0;i<_actionsToExecuteThisFrame.Count ;i++)
             {
-               itemPos.Execute();
-               if(itemPos.IsFinished)
-                   _actionsToExecute.Remove(itemPos);
+                _actionsToExecuteThisFrame[i].Execute();
+                if (_actionsToExecuteThisFrame[i].IsFinished)
+                {
+                    _actionsToExecute.Remove(_actionsToExecuteThisFrame[i]);
+                    _actionsToExecuteThisFrame[i]=null;
+                }
             }
             _actionsToExecuteThisFrame.Clear();
-
+       
+            
+            
         }
+        
         
     }
 }
