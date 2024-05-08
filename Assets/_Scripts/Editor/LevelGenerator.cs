@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using DefaultNamespace;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEditor;
 using UnityEditor.Sprites;
 using UnityEngine;
-using SerializationUtility = Sirenix.Serialization.SerializationUtility;
 
-namespace Scripts.Node
+namespace _Scripts.Editor
 {
     public class LevelGenerator : MonoBehaviour
     {
@@ -21,7 +18,7 @@ namespace Scripts.Node
         [SerializeField] private int[,] goalIds=new int[4,1];
         [SerializeField] private int moveCount = 1;
         [SerializeField] private ItemDatabaseSO itemDataBase;
-        private readonly LevelData _levelData = new();
+        private readonly LevelData _levelData;
         private readonly List<int> _goalCounts = new();
         [ShowInInspector] [TableMatrix(DrawElementMethod = "DrawElement", RowHeight = 90)]
         public int[,] BoardElementIDs = new int[8, 10];
