@@ -1,0 +1,15 @@
+﻿{
+    "$type": "0|_Scripts.Data_Classes.EventData, Assembly-CSharp",
+    "eventObjectiveID": 0,
+    "eventRewardID": 100,
+    "isRewardBooster": true,
+    "isRewardCoin": false,
+    "rewardCount": 3,
+    "isRewardUnlimitedUseForSpecificTime": false,
+    "rewardUnlimitedUseTimeInSeconds": 0,
+    "eventStartUnixTime": 1716650303,
+    "eventRemainingTimeInSecond": 3600,
+    "eventGoalCount": 850,
+    "isMainEvent": false,
+    "eventProgressCount": 415
+}
