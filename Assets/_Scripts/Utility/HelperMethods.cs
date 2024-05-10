@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace _Scripts.Utility
 {
-    public static class ArrayExtensions
+    public static class HelperMethods
     {
         
         public static Cell GetCell(this Board board, int x,int y)
@@ -42,45 +42,50 @@ namespace _Scripts.Utility
         {
             return LevelGrid.Instance.GetCellCenterWorld(array[0,0].CellPosition).y-LevelGrid.Grid.cellSize.y;
         }
-        public static IItem GetItem(this Cell[,] array, int x,int y)
+  
+        public static bool IsInBoundaries(this Board board, Vector2Int pos)
         {
-            if(array.GetCell(x,y).HasItem)
-            {
-                return array.GetCell(x,y).Item;
-            }
-          
-            return null;
+            return pos.x >= 0 && pos.x < board.Width&& pos.y >= 0 && pos.y < board.Height;
         }
-        public static IItem GetItem(this Cell[,] array, Vector2Int position)
+        public static bool IsInBoundaries(this Board board, int x,int y)
         {
-            if(array.IsInBoundaries(position)&&array.GetCell(position).HasItem)
-            {
-                return array.GetCell(position).Item;
-            }
-
-            return null;
+            return x >= 0 && x < board.Width&& y >= 0 && y < board.Height;
         }
-        public static bool IsInBoundaries(this Cell[,] array, Vector2Int pos)
-        {
-            return pos.x >= 0 && pos.x < array.GetLength(0)&& pos.y >= 0 && pos.y < array.GetLength(1);
-        }
-        public static IItem GetItem(this Board board, int x,int y)
+        public static IBoardItem GetItem(this Board board, int x,int y)
         {
             if(board.Cells.GetCell(x,y).HasItem)
             {
-                return board.Cells.GetCell(x,y).Item;
+                return board.Cells.GetCell(x,y).BoardItem;
             }
           
             return null;
         }
-        public static IItem GetItem(this Board board ,Vector2Int position)
+        public static IBoardItem GetItem(this Board board ,Vector2Int position)
         {
-            if(IsInBoundaries(board.Cells,position)&&board.Cells.GetCell(position).HasItem)
+            if(board.IsInBoundaries(position)&&board.Cells.GetCell(position).HasItem)
             {
-                return board.Cells.GetCell(position).Item;
+                return board.Cells.GetCell(position).BoardItem;
             }
 
             return null;
+        }
+        public static void SetBoardItemsParent(this Board board, Transform parent)
+        {
+            foreach (var cell in board.Cells)
+            {
+                if (cell.HasItem)
+                {
+                    cell.BoardItem.Transform.SetParent(parent);
+                }
+                if(cell.HasOverLayItem)
+                {
+                    cell.OverLayBoardItem.Transform.SetParent(parent);
+                }
+                if(cell.HasUnderLayItem)
+                {
+                    cell.UnderLayBoardItem.Transform.SetParent(parent);
+                }
+            }
         }
         #region Directions
 
@@ -96,7 +101,8 @@ namespace _Scripts.Utility
         }
 
         #endregion
-
+        
+        
         
 
     }
