@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+
 using System.Collections.Generic;
 using _Scripts.Core;
 using _Scripts.Utility;
@@ -36,29 +37,22 @@ namespace _Scripts.Managers.Matching
 
     public class MatchChecker
     {
-        private readonly Match[] _allMatches;
-
         private readonly Board _board;
-        private readonly int _height;
         private readonly Match[] _horizontalExtensions;
         private readonly Match[] _horizontalMatches;
         private readonly Match[] _verticalExtensions;
         private readonly Match[] _verticalMatches;
-        private readonly int _width;
-        private int _matchCount;
+        List<Vector2Int> matches = new List<Vector2Int>();
         private int _itemID;
         private readonly HashSet<Vector2Int> _itemsToCheckForMatches = new HashSet<Vector2Int>();
         private readonly HashSet<Vector2Int> _itemsToCheckForMatchesThisFrame = new HashSet<Vector2Int>();
-        public MatchChecker(Board board, int width, int height)
+        public MatchChecker(Board board)
         {
             _board = board;
-            _width = width;
-            _height = height;
-            _verticalMatches = new Match[height];
-            _horizontalMatches = new Match[width];
-            _verticalExtensions = new Match[height];
-            _horizontalExtensions = new Match[width];
-            _allMatches = new Match[14];
+            _verticalMatches = new Match[_board.Height];
+            _horizontalMatches = new Match[_board.Width];
+            _verticalExtensions = new Match[_board.Height];
+            _horizontalExtensions = new Match[_board.Width];
             EventManager.Instance.AddHandler<Vector2Int>(GameEvents.OnItemMovementEnd, AddItemToCheckForMatches);            
         }
         private void AddItemToCheckForMatches(Vector2Int itemPos)
@@ -84,41 +78,36 @@ namespace _Scripts.Managers.Matching
                 _board.GetItem(pos).IsExploding||_board.GetItem(pos).IsMatching)
                 return false;
             MatchData matchedItems = new MatchData();
-//            Debug.Log("Checking Matches for "+pos);
             var item = _board.GetItem(pos);
             _itemID = item.ItemID;
-
             var horizontalMatchCount = CheckMatchesInDirection(_horizontalMatches, pos, new Vector2Int(1, 0));
             var verticalMatchCount = CheckMatchesInDirection(_verticalMatches, pos, new Vector2Int(0, 1));
             var verticalExtensionCount = GetExtension(_horizontalMatches, _verticalExtensions, new Vector2Int(0, 1));
             var horizontalExtensionCount = GetExtension(_verticalMatches, _horizontalExtensions, new Vector2Int(1, 0));
 
-            _matchCount = 0;
-            _allMatches[_matchCount].Pos = pos;
-            _allMatches[_matchCount].IsMatch = true;
-            _board.GetCell(pos).Item.IsMatching = true;
-            _matchCount++;
-
+            _board.GetCell(pos).BoardItem.IsMatching = true;
+            matches.Add(pos);
+         
             var matchType = CheckForMatchType(horizontalMatchCount, verticalMatchCount, verticalExtensionCount,
                 horizontalExtensionCount);
             if (matchType != MatchType.None)
             {
-                Array.Copy(_allMatches, matchedItems.Matches, 14);
-                matchedItems.MatchType = matchType;
+                matchedItems.MatchType =MatchType.Missile;
+                matchedItems.matchID = _itemID;
+                matchedItems.Matches.AddRange(matches);
                 EventManager.Instance.Broadcast(GameEvents.AddMatchToHandle, matchedItems);
             }
             else
             {
-                _board.GetCell(pos).Item.IsMatching = false;
+                _board.GetCell(pos).BoardItem.IsMatching = false;
             }
             ClearAllMatchesAndAddThemToArray(_horizontalMatches, false);
             ClearAllMatchesAndAddThemToArray(_verticalMatches, false);
             ClearAllMatchesAndAddThemToArray(_horizontalExtensions, false);
             ClearAllMatchesAndAddThemToArray(_verticalExtensions, false);
-            ClearAllMatchesAndAddThemToArray(_allMatches, false);
+            matches.Clear();
             return matchType != MatchType.None;
         }
-
         private int CheckMatchesInDirection(Match[] matchArray, Vector2Int pos, Vector2Int direction)
         {
             var arrayIndex = 0;
@@ -130,11 +119,11 @@ namespace _Scripts.Managers.Matching
         private int CheckMatchesInDirectionHelper(Match[] matchArray, Vector2Int pos, Vector2Int direction, int start, int arrayIndex)
         {
             var index = start;
-            while (IsWithinBounds(pos + direction * index) && _board.GetItem(pos + direction * index) != null)
+            while (_board.IsInBoundaries(pos + direction * index) && _board.GetItem(pos + direction * index) != null)
             {
                 var cell = _board.GetCell(pos + direction * index);
-                if (_itemID == cell.Item.ItemID && !cell.Item.IsMoving && !cell.Item.IsExploding &&
-                    !cell.IsGettingFilled && !cell.IsGettingEmptied&&!cell.Item.IsMatching)
+                if (_itemID == cell.BoardItem.ItemID && !cell.BoardItem.IsMoving && !cell.BoardItem.IsExploding &&
+                    !cell.IsGettingFilled && !cell.IsGettingEmptied&&!cell.BoardItem.IsMatching&&cell.BoardItem.IsMatchable&&!cell.IsLocked)
                 {
                     matchArray[arrayIndex].Pos = pos + direction * index;
                     matchArray[arrayIndex].IsMatch = true;
@@ -150,12 +139,6 @@ namespace _Scripts.Managers.Matching
 
             return arrayIndex;
         }
-
-        private bool IsWithinBounds(Vector2Int pos)
-        {
-            return pos.x >= 0 && pos.x < _width && pos.y >= 0 && pos.y < _height;
-        }
-
         private int GetExtension(Match[] arrayToCheck, Match[] matchArray, Vector2Int direction, int minMatchCount = 2)
         {
             foreach (var item in arrayToCheck)
@@ -174,10 +157,8 @@ namespace _Scripts.Managers.Matching
             {
                 if (matchArray[i].IsMatch && addToArray)
                 {
-                    _allMatches[_matchCount] = matchArray[i];
-                    _allMatches[_matchCount].IsMatch = true;
-                    _board.GetCell(matchArray[i].Pos).Item.IsMatching= true;
-                    _matchCount++;
+                    matches.Add(matchArray[i].Pos);
+                    _board.GetCell(matchArray[i].Pos).BoardItem.IsMatching= true;
                 }
 
                 matchArray[i].IsMatch = false;
@@ -205,11 +186,9 @@ namespace _Scripts.Managers.Matching
                 {
                     if(!_horizontalMatches[i].IsMatch||!_verticalMatches[j].IsMatch) continue;
                     var posToCheck= new Vector2Int(_horizontalMatches[i].Pos.x, _verticalMatches[j].Pos.y);
-                    if (IsWithinBounds(posToCheck) && _board.GetCell(posToCheck).HasItem && _board.GetItem(posToCheck).ItemID == _itemID)
+                    if (_board.IsInBoundaries(posToCheck) && _board.GetCell(posToCheck).HasItem && _board.GetItem(posToCheck).ItemID == _itemID)
                     {
-                        _allMatches[_matchCount].Pos = posToCheck;
-                        _allMatches[_matchCount].IsMatch = true;
-                        _matchCount++;
+                        matches.Add(posToCheck);
                         _board.GetItem(posToCheck).IsMatching = true;
                         ClearAllMatchesAndAddThemToArray(_horizontalMatches);
                         ClearAllMatchesAndAddThemToArray(_verticalMatches);
