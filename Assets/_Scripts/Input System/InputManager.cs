@@ -1,8 +1,6 @@
-﻿using System.Threading;
-using Cysharp.Threading.Tasks;
-using Rimaethon.Scripts.Managers;
+﻿using Rimaethon.Scripts.Managers;
+using Rimaethon.Scripts.Utility;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace Scripts
@@ -10,19 +8,19 @@ namespace Scripts
     public class InputManager: MonoBehaviour
     {
         [SerializeField] private GameObject _eventSystem;
+        [SerializeField] private bool _isMainMenu;
         private PlayerInputs _playerInputs;
-        private PlayerInput _playerInput;
         private Camera _mainCamera;
         private Vector2 _clickPos;
         private Vector2 _dragPos;
         private bool _isDragging=true;
         private bool _isBoardLocked;
-        private int _booardLockCount; 
+        private int _boardLockCount;
+        private int _userInputLockCount; 
         private int _playerInputLockCount;
         private void Awake()
         {
             _playerInputs = new PlayerInputs();
-            _playerInput = GetComponent<PlayerInput>();
             _mainCamera = Camera.main;
         }
         private void OnEnable()
@@ -34,29 +32,9 @@ namespace Scripts
 
             EventManager.Instance.AddHandler(GameEvents.OnPlayerInputLock, OnPlayerInputLock);
             EventManager.Instance.AddHandler(GameEvents.OnPlayerInputUnlock, OnPlayerInputUnlock);
+            EventManager.Instance.AddHandler(GameEvents.OnBoardLock, OnBoardLock);
+            EventManager.Instance.AddHandler(GameEvents.OnBoardUnlock, OnBoardUnlock);
         }
-
-        private void OnPlayerInputLock()
-        {
-         _playerInputLockCount++;
-         _playerInputs.Disable();
-         _playerInput.enabled = false;
-         _eventSystem.SetActive(false);
-         _isBoardLocked = true;
-        }
-        private void OnPlayerInputUnlock()
-        {
-            _playerInputLockCount--;
-            if (_playerInputLockCount <= 0)
-            {
-                _playerInputs.Enable();
-                _playerInput.enabled = true;
-                _eventSystem.SetActive(true);
-                _isBoardLocked = false;
-            }
-        }
-
-
         private void OnDisable()
         {
             _playerInputs.Disable();
@@ -65,17 +43,46 @@ namespace Scripts
             _playerInputs.Player.Click.canceled -= OnRelease;
             if (EventManager.Instance == null)
                 return;
-
             EventManager.Instance.RemoveHandler(GameEvents.OnPlayerInputLock, OnPlayerInputLock);
             EventManager.Instance.RemoveHandler(GameEvents.OnPlayerInputUnlock, OnPlayerInputUnlock);
+            EventManager.Instance.RemoveHandler(GameEvents.OnBoardLock, OnBoardLock);
+            EventManager.Instance.RemoveHandler(GameEvents.OnBoardUnlock, OnBoardUnlock);
+        }
+    
+        private void OnBoardLock()
+        {
+            _boardLockCount++;
+            _isBoardLocked = true;
+        }
+        private void OnBoardUnlock()
+        {
+            _boardLockCount--;
+            if (_boardLockCount <= 0)
+            {
+                _isBoardLocked = false;
+            }
         }
 
-
- 
+        private void OnPlayerInputLock()
+        {
+         _playerInputLockCount++;
+         OnBoardLock();
+         _eventSystem.SetActive(false);
+        }
+        private void OnPlayerInputUnlock()
+        {
+            OnBoardUnlock();
+            _playerInputLockCount--;
+            if (_playerInputLockCount <= 0)
+            {
+                _eventSystem.SetActive(true);
+            }
+        }
         private void OnTouch(InputAction.CallbackContext context)
         {
             _clickPos = _mainCamera.ScreenToWorldPoint(_playerInputs.Player.Drag.ReadValue<Vector2>());
             EventManager.Instance.Broadcast(GameEvents.OnScreenTouch, _clickPos);
+            if(_isMainMenu) return;
             if (_isBoardLocked)
                 return;
             EventManager.Instance.Broadcast(GameEvents.OnTouch, _clickPos);
@@ -83,8 +90,8 @@ namespace Scripts
         }
        private void OnRelease(InputAction.CallbackContext context)
         {
+            if(_isMainMenu) return;
             if (_isBoardLocked) return;
-
             if (_isDragging)
             {
                 EventManager.Instance.Broadcast(GameEvents.OnClick, _clickPos);
@@ -98,6 +105,7 @@ namespace Scripts
         
         private void OnDrag(InputAction.CallbackContext context)
         {
+            if(_isMainMenu) return;
             if (_isBoardLocked) return;
             if (!_isDragging) return;
             _dragPos = _mainCamera.ScreenToWorldPoint(_playerInputs.Player.Drag.ReadValue<Vector2>());
