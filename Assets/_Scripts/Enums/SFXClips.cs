@@ -1,4 +1,4 @@
-﻿public enum SFXClips
+public enum SFXClips
 {
 	BoosterCreationSound = 0,
 	GrassSound = 1,
@@ -19,4 +19,6 @@
 	MatchItemExplodeSound = 16,
 	LevelLoseSound = 17,
 	LevelWinSound = 18,
+	TntTntMergeExplosionSound = 19,
+	FuseSoundEffect = 20,
 }

@@ -34,12 +34,18 @@ public enum GameEvents
     OnBoosterUsed,
     OnBoosterRemoved,
     OnMainEventGoalRemoval,
-    OnItemsMatched,
+    OnMainEventGoalMatch,
     OnCoinAmountChanged,
     OnHeartAmountChanged,
     OnStarAmountChanged,
     OnBoosterAmountChanged,
     OnPowerUpAmountChanged,
     OnReturnToMainMenu,
-    OnEventCurrencyAmountChanged
+    OnEventCurrencyAmountChanged,
+    OnCloseBloom,
+    OnOpenBloom,
+    OnMusicToggle,
+    OnLevelRestart,
+    OnMainEventInitialization,
+    AddMergeActionToHandle
 }

@@ -1,4 +1,4 @@
-﻿public enum MusicClips
+public enum MusicClips
 {
 	BackgroundMusic = 0,
 }
