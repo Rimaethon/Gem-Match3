@@ -2,8 +2,8 @@
 {
     public class GameData
     {
-        string _version;
-        int _numberOfLevels;
+        public string Version;
+        public int NumberOfLevels;
         
     }
 }

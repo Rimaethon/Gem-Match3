@@ -7,29 +7,7 @@ using UnityEngine.Tilemaps;
 
 namespace _Scripts.Editor
 {
-    /// <summary>
-    ///     Default built-in brush for painting or erasing tiles and/or gameobjects on a grid.
-    /// </summary>
-    /// <remarks>
-    ///     Default brush is meant for two things: Authoring GameObjects on a grid and authoring tiles on a grid. It can be
-    ///     used for both at the same time if necessary. Basically the default brush allows you to pick and paste tiles and
-    ///     GameObjects from one area to another.
-    ///     Tiles in a tilemap are considered to be active for brush editing if a GameObject with Tilemap is currently
-    ///     selected.
-    ///     GameObjects are considered to be active for brush editing if their parent GameObject is currently selected.
-    ///     For example: A new default brush with size of 2x3 is generated as a result of Scene view picking operation. The new
-    ///     instance contains six cells (GridBrush.BrushCell) and the cells are fed with tiles &amp; GameObjects from the
-    ///     picking area.
-    ///     Later when this brush is used in a painting operation, all the tiles and GameObjects contained in the cells are
-    ///     set/cloned into a new Scene position.
-    ///     When creating custom brushes, it is recommended to inherit GridBrushBase by default. Inheriting GridBrush is
-    ///     possible when similar functionality is required, but extending it has its limits compared to base class.
-    ///     It is also possible to replace the default GridBrush from the Tile Palette brush list completely by using the
-    ///     GridDefaultBrush attribute on one of your custom brushes and promote it to become a new default brush of the
-    ///     project. This is useful when higher level brush can operate as a default and protect designers from accidentally
-    ///     using the built-in one.
-    /// </remarks>
-    [CustomGridBrush(true, false, false, "Custom Brush")]
+    [CustomGridBrush(false, false, false, "Level Creator Brush")]
     public class CustomGridBrush : GridBrushBase
     {
         private static readonly Matrix4x4 SClockwise = new(new Vector4(0f, -1f, 0f, 0f),
@@ -57,10 +35,6 @@ namespace _Scripts.Editor
 
         [SerializeField] [HideInInspector] private List<TileChangeData> _mTileChangeDataList;
 
-
-        /// <summary>
-        ///     Default built-in brush for painting or erasing tiles and/or gameobjects on a grid.
-        /// </summary>
         public CustomGridBrush()
         {
             Init(Vector3Int.one, Vector3Int.zero);
@@ -142,7 +116,7 @@ namespace _Scripts.Editor
                 var tile = tileBase as ItemTileDataSO;
                 if(matrixCreator.ItemIDMatrix==null)
                     matrixCreator.GetComponentInParent<BoardDataCreator>().InitializeItemMatrices();
-                matrixCreator.ItemIDMatrix[position.x, position.y] = tile.gameObject.GetComponent<ItemBase>().ItemID;
+                matrixCreator.ItemIDMatrix[position.x, position.y] = tile.gameObject.GetComponent<BoardItemBase>().ItemID;
                 Debug.Log("RuleTile GameObject: " + tile.name + " " + position);
             }
         }

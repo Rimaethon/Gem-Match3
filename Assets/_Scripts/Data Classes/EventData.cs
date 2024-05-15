@@ -1,24 +1,21 @@
 ﻿using System;
-using Sirenix.Serialization;
-
-namespace _Scripts.Data_Classes
+namespace _Scripts.Data_Classes 
 {
     [Serializable]
     public class EventData
     {
-        [OdinSerialize]
-        public int EventObjectiveSpriteID { get; set; }
-        [OdinSerialize]
-        public int EventRewardSpriteID { get; set; }
-        
-        [OdinSerialize]
-        public int[] EventStartTime { get; set; }
-        [OdinSerialize]
-        public int EventDuration { get; set; }
-        
-        [OdinSerialize]
-        public int EventProgress { get; set; }
-        [OdinSerialize]
-        public int EventGoal { get; set; }
+        public int eventObjectiveID;
+        public int eventRewardID;
+        public bool isRewardBooster;
+        public bool isRewardCoin;
+        public int rewardCount;
+        //Come on I can give better names
+        public bool isRewardUnlimitedUseForSpecificTime;
+        public int rewardUnlimitedUseTimeInSeconds;
+        public long eventStartUnixTime;
+        public long eventDuration;
+        public int eventGoalCount;
+        public bool isMainEvent;
+        public int eventProgressCount;
     }
 }
