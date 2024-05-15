@@ -1,6 +1,4 @@
-﻿
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Scripts.Core;
 using _Scripts.Utility;
 using Rimaethon.Scripts.Managers;
@@ -9,7 +7,7 @@ using UnityEngine;
 
 namespace _Scripts.Managers.Matching
 {
-    //I made this for checking shapes but there are some shapes that can happen at runtime and this class is not enough to handle all of them.
+    //First version I made  was  checking shapes but there are some shapes that can happen at runtime and this class is not enough to handle all of them.
     //Since items are dropping randomly there can be some instances such as + shape or 5+ same items in a row or column 
     //Such as : https://youtu.be/KjkjjvClTGU?t=230   https://youtu.be/KjkjjvClTGU?t=222  
 
@@ -34,7 +32,6 @@ namespace _Scripts.Managers.Matching
         public bool IsMatch;
         public Vector2Int Pos;
     }
-
     public class MatchChecker
     {
         private readonly Board _board;
@@ -44,37 +41,41 @@ namespace _Scripts.Managers.Matching
         private readonly Match[] _verticalMatches;
         List<Vector2Int> matches = new List<Vector2Int>();
         private int _itemID;
-        private readonly HashSet<Vector2Int> _itemsToCheckForMatches = new HashSet<Vector2Int>();
-        private readonly HashSet<Vector2Int> _itemsToCheckForMatchesThisFrame = new HashSet<Vector2Int>();
+        private HashSet<Vector2Int> _itemsToCheckForMatches = new HashSet<Vector2Int>();
+        private List<Vector2Int> _itemsToCheckForMatchesThisFrame = new List<Vector2Int>();
         public MatchChecker(Board board)
         {
             _board = board;
-            _verticalMatches = new Match[_board.Height];
-            _horizontalMatches = new Match[_board.Width];
-            _verticalExtensions = new Match[_board.Height];
-            _horizontalExtensions = new Match[_board.Width];
+            _verticalMatches = new Match[10];
+            _horizontalMatches =new Match[10];
+            _verticalExtensions = new Match[10];
+            _horizontalExtensions =new Match[10];
             EventManager.Instance.AddHandler<Vector2Int>(GameEvents.OnItemMovementEnd, AddItemToCheckForMatches);            
+        }
+        public void OnDisable()
+        { 
+            if(EventManager.Instance==null)
+                return;
+            EventManager.Instance.RemoveHandler<Vector2Int>(GameEvents.OnItemMovementEnd, AddItemToCheckForMatches);
         }
         private void AddItemToCheckForMatches(Vector2Int itemPos)
         {
             _itemsToCheckForMatches.Add(itemPos); 
         }
-        
         public void CheckForMatches()
         {
-            _itemsToCheckForMatchesThisFrame.UnionWith(_itemsToCheckForMatches);
+            _itemsToCheckForMatchesThisFrame.AddRange(_itemsToCheckForMatches);
             foreach (Vector2Int pos in _itemsToCheckForMatchesThisFrame)
             {
                 CheckMatch(pos);
                 _itemsToCheckForMatches.Remove(pos);
             }
             _itemsToCheckForMatchesThisFrame.Clear();
-
         }
 
-       public bool  CheckMatch(Vector2Int pos)
+        public bool  CheckMatch(Vector2Int pos)
         {
-            if (!_board.GetCell(pos).HasItem || !_board.GetItem(pos).IsMatchable || _board.GetItem(pos).IsMoving ||
+            if (!_board.Cells[pos.x,pos.y].HasItem || !_board.GetItem(pos).IsMatchable || _board.GetItem(pos).IsMoving ||
                 _board.GetItem(pos).IsExploding||_board.GetItem(pos).IsMatching)
                 return false;
             MatchData matchedItems = new MatchData();
@@ -84,22 +85,20 @@ namespace _Scripts.Managers.Matching
             var verticalMatchCount = CheckMatchesInDirection(_verticalMatches, pos, new Vector2Int(0, 1));
             var verticalExtensionCount = GetExtension(_horizontalMatches, _verticalExtensions, new Vector2Int(0, 1));
             var horizontalExtensionCount = GetExtension(_verticalMatches, _horizontalExtensions, new Vector2Int(1, 0));
-
-            _board.GetCell(pos).BoardItem.IsMatching = true;
+            _board.Cells[pos.x,pos.y].BoardItem.IsMatching = true;
             matches.Add(pos);
-         
             var matchType = CheckForMatchType(horizontalMatchCount, verticalMatchCount, verticalExtensionCount,
                 horizontalExtensionCount);
             if (matchType != MatchType.None)
             {
-                matchedItems.MatchType =MatchType.Missile;
+                matchedItems.MatchType = matchType;
                 matchedItems.matchID = _itemID;
                 matchedItems.Matches.AddRange(matches);
                 EventManager.Instance.Broadcast(GameEvents.AddMatchToHandle, matchedItems);
             }
             else
             {
-                _board.GetCell(pos).BoardItem.IsMatching = false;
+                _board.Cells[pos.x,pos.y].BoardItem.IsMatching = false;
             }
             ClearAllMatchesAndAddThemToArray(_horizontalMatches, false);
             ClearAllMatchesAndAddThemToArray(_verticalMatches, false);
@@ -121,7 +120,8 @@ namespace _Scripts.Managers.Matching
             var index = start;
             while (_board.IsInBoundaries(pos + direction * index) && _board.GetItem(pos + direction * index) != null)
             {
-                var cell = _board.GetCell(pos + direction * index);
+                Vector2Int cellPos = pos + direction * index;
+                var cell = _board.Cells[cellPos.x,cellPos.y];
                 if (_itemID == cell.BoardItem.ItemID && !cell.BoardItem.IsMoving && !cell.BoardItem.IsExploding &&
                     !cell.IsGettingFilled && !cell.IsGettingEmptied&&!cell.BoardItem.IsMatching&&cell.BoardItem.IsMatchable&&!cell.IsLocked)
                 {
@@ -133,22 +133,30 @@ namespace _Scripts.Managers.Matching
                 {
                     break;
                 }
-
                 index += start;
             }
-
             return arrayIndex;
         }
-        private int GetExtension(Match[] arrayToCheck, Match[] matchArray, Vector2Int direction, int minMatchCount = 2)
+        Match[] arrayToCheckCopy = new Match[10];
+
+        private int GetExtension(Match[] arrayToCheck, Match[] matchArray, Vector2Int direction)
         {
+            int maxMatchCount = 0;
             foreach (var item in arrayToCheck)
             {
-                if (!item.IsMatch) return 0;
-                var extensionMatchCount = CheckMatchesInDirection(matchArray, item.Pos, direction);
-                if (extensionMatchCount > minMatchCount) return extensionMatchCount;
+                if (!item.IsMatch)
+                {
+                    break;
+                }
+                var extensionMatchCount = CheckMatchesInDirection(arrayToCheckCopy, item.Pos, direction);
+                if (extensionMatchCount > maxMatchCount)
+                {
+                    arrayToCheckCopy.CopyTo(matchArray, 0);
+                    maxMatchCount = extensionMatchCount;
+                }
+                arrayToCheckCopy = new Match[10];
             }
-
-            return 0;
+            return maxMatchCount;
         }
 
         private void ClearAllMatchesAndAddThemToArray(Match[] matchArray, bool addToArray = true)
@@ -158,7 +166,7 @@ namespace _Scripts.Managers.Matching
                 if (matchArray[i].IsMatch && addToArray)
                 {
                     matches.Add(matchArray[i].Pos);
-                    _board.GetCell(matchArray[i].Pos).BoardItem.IsMatching= true;
+                    _board.Cells[matchArray[i].Pos.x,matchArray[i].Pos.y].BoardItem.IsMatching= true;
                 }
 
                 matchArray[i].IsMatch = false;
@@ -170,32 +178,23 @@ namespace _Scripts.Managers.Matching
             if (CheckForTNT(horizontalMatchCount, verticalMatchCount, verticalExtensionCount, horizontalExtensionCount)) return MatchType.TNT;
             if (CheckForHorizontalRocket(verticalMatchCount)) return MatchType.HorizontalRocket;
             if (CheckForVerticalRocket(horizontalMatchCount)) return MatchType.VerticalRocket;
-            if (CheckForMissile(horizontalMatchCount, verticalMatchCount)) return MatchType.Missile;
+            if (CheckForMissile(horizontalMatchCount, verticalMatchCount,horizontalExtensionCount,verticalExtensionCount)) return MatchType.Missile;
             if (CheckForNormal(horizontalMatchCount, verticalMatchCount)) return MatchType.Normal;
             
             return MatchType.None;
         }
 
-        private bool CheckForMissile(int horizontalMatchCount, int verticalMatchCount)
+        private bool CheckForMissile(int horizontalMatchCount, int verticalMatchCount, int horizontalExtensionCount, int verticalExtensionCount)
         {
-            if (horizontalMatchCount < 1 || verticalMatchCount < 1) return false;
-
-            for (int i = 0; i < 2; i++)
+            if (horizontalMatchCount < 1 || verticalMatchCount < 1||(verticalExtensionCount==0||horizontalExtensionCount==0)) return false;
+            if (_verticalExtensions[0].Pos == _horizontalExtensions[0].Pos)
             {
-                for (int j = 0; j < 2; j++)
-                {
-                    if(!_horizontalMatches[i].IsMatch||!_verticalMatches[j].IsMatch) continue;
-                    var posToCheck= new Vector2Int(_horizontalMatches[i].Pos.x, _verticalMatches[j].Pos.y);
-                    if (_board.IsInBoundaries(posToCheck) && _board.GetCell(posToCheck).HasItem && _board.GetItem(posToCheck).ItemID == _itemID)
-                    {
-                        matches.Add(posToCheck);
-                        _board.GetItem(posToCheck).IsMatching = true;
-                        ClearAllMatchesAndAddThemToArray(_horizontalMatches);
-                        ClearAllMatchesAndAddThemToArray(_verticalMatches);
-                        return true;
-                    }
-                }
+                ClearAllMatchesAndAddThemToArray(_horizontalMatches);
+                ClearAllMatchesAndAddThemToArray(_verticalMatches);
+                ClearAllMatchesAndAddThemToArray(_horizontalExtensions);
+                return true;
             }
+
             return false;
         }
 
@@ -218,8 +217,10 @@ namespace _Scripts.Managers.Matching
             if (horizontalMatchCount <= 3 && verticalMatchCount <= 3) return false;
             ClearAllMatchesAndAddThemToArray(_horizontalMatches);
             ClearAllMatchesAndAddThemToArray(_verticalMatches);
-            ClearAllMatchesAndAddThemToArray(_horizontalExtensions);
-            ClearAllMatchesAndAddThemToArray(_verticalExtensions);
+            if(_horizontalExtensions[0].IsMatch&&_horizontalExtensions[1].IsMatch)
+                ClearAllMatchesAndAddThemToArray(_horizontalExtensions);
+            if(_verticalExtensions[0].IsMatch&&_verticalExtensions[1].IsMatch)
+                ClearAllMatchesAndAddThemToArray(_verticalExtensions);
            
             return true;
         }
@@ -232,8 +233,10 @@ namespace _Scripts.Managers.Matching
                 return false;
             ClearAllMatchesAndAddThemToArray(_horizontalMatches);
             ClearAllMatchesAndAddThemToArray(_verticalMatches);
-            ClearAllMatchesAndAddThemToArray(_horizontalExtensions);
-            ClearAllMatchesAndAddThemToArray(_verticalExtensions);
+            if(_horizontalExtensions[0].IsMatch&&_horizontalExtensions[1].IsMatch)
+                ClearAllMatchesAndAddThemToArray(_horizontalExtensions);
+            if(_verticalExtensions[0].IsMatch&&_verticalExtensions[1].IsMatch)
+                ClearAllMatchesAndAddThemToArray(_verticalExtensions);
             return true;
         }
 
