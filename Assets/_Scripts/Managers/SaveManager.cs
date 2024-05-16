@@ -1,123 +1,449 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using _Scripts.Core.Interfaces;
+using _Scripts.Data_Classes;
 using Data;
+using DefaultNamespace;
+using Rimaethon.Scripts.Managers;
 using Rimaethon.Scripts.Utility;
 using Sirenix.Serialization;
 using UnityEngine;
 
 //Get and Set Methods in this class are just for testing purposes. In a real game, these methods should be server authoritative .
-public class SaveManager : PersistentSingleton<SaveManager>
+public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
 {
-    [SerializeField] private string userDataName = "Assets/Data/General/UserData";
-    [SerializeField] private string gameDataName = "Assets/Data/General/GameData";
-    [SerializeField] private string levelDataFolder = "Assets/Data/Levels/Level";
-    private const string Extension = ".json";
     [SerializeField] private ItemDatabaseSO itemDatabase;
-    private UserData _userData=new UserData();
-  
-    protected override void Awake()
+    [SerializeField] private List<int> _boosterIdsToInitialize;
+    [SerializeField] private List<int> _powerUpIdsToInitialize;
+    [SerializeField] private int _initialBoosterCount = 10;
+    private readonly string eventDataFolder = "Assets/Data/Events/";
+    private readonly string levelDataFolder = "Assets/Data/Levels/";
+    private readonly string gameDataPath = "Assets/Data/General/GameData";
+    private readonly string userDataPath = "Assets/Data/General/UserData";
+    private readonly string eventDataName = "MainEvent";
+    private readonly string Extension = ".json";
+    private UserData _userData;
+    private GameData _gameData;
+    private EventData _mainEvent;
+    private LevelData _currentLevelData;
+    private bool _hasMainEvent;
+    private bool _hasNewLevel;
+    private bool _isDataInitialized;
+#if UNITY_EDITOR
+    public bool shouldStartFromSpecificLevel;
+    public int currentLevelToStartIfExists;
+#endif
+
+    private void OnEnable()
     {
         CheckAndCreateData();
-        base.Awake();
+        EventManager.Instance.AddHandler(GameEvents.OnGameSceneLoaded, CheckAndCreateData);
+        EventManager.Instance.AddHandler(GameEvents.OnMenuSceneLoaded, CheckAndCreateData);
     }
 
-    
+    private void OnDisable()
+    {
+        if (EventManager.Instance == null) return;
+        EventManager.Instance.RemoveHandler(GameEvents.OnGameSceneLoaded, CheckAndCreateData);
+        EventManager.Instance.RemoveHandler(GameEvents.OnMenuSceneLoaded, CheckAndCreateData);
+    }
+ 
     private void CheckAndCreateData()
     {
-        //This part would normally consist server side check for data
-        if (!File.Exists(userDataName))
+        if (!File.Exists(userDataPath+Extension))
         {
-            InitializeUserData(_userData);
-            SaveToJson(userDataName, _userData);
+            InitializeUserData();
+            SaveToJson( _userData,userDataPath);
         }
         else
         {
-            LoadFromJson(userDataName);
+            _userData=LoadFromJson<UserData>(userDataPath+Extension);
+            foreach (var boosterData in _userData.BoosterAmounts.Values)
+            {
+                boosterData.unlimitedDuration -= DateTimeOffset.UtcNow.ToUnixTimeSeconds() - boosterData.unlimitedStartTime;
+                boosterData.unlimitedStartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                if(boosterData.unlimitedDuration<=0)
+                {
+                    boosterData.isUnlimited = false;
+                    boosterData.unlimitedDuration = 0;
+                    boosterData.unlimitedStartTime = 0;
+                }
+            }
         }
+        if (!File.Exists(gameDataPath))
+        {
+            InitializeGameData();
+            SaveToJson(_gameData,gameDataPath);
+        }
+        else
+        {
+            _gameData=LoadFromJson<GameData>(gameDataPath);
+        }
+        if(File.Exists(eventDataFolder+eventDataName+Extension))
+        {
+            _mainEvent=LoadFromJson<EventData>(eventDataFolder+eventDataName+Extension);
+            _hasMainEvent = true;
+        }
+#if UNITY_EDITOR
+        if (shouldStartFromSpecificLevel)
+        {
+            if(_gameData.NumberOfLevels>=currentLevelToStartIfExists)
+            {
+                _userData.currentLevel = currentLevelToStartIfExists;
+            }
+            else
+            {
+                Debug.LogError("Current Level is greater than the number of levels");
+            }
+        }
+#endif
+      
+        if(File.Exists(levelDataFolder+_userData.currentLevel+Extension))
+        {
+            var data = File.ReadAllBytes(levelDataFolder + _userData.currentLevel + Extension);
+            _currentLevelData= SerializationUtility.DeserializeValue<LevelData>(data, DataFormat.JSON);
+            _hasNewLevel = true;
+        }
+        else
+        {
+            _hasNewLevel = false;
+        }
+        _isDataInitialized = true;
+        
+
     }
-    public bool DoesLevelExist(int levelIndex)
+
+    #region User Data Getters and Setters
+
+    #region Resources
+    public int GetCoinAmount()
     {
-        if(!File.Exists(levelDataFolder + levelIndex + Extension))
-            //This part would normally consist server side check for data
-            return false;
-        return true ;
+        return _userData.coinAmount;
+    }
+    public void AdjustCoinAmount(int amount)
+    {
+        _userData.coinAmount += amount;
+        EventManager.Instance.Broadcast(GameEvents.OnCoinAmountChanged);
+        SaveToJson<UserData>( _userData,userDataPath);
+    }
+    
+    public int GetHeartAmount()
+    {
+        return _userData.heartAmount;
+    }
+    public void AdjustHeartAmount(int amount)
+    {
+        _userData.heartAmount += amount;
+        EventManager.Instance.Broadcast(GameEvents.OnHeartAmountChanged);
+        SaveToJson<UserData>( _userData,userDataPath);
+    }
+    public void AddTimeToUnlimitedHeartTime(int duration)
+    {
+        _userData.firstHeartNotBeingFullUnixTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        _userData.heartRefillTimeInSeconds += duration;
+        SaveToJson<UserData>( _userData,userDataPath);
+    }
+    public bool HasUnlimitedHearts()
+    {
+        return _userData.hasUnlimitedHearts;
+    }
+    public string GetUnlimitedHeartTime()
+    {
+        return DateTimeOffset.FromUnixTimeSeconds(_userData.unlimitedHeartDuration).DateTime.TimeOfDay.ToString();
+    }
+    public int GetMaxHeartAmount()
+    {
+        return _userData.maxHeartAmount;
+    }
+    public int GetHeartRefillTimeInSeconds()
+    {
+        return _userData.heartRefillTimeInSeconds;
+    }
+    public long GetFirstHeartNotBeingFullUnixTime()
+    {
+        return _userData.firstHeartNotBeingFullUnixTime;
+    }
+    public int GetStarAmount()
+    {
+        return _userData.starAmount;
+    }
+    public void AdjustStarAmount(int amount)
+    {
+        _userData.starAmount += amount;
+        EventManager.Instance.Broadcast(GameEvents.OnStarAmountChanged);
+        SaveToJson<UserData>( _userData,userDataPath);
+    }
+
+    #endregion
+
+    #region Boosters and PowerUps
+
+    public int GetBoosterAmount(int boosterId)
+    {
+        if (_userData.BoosterAmounts.ContainsKey(boosterId))
+        {
+            return _userData.BoosterAmounts[boosterId].boosterAmount;
+        }
+        return 0;
+    }
+    public int GetPowerUpAmount(int powerUpId)
+    {
+        if (_userData.PowerUpAmounts.ContainsKey(powerUpId))
+        {
+            return _userData.PowerUpAmounts[powerUpId];
+        }
+        return 0;
+    }
+    //Increase and decrease with certain amount. Such as -1 when booster used and +3 when booster bought/earned
+    public void AdjustBoosterAmount(int boosterId, int count)
+    {
+        if (_userData.BoosterAmounts.ContainsKey(boosterId))
+        {
+            _userData.BoosterAmounts[boosterId].boosterAmount += count;
+        }
+        EventManager.Instance.Broadcast(GameEvents.OnBoosterAmountChanged);
+       
+        SaveToJson<UserData>( _userData,userDataPath);
+    }
+    public void AdjustPowerUpAmount(int powerUpId, int count)
+    {
+        if (_userData.PowerUpAmounts.ContainsKey(powerUpId))
+        {
+            _userData.PowerUpAmounts[powerUpId] += count;
+        }
+        EventManager.Instance.Broadcast(GameEvents.OnPowerUpAmountChanged);
+        SaveToJson<UserData>( _userData,userDataPath);
+    }
+
+    public void AddTimeToUnlimitedBooster(int boosterId, int duration)
+    {
+        if (_userData.BoosterAmounts.ContainsKey(boosterId))
+        {
+            if(!_userData.BoosterAmounts[boosterId].isUnlimited)
+            {
+                _userData.BoosterAmounts[boosterId].isUnlimited = true;
+                _userData.BoosterAmounts[boosterId].unlimitedStartTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                _userData.BoosterAmounts[boosterId].unlimitedDuration = duration;
+            }
+            else
+            {
+                _userData.BoosterAmounts[boosterId].unlimitedDuration += duration;
+            }
+            _userData.BoosterAmounts[boosterId].unlimitedDuration += duration;
+        }
+        SaveToJson<UserData>( _userData,userDataPath);
+    }
+    public bool HasUnlimitedBooster(int boosterId)
+    {
+        if (_userData.BoosterAmounts.ContainsKey(boosterId))
+        {
+            return _userData.BoosterAmounts[boosterId].isUnlimited;
+        }
+        return false;
+    }
+    public string GetUnlimitedBoosterTime(int boosterId)
+    {
+        if (_userData.BoosterAmounts.ContainsKey(boosterId))
+        {
+           return DateTimeOffset.FromUnixTimeSeconds(_userData.BoosterAmounts[boosterId].unlimitedDuration).DateTime.TimeOfDay.ToString();
+        }
+        return "";
+    }
+    #endregion
+    
+    #region Settings
+    public bool IsMusicOn()
+    {
+        return _userData.isMusicOn;
+    }
+    public bool IsSfxOn()
+    {
+        if(!_isDataInitialized)
+            CheckAndCreateData();
+        return _userData.isSfxOn;
+    }
+    public bool IsHintOn()
+    {
+        return _userData.isHintOn;
+    }
+    public bool IsNotificationOn()
+    {
+        return _userData.isNotificationOn;
+    }
+    public void SetMusic(bool value)
+    {
+        _userData.isMusicOn = value;
+        SaveToJson<UserData>( _userData,userDataPath);
+        EventManager.Instance.Broadcast(GameEvents.OnMusicToggle);
+    }
+    public void SetSFX(bool value)
+    {
+        _userData.isSfxOn = value;
+        SaveToJson<UserData>( _userData,userDataPath);
+    }
+    public void SetHint(bool value)
+    {
+        _userData.isHintOn = value;
+        SaveToJson<UserData>( _userData,userDataPath);
+    }
+    public void SetNotification(bool value)
+    {
+        _userData.isNotificationOn = value;
+        SaveToJson<UserData>( _userData,userDataPath);
+    }
+
+    
+
+    #endregion
+  
+    #endregion
+   
+    #region Level Data Getters and Setters
+    public int GetCurrentLevelName()
+    {
+        return _userData.currentLevel;
+    }
+    public int[] GetCurrentLevelGoalIds()
+    {
+        return _currentLevelData.GoalSaveData.GoalIDs;
+    }
+    public int[] GetCurrentLevelGoalAmounts()
+    {
+        return _currentLevelData.GoalSaveData.GoalAmounts;
+    }
+    public bool HasNewLevel()
+    {
+        return _hasNewLevel;
     }
     public int GetLevelIndex()
     {
         return _userData.currentLevel;
     }
-    public void SetLevelIndex(int levelIndex)
+    public void IncreaseLevelIndex()
     {
-        _userData.currentLevel = levelIndex;
-        SaveToJson(userDataName, _userData);
+        _userData.currentLevel++;
+        SaveToJson(_userData, userDataPath);
     }
-    public int GetCoinCount()
+
+    public LevelData GetCurrentLevelData()
     {
-        return _userData.coinCount;
+        return _currentLevelData;
     }
-    public void SetCoinCount(int coinCount)
+    #endregion
+
+    #region Main Event Getters and Setters
+
+    public EventData GetMainEventData()
     {
-        _userData.coinCount = coinCount;
-        SaveToJson(userDataName, _userData);
+        return _mainEvent;
     }
-    public int GetHeartCount()
+    public bool HasMainEvent()
     {
-        return _userData.heartCount;
+        return _hasMainEvent;
     }
-    public void SetHeartCount(int heartCount)
+    public void SaveMainEventData(EventData eventData)
     {
-        _userData.heartCount = heartCount;
-        SaveToJson(userDataName, _userData);
+        _mainEvent = eventData;
+        SaveToJson(_mainEvent, eventDataFolder + eventDataName + Extension);
     }
-    public int GetStarCount()
+
+    #endregion
+    
+    #region Game Data Getters and Setters
+    public string GetVersion()
     {
-        return _userData.starCount;
+        return _gameData.Version;
     }
-    public void SetStarCount(int starCount)
+    public int GetNumberOfLevels()
     {
-        _userData.starCount = starCount;
-        SaveToJson(userDataName, _userData);
+        return _gameData.NumberOfLevels;
     }
-    public int GetBoosterCount(int boosterId)
+
+    #endregion
+
+    #region Initializers
+    private void InitializeUserData()
     {
-        if (_userData.BoosterCounts.TryGetValue(boosterId, out int count))
+        _userData = new UserData();
+        _userData.BoosterAmounts = new Dictionary<int, BoosterData>();
+        foreach (var item in _boosterIdsToInitialize)
         {
-            return count;
+            _userData.BoosterAmounts.Add(item, new BoosterData
+            {
+                boosterAmount = _initialBoosterCount,
+                isUnlimited = false,
+                unlimitedStartTime = 0,
+                unlimitedDuration = 0
+            });
         }
-        return 0;
-    }
-    public void SetBoosterCount(int boosterId, int count)
-    {
-        if (_userData.BoosterCounts.ContainsKey(boosterId))
+        _userData.PowerUpAmounts = new Dictionary<int, int>();
+        foreach (var item in _powerUpIdsToInitialize)
         {
-            _userData.BoosterCounts[boosterId] = count;
-        }
-        else
-        {
-            _userData.BoosterCounts.Add(boosterId, count);
-        }
-        SaveToJson(userDataName, _userData);
-    }
-    private void LoadFromJson(string path)
-    {
-        var data = File.ReadAllBytes(path);
-        _userData = SerializationUtility.DeserializeValue<UserData>(data, DataFormat.JSON);
-    }
-    private void InitializeUserData(UserData userData)
-    {
-        userData.coinCount = 3000;
-        userData.currentLevel = 1;
-        userData.heartCount = 5;
-        userData.starCount = 0;
-        userData.BoosterCounts = new Dictionary<int, int>();
-        foreach (var item in itemDatabase.Boosters)
-        {
-            userData.BoosterCounts.Add(item.Key, 10);
+            _userData.PowerUpAmounts.Add(item, _initialBoosterCount);
         }
     }
-    private void SaveToJson(string path, UserData userData)
+    private void InitializeGameData()
     {
-        var serializedData = SerializationUtility.SerializeValue(userData, DataFormat.JSON);
-        File.WriteAllBytes(path+Extension, serializedData);
+        _gameData= new GameData
+        {
+            Version = Application.version,
+            NumberOfLevels = GetNumberOfFilesInFolder(levelDataFolder)
+        };
+    }
+    
+    #endregion
+
+    #region Helpers
+    private int GetNumberOfFilesInFolder(string folderPath)
+    {
+        return Directory.GetFiles(folderPath).Length;
+    }
+    private void SaveToJson<T>(T data, string path)
+    {
+        var serializedData = SerializationUtility.SerializeValue(data, DataFormat.JSON);
+        File.WriteAllBytes(path + Extension, serializedData);
+    }
+    private T LoadFromJson<T>(string path)
+    {
+        var bytes = File.ReadAllBytes(path);
+        return SerializationUtility.DeserializeValue<T>(bytes, DataFormat.JSON);
+    }
+    #endregion
+
+    public void OnTimeUpdate(long currentTime)
+    {
+        foreach (var boosterData in _userData.BoosterAmounts.Values)
+        {
+            boosterData.unlimitedDuration--;
+            if(boosterData.unlimitedDuration<=0)
+            {
+                boosterData.isUnlimited = false;
+                boosterData.unlimitedDuration = 0;
+                boosterData.unlimitedStartTime = 0;
+            }
+        }
+        if (currentTime - _userData.firstHeartNotBeingFullUnixTime >= _userData.heartRefillTimeInSeconds)
+        {
+            _userData.firstHeartNotBeingFullUnixTime = currentTime;
+            if (_userData.heartAmount < _userData.maxHeartAmount)
+            {
+                _userData.heartAmount++;
+            }
+            if (_userData.hasUnlimitedHearts)
+            {
+                _userData.unlimitedHeartDuration = currentTime - _userData.unlimitedHeartStartTime+_userData.unlimitedHeartDuration;
+            }
+        }
+
+        if (_hasMainEvent)
+        {
+            if (_mainEvent.eventStartUnixTime + _mainEvent.eventDuration <= currentTime)
+            {
+                _hasMainEvent = false;
+            }
+            SaveMainEventData(_mainEvent);
+        }
+        SaveToJson<UserData>(_userData,userDataPath);
     }
 }
