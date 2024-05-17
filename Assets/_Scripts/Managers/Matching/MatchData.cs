@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
-using _Scripts.Managers.Matching;
-using Scripts;
+﻿
+
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace _Scripts.Core
 {
     public class MatchData
     {
-        public Match[] Matches=new Match[14];
+        public List<Vector2Int> Matches=new List<Vector2Int>();
         public MatchType MatchType=MatchType.None;
+        public int matchID;
+        public bool IsInitialized;
     }
 }

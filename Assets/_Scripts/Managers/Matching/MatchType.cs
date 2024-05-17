@@ -9,7 +9,6 @@ namespace _Scripts.Core
         LightBall=103,
         Missile=104,
         Normal,
-        SingleExplosion,
         None
     }
 }
