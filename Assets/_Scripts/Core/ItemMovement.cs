@@ -1,216 +1,350 @@
-﻿using _Scripts.Utility;
+﻿using System.Collections.Generic;
+using _Scripts.Utility;
+using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using Scripts;
+using Unity.Mathematics;
 using UnityEngine;
-using Random = UnityEngine.Random;
-
 namespace _Scripts.Core
 {
     public class ItemMovement
     {
         private readonly Board _board;
-        private readonly int _width;
-        private readonly int _height;
-        private readonly bool[] _dirtyColumns;
-        public ItemMovement(Board board, bool[] dirtyColumns, int width, int height)
+        private bool[] _dirtyColumns;
+        private const float Gravity = 0.5f;
+
+        public ItemMovement(Board board, bool[] dirtyColumns)
         {
             _board = board;
-            _width = width;
-            _height = height;
             _dirtyColumns = dirtyColumns;
-            
+            EventManager.Instance.AddHandler(GameEvents.OnShuffleBoard, ShuffleItems);
+        }
+        public void OnDisable()
+        {
+            if (EventManager.Instance == null) return;
+            EventManager.Instance.RemoveHandler(GameEvents.OnShuffleBoard, ShuffleItems);
+
         }
 
-        public void MoveItems()
+        //This shouldn't work every frame and it wasn't before. But obstacles made my dirty column logic useless. 
+        public bool MoveItems()
         {
-            for (int x = 0; x <_width; x++)
+            bool isAnyItemMoving = false;
+            for (int x = 0; x < _board.Width; x++)
             {
-               
-                bool isAnyItemMoving=false;
-                for (int y =0; y <_height ; y++)
+                bool isAnyItemMovingInColumn = false;
+                bool hasObstacle = false;
+              //  Debug.Log("Checking column " + x+" "+_dirtyColumns[x]);
+                if(!_dirtyColumns[x])
+                    continue;
+                for (int y = _board.Height-1; y>=0; y--)
                 {
-                    if (!_board.GetCell(x, y).HasItem || !_board.GetItem(x, y).IsActive ||
-                       _board.GetCell(x,y).Item.IsSwapping)
+                    if (!_board.Cells[x, y].HasItem)
                     {
-                        isAnyItemMoving = true;
+                        isAnyItemMovingInColumn = true;
                         continue;
                     }
-                    if (_board.GetItem(x,y).IsMoving)
+//                    Debug.Log("Checking cell " + x+" "+y+" "+_board.GetCell(x,y).HasItem+" "+_board.GetItem(x,y).IsActive+" "+_board.GetCell(x,y).BoardItem.IsSwapping+" "+_board.GetItem(x,y).IsExploding+" "+_board.GetItem(x,y).IsMatching);
+                    if (_board.Cells[x, y].BoardItem.IsSwapping || _board.GetItem(x, y).IsExploding ||
+                        _board.GetItem(x, y).IsMatching)
+                    {
+                        isAnyItemMovingInColumn = true;
+                        continue;
+                    }
+                    if (!_board.GetItem(x, y).IsFallAble&&!_board.GetItem(x,y).IsGeneratorItem)
+                    {
+                        hasObstacle = true;
+                        continue;     
+                    }
+                    if (_board.GetItem(x, y).IsMoving)
                     {
                         MoveItemTowardsTarget(x, y);
-                        isAnyItemMoving = true;
+                        isAnyItemMovingInColumn = true;
                         continue;
                     }
-                    if(_board.GetCell(x, y).IsLocked)continue;
-
-                   if(CanFallToAnyDirection(x, y))
+                    if (_board.Cells[x, y].IsLocked)
                     {
-                        
-                        isAnyItemMoving = true;
+                        continue;
+                    }
+                    if (CanFallToAnyDirection(x, y))
+                    {
+                        isAnyItemMovingInColumn = true;
                     }
                 }
 
-                if (isAnyItemMoving) continue;
-                //_dirtyColumns[x] = false;
-                for (int y = 0; y < _height; y++)
+                if (isAnyItemMovingInColumn)
                 {
-                    if (!_board.GetCell(x, y).HasItem)
-                        return;
+                    isAnyItemMoving = true;
+                    continue;
                 }
+                if (hasObstacle)
+                {
+                    if(x>0)
+                        _dirtyColumns[x-1]=true;
+                    if(x<_board.Width-1)
+                        _dirtyColumns[x+1]=true;
+                }
+                _dirtyColumns[x] = false;
             }
+
+            return isAnyItemMoving;
         }
-        
+
         private void MoveItemTowardsTarget(int x, int y)
         {
-            _board.GetItem(x,y).SetSortingOrder(5);
-            Vector2Int target = _board.GetItem(x,y).TargetToMove;
-            Vector3 currPos = _board.GetItem(x,y).Transform.localPosition;
+            Vector2Int target = _board.GetItem(x, y).TargetToMove;
+            Vector3 currPos = _board.GetItem(x, y).Transform.localPosition;
             Vector3 targetPos = LevelGrid.Instance.GetCellCenterLocalVector2(target);
-            _board.GetItem(x,y).FallSpeed+=_board.GetItem(x,y).Gravity;
-            float maxDistance = _board.GetItem(x,y).FallSpeed * Time.deltaTime;
+            _board.GetItem(x, y).FallSpeed += Gravity;
+            if (y > 0 && _board.Cells[x, y-1].HasItem && _board.GetItem(x, y - 1).IsMoving)
+                _board.GetItem(x, y).FallSpeed =
+                    math.min(_board.GetItem(x, y).FallSpeed, _board.GetItem(x, y - 1).FallSpeed);
+            float maxDistance = _board.GetItem(x, y).FallSpeed * Time.deltaTime;
             Vector3 newPos = Vector3.MoveTowards(currPos, targetPos, maxDistance);
-            _board.GetItem(x,y).Transform.localPosition = newPos;
-           
-            if(IsItemCloseToTarget(newPos,targetPos,0.10f))
+            _board.GetItem(x, y).Transform.localPosition = newPos;
+
+            if (IsItemCloseToTarget(newPos, targetPos, LevelGrid.Grid.cellSize.x / 10))
             {
-                if ((target!=new Vector2Int(x,y))&&IsItemCloseToTarget(newPos, targetPos, LevelGrid.Grid.cellSize.x)&&!_board.GetCell(target).HasItem)
+                if ((target != new Vector2Int(x, y)) &&
+                    IsItemCloseToTarget(newPos, targetPos, LevelGrid.Grid.cellSize.x) &&
+                    !_board.Cells[target.x, target.y].HasItem)
                 {
-                    _board.GetCell(target).SetItem(_board.GetItem(x, y));
-                    _board.GetCell(x, y).SetItem(null);
-                    FinishItemMovement(target.x,target.y);
+                    _board.Cells[target.x, target.y].SetItem(_board.GetItem(x, y));
+                    _board.Cells[x, y].SetItem(null);
+      
+                    FinishItemMovement(target.x, target.y);
                 }
                 else
                 {
+
                     FinishItemMovement(x, y);
                 }
             }
-            else if ((target!=new Vector2Int(x,y))&&IsItemCloseToTarget(newPos, targetPos, LevelGrid.Grid.cellSize.x)&&!_board.GetCell(target).HasItem)
-            { 
-     //           Debug.Log(x+" "+y+" changed with "+target.x+" "+target.y+" and it was null "+_board.GetCell(target).HasItem);
-                _board.GetCell(target).SetItem(_board.GetItem(x, y));
-                _board.GetCell(target).SetIsGettingEmptied( false);
-                _board.GetCell(x, y).SetItem(null);
+            else if ((target != new Vector2Int(x, y)) &&
+                     IsItemCloseToTarget(newPos, targetPos, LevelGrid.Grid.cellSize.x) &&
+                     !_board.Cells[target.x, target.y].HasItem)
+            {
+                //           Debug.Log(x+" "+y+" changed with "+target.x+" "+target.y+" and it was null "+_board.GetCell(target).HasItem);
+                _board.Cells[target.x, target.y].SetItem(_board.GetItem(x, y));
+                _board.Cells[x, y].SetIsGettingEmptied(false);
+                _board.Cells[target.x, target.y].SetIsGettingFilled(false);
+                _board.Cells[x, y].SetItem(null);
             }
 
         }
-        private void AddPositionToQueue(int x, int y,int targetX, int targetY)
-        {
-    //         Debug.Log("Adding position to queue "+x+" "+y+" to "+targetX+" "+targetY+" "+_board.GetCell(targetX,targetY).HasItem+" "+_board.GetCell(targetX,targetY).IsGettingFilled+" "+_board.GetCell(targetX,targetY).IsGettingEmptied);
-            _board.GetItem(x,y).TargetToMove=new Vector2Int(targetX,targetY);
-            _board.GetCell(targetX, targetY).SetIsGettingFilled( true);
-            _board.GetItem(x,y).IsMoving = true;
 
-            _board.GetCell(x,y).SetIsGettingEmptied( true);
+        private void GiveTargetToItem(int x, int y, int targetX, int targetY)
+        {
+            //         Debug.Log("Adding position to queue "+x+" "+y+" to "+targetX+" "+targetY+" "+_board.GetCell(targetX,targetY).HasItem+" "+_board.GetCell(targetX,targetY).IsGettingFilled+" "+_board.GetCell(targetX,targetY).IsGettingEmptied);
+            _board.GetItem(x, y).TargetToMove = new Vector2Int(targetX, targetY);
+            _board.Cells[targetX, targetY].SetIsGettingFilled(true);
+            _board.GetItem(x, y).IsMoving = true;
+
+            _board.Cells[x, y].SetIsGettingEmptied(true);
 
         }
+
         private void RemovePositionFromQueue(int x, int y)
         {
-            _board.GetCell(x,y).SetIsGettingEmptied( false);
-            if (!_board.GetCell(x, y).HasItem)
+            _board.Cells[x, y].SetIsGettingEmptied(false);
+            if (!_board.Cells[x, y].HasItem)
                 return;
-            Vector2Int target=_board.GetItem(x,y).TargetToMove;
-            _board.GetItem(x,y).Transform.localPosition = LevelGrid.Instance.GetCellCenterLocalVector2(target);
-            _board.GetCell(target).SetIsGettingFilled(false);
+            Vector2Int target = _board.GetItem(x, y).TargetToMove;
+            _board.GetItem(x, y).Transform.localPosition = LevelGrid.Instance.GetCellCenterLocalVector2(target);
+            _board.Cells[target.x,target.y].SetIsGettingFilled(false);
         }
+
         private bool CanFallToAnyDirection(int x, int y)
         {
-            if (!CheckIfFallAble(x, y ))
+            if (!CheckIfFallAble(x, y))
             {
                 return false;
             }
 
-            if (y > 0)
-            { 
-//             Debug.Log("Checking if item can fall"+x+" "+y+" to "+ (x,y-1)+" "+_board.GetCell(x,y-1).HasItem+" "+_board.GetCell(x,y-1).IsGettingFilled+" "+_board.GetCell(x,y-1).IsGettingEmptied+" "+_board.GetCell(x,y-1).IsLocked);
+            if (CanFallBelow(x, y))
+            {
+                GiveTargetToItem(x, y, x, y - 1);
 
-            }
-            if (CanFallVertically(x, y))
-            {
-                AddPositionToQueue(x, y, x, y - 1);
                 return true;
             }
-            if(CanBelowFall(x,y))
+
+            if (IsAnyItemBelowFallingOrEmpty(x, y))
+            {
                 return false;
-            if (x<_width-1&&CanFallDiagonally(x, y, x + 1))
+            }
+
+            if (x < _board.Width - 1 && CanFallDiagonally(x, y, x + 1))
             {
-                AddPositionToQueue(x, y, x + 1, y - 1);                
+                GiveTargetToItem(x, y, x + 1, y - 1);
                 return true;
             }
-            if (x>0&&CanFallDiagonally(x, y, x - 1))
+
+            if (x >0 && CanFallDiagonally(x, y, x - 1))
             {
-                AddPositionToQueue(x, y, x - 1, y - 1);    
+                GiveTargetToItem(x, y, x - 1, y - 1);
                 return true;
             }
+
             return false;
         }
-        private bool CanBelowFall(int x, int y)
+
+        private bool IsAnyItemBelowFallingOrEmpty(int x, int y)
         {
             y--;
             while (y > 0)
             {
-                if(!_board.GetCell(x,y).HasItem&&!_board.GetCell(x,y).IsLocked)
+                if (!_board.Cells[x,y].HasItem && !_board.Cells[x,y].IsLocked)
                     return true;
-                if(_board.GetCell(x,y).IsGettingEmptied)
+                if (_board.Cells[x,y].IsGettingEmptied)
                     return true;
+                if (_board.Cells[x,y].HasItem && !_board.GetItem(x, y).IsFallAble)
+                    return false;
                 y--;
             }
             return false;
         }
-        private bool CanFallVertically(int x, int y)
+
+        private bool CanFallBelow(int x, int y)
         {
-            if(_board.GetCell(x,y-1).IsLocked)
+            if (_board.Cells[x,y-1].IsLocked)
                 return false;
-            return (!_board.GetCell(x, y - 1).HasItem&&!_board.GetCell(x,y-1).IsGettingFilled)||(_board.GetCell(x, y - 1).HasItem&&_board.GetCell(x,y-1).IsGettingEmptied);
+//            Debug.Log(_board.Cells[x,y-1].HasItem+" "+_board.Cells[x,y-1].IsGettingFilled+" "+_board.Cells[x,y-1].IsGettingEmptied+" "+x+" "+(y-1));
+            return (!_board.Cells[x,y-1].HasItem && !_board.Cells[x,y-1].IsGettingFilled) ||
+                   (_board.Cells[x,y-1].HasItem && _board.Cells[x,y-1].IsGettingEmptied);
         }
-        private bool CanFallDiagonally(int x, int y, int targetX)
-        {
-//           Debug.Log("Checking if item can fall"+x+" "+y+" to "+ targetX+" "+(y-1)+" "+_board.GetCell(targetX,y-1).HasItem+" "+_board.GetCell(targetX,y-1).IsGettingFilled+" "+_board.GetCell(targetX,y-1).IsGettingEmptied);
-            if (_board.GetCell(targetX, y - 1).HasItem&&_board.GetCell(targetX,y-1).IsLocked) 
-            {
-         //   Debug.Log("Target is not empty"+_board.GetCell(targetX,y-1).Item.Position);
-                 return false;
-            }
-            int firstObstacleAbove = GetFirstObstacleAbove(targetX, y);
-            if (firstObstacleAbove == _height)
-                return false;
-            if(firstObstacleAbove==y&&(CheckIfFallAble(targetX,firstObstacleAbove)))
-                 return false;
-            if(firstObstacleAbove>y&&(CheckIfFallAble(targetX,firstObstacleAbove)||CheckIfFallAble(targetX+1,firstObstacleAbove)||CheckIfFallAble(targetX-1,firstObstacleAbove)))
-                return false;
-            if(firstObstacleAbove>y&&((_board.GetCell(x,y+1).HasItem&&_board.GetItem(x,y+1).IsFallAble)||_board.GetCell(x,y+1).IsGettingFilled))
-                return false;
-            return !_board.GetCell(targetX, y - 1).HasItem&&!_board.GetCell(targetX,y-1).IsGettingFilled;
-        }
+
         private bool CheckIfFallAble(int x, int y)
         {
-            if(x>=_width||x<0||y>=_height||y<1)
+            if (!_board.IsInBoundaries(x, y - 1))
                 return false;
-            return _board.GetCell(x,y).HasItem&&_board.GetItem(x,y).IsFallAble&&!_board.GetCell(x,y).Item.IsSwapping||_board.GetCell(x,y).IsLocked;
+            return _board.Cells[x,y].HasItem && _board.GetItem(x, y).IsFallAble &&
+                !_board.Cells[x,y].BoardItem.IsSwapping || _board.Cells[x,y].IsLocked;
         }
+
+        private bool CanFallDiagonally(int x, int y, int targetX)
+        {
+            if (_board.Cells[targetX, y - 1].HasItem || _board.Cells[targetX, y - 1].IsLocked)
+            {
+                return false;
+            }
+
+            int firstObstacleAbove = GetFirstObstacleAbove(targetX, y);
+            if (firstObstacleAbove == _board.Height)
+            {
+                return false;
+            }
+
+            if (firstObstacleAbove == y && CheckIfFallAble(targetX, firstObstacleAbove))
+            {
+                return false;
+            }
+
+            if (firstObstacleAbove > y && (CheckIfFallAble(targetX, firstObstacleAbove) ||
+                                           CheckIfFallAble(targetX + 1, firstObstacleAbove) ||
+                                           CheckIfFallAble(targetX - 1, firstObstacleAbove)))
+            {
+                return false;
+            }
+
+            if (firstObstacleAbove > y && ((_board.Cells[x, y+1].HasItem && _board.GetItem(x, y + 1).IsFallAble) ||
+                                           _board.Cells[x, y+1].IsGettingFilled))
+            {
+                return false;
+            }
+
+            bool canFall = !_board.Cells[targetX, y-1].HasItem && !_board.Cells[targetX, y-1].IsGettingFilled;
+            return canFall;
+        }
+
         private int GetFirstObstacleAbove(int x, int y)
         {
-            while(y<_height)
+            while (y < _board.Height)
             {
-                if(_board.GetCell(x,y).HasItem&&!_board.GetCell(x,y).Item.IsFallAble)
+                if (_board.Cells[x, y].HasItem && !_board.Cells[x, y].BoardItem.IsFallAble)
                     return y;
                 y++;
             }
+
             return y;
         }
+
         private bool IsItemCloseToTarget(Vector3 currPos, Vector3 targetPos, float maxDistance = 0.05f)
         {
-            return Mathf.Abs(targetPos.y - currPos.y) < maxDistance/2 &&Mathf.Abs(targetPos.x - currPos.x) < maxDistance/2;
+            return Mathf.Abs(targetPos.y - currPos.y) < maxDistance / 2 &&
+                   Mathf.Abs(targetPos.x - currPos.x) < maxDistance / 2;
         }
+
         private void FinishItemMovement(int x, int y)
-        { 
-            _board.GetCell(x,y).SetIsGettingEmptied( false);
-            RemovePositionFromQueue(x,y); 
-            _board.GetItem(x, y).IsMoving=CanFallToAnyDirection(x, y);
+        {
+            _board.Cells[x, y].SetIsGettingEmptied(false);
+            RemovePositionFromQueue(x, y);
+            _board.GetItem(x, y).IsMoving = CanFallToAnyDirection(x, y);
             if (_board.GetItem(x, y).IsMoving) return;
-            _board.GetItem(x,y).FallSpeed = 0f;
-            _board.GetItem(x,y).SetSortingOrder(4);
-            EventManager.Instance.Broadcast(GameEvents.OnItemMovementEnd,new Vector2Int(x,y));
-         
+            _board.GetItem(x, y).FallSpeed = 1.5f;
+            if(y<_board.Height-1&&_board.Cells[x,y+1].HasItem&&_board.GetItem(x,y+1).IsMoving&&_board.GetItem(x,y+1).ItemID==_board.GetItem(x,y).ItemID)
+                return;
+            EventManager.Instance.Broadcast(GameEvents.OnItemMovementEnd, new Vector2Int(x, y));
+
         }
+
+        #region Jester Hat Shuffle
+            private void ShuffleItems()
+            {
+                List<Vector2Int> shuffleableCells = new List<Vector2Int>();
+                for (int x = 0; x < _board.Width; x++)
+                {
+                    for (int y = 0; y < _board.Height; y++)
+                    {
+                        if (_board.Cells[x, y].HasItem && _board.GetItem(x, y).IsShuffleAble)
+                        {
+                            shuffleableCells.Add(new Vector2Int(x, y));
+                        }
+                    }
+                }
+                // Ensure the number of shuffleable cells is even
+                if (shuffleableCells.Count % 2 != 0)
+                {
+                    shuffleableCells.RemoveAt(shuffleableCells.Count - 1);
+                }
+                System.Random rand = new System.Random();
+                while (shuffleableCells.Count > 0)
+                {
+                    int index1 = rand.Next(shuffleableCells.Count);
+                    int index2 = rand.Next(shuffleableCells.Count);
+                    if(index1==index2)
+                        continue;
+                    SwapItems(shuffleableCells[index1], shuffleableCells[index2]);
+                    if (index1 > index2)
+                    {
+                        shuffleableCells.RemoveAt(index1);
+                        shuffleableCells.RemoveAt(index2);
+                    }
+                    else
+                    {
+                        shuffleableCells.RemoveAt(index2);
+                        shuffleableCells.RemoveAt(index1);
+                    }
+                }
+             
+            }
+            private void SwapItems(Vector2Int pos1, Vector2Int pos2)
+            {
+                IBoardItem item1 = _board.GetItem(pos1);
+                IBoardItem item2 = _board.GetItem(pos2);
+                Vector3 item1Pos = item1.Transform.localPosition;
+                Vector3 item2Pos = item2.Transform.localPosition;
+                item1.Transform.DOLocalMove(item2Pos, 0.5f).SetUpdate(UpdateType.Fixed).SetEase(Ease.InOutSine);
+                item2.Transform.DOLocalMove(item1Pos, 0.5f).SetUpdate(UpdateType.Fixed).SetEase(Ease.InOutSine).onComplete +=
+                    () =>
+                    {
+                      IBoardItem temp = _board.GetItem(pos1);
+                        _board.Cells[pos1.x, pos1.y].SetItem(_board.GetItem(pos2));
+                        _board.Cells[pos2.x, pos2.y].SetItem(temp);
+                        EventManager.Instance.Broadcast(GameEvents.OnItemMovementEnd, pos1);
+                        EventManager.Instance.Broadcast(GameEvents.OnItemMovementEnd, pos2);
+                    };
+            }
+        #endregion
+        
     }
 }
