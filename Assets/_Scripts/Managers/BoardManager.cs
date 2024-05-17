@@ -1,14 +1,18 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _Scripts.Core;
+using _Scripts.Managers;
 using _Scripts.Managers.Matching;
 using _Scripts.Utility;
 using Cysharp.Threading.Tasks;
 using Data;
+using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Scripting;
 using Random = UnityEngine.Random;
 
 //Bomb + rocket = triple rocket vertical and horizontal 
@@ -22,92 +26,94 @@ namespace Scripts
 {
     public class BoardManager : MonoBehaviour
     {
-        [SerializeField] private int width;
-        [SerializeField] private int height;
-        [SerializeField] private int itemTypeStart;
-        [SerializeField] private int itemTypeEnd=4;
-        
-        private bool _isBoardShaking;
-        private const float ShakeDuration = 0.5f;
-        private const float ShakeMagnitude = 0.1f;
-
-        
         [SerializeField] private bool[] dirtyColumns;
         private Board _board;
-        private SwipeController _swipeController;
+        private InputHandler _inputHandler;
         private MatchChecker _matchChecker;
-        private RandomBoardGenerator _randomBoardGenerator;
         private ItemMovement _itemMovement;
         private MatchHandler _matchHandler;
         private ItemRemovalHandler _itemRemovalHandler;
         private SpawnHandler _spawnHandler;
         private ItemActionHandler _itemActionHandler;
-     
-
-
-     
+        private bool _isBoardInitialized;
+        private bool _isBoardShaking;
+        private const float ShakeDuration = 0.2f;
+        private const float ShakeMagnitude = 0.06f;
+        private bool hasActionToRun;
+        private bool hasMatchToRun;
+        private bool hasItemToRemove;
+        private bool hasFillToSpawn;
+        private bool hasItemToMove;
         private void OnEnable()
         {
+            GC.Collect();
             if(EventManager.Instance==null)
                 return;
             EventManager.Instance.AddHandler(GameEvents.OnBoardShake, HandleBoardShake);
         }
+
         private void OnDisable()
         {
+            _inputHandler.OnDisable();
+            _itemMovement.OnDisable();
+            _matchChecker.OnDisable();
+            _matchHandler.OnDisable();
+            _itemRemovalHandler.OnDisable();
+            _spawnHandler.OnDisable();
+            _itemActionHandler.OnDisable();
+            _inputHandler = null;
+            _itemMovement = null;
+            _matchChecker = null;
+            _matchHandler = null;
+            _itemRemovalHandler = null;
+            _spawnHandler= null;
+            _itemActionHandler = null;
+            _board = null;
+            GC.Collect();
             if (EventManager.Instance == null) return;
             EventManager.Instance.RemoveHandler(GameEvents.OnBoardShake, HandleBoardShake);
         }
-    
-        private void Start()
+        
+        public void InitializeBoard(Board board)
         {
-            Application.targetFrameRate = 60;
-            dirtyColumns = new bool[width];
-            _randomBoardGenerator = new RandomBoardGenerator();
-            _board =_randomBoardGenerator.GenerateRandomBoard(width, height,itemTypeStart,itemTypeEnd);
-            _matchChecker = new MatchChecker(_board,width,height);
-            _itemMovement = new ItemMovement(_board,dirtyColumns,width,height);
-            _swipeController = new SwipeController(_board,_matchChecker,width,height);
-            _matchHandler = new MatchHandler(_board,dirtyColumns);
-            _itemRemovalHandler = new ItemRemovalHandler(_board);
-            _spawnHandler = new SpawnHandler(_board);
+            _board = board;
+            _board.SetBoardItemsParent(gameObject.transform);
+            dirtyColumns = new bool[_board.Width];
+            _matchChecker = new MatchChecker(_board);
+            _itemMovement = new ItemMovement(_board,dirtyColumns);
+            _inputHandler = new InputHandler(_board,_matchChecker);
+            _matchHandler = new MatchHandler(_board);
+            _itemRemovalHandler = new ItemRemovalHandler(_board,dirtyColumns);
+            _spawnHandler = new SpawnHandler(gameObject,_board,dirtyColumns,_board._spawnAbleFillerItemIds);
             _itemActionHandler = new ItemActionHandler(_board);
-            
-            EventManager.Instance.Broadcast<Board>(GameEvents.FindGoals,_board);
+            _isBoardInitialized = true;
         }
-  
+
+
         private void FixedUpdate()
         {
-            _itemMovement.MoveItems();
-            _swipeController.MakeSwipe();
+            if (!_isBoardInitialized)
+                return;
+            hasItemToMove=_itemMovement.MoveItems();
+            _inputHandler.HandleInputs();
             _matchChecker.CheckForMatches();
-            _matchHandler.HandleMatches();
-            _itemRemovalHandler.HandleItemRemoval();
+            hasMatchToRun=_matchHandler.HandleMatches();
+            hasItemToRemove= _itemRemovalHandler.HandleItemRemoval();
             _spawnHandler.HandleBoosterSpawn();
-            _spawnHandler.HandleFillSpawn();
-            _itemActionHandler.HandleActions();
+            hasFillToSpawn=_spawnHandler.HandleFillSpawn();
+            hasActionToRun=_itemActionHandler.HandleActions();
+            LevelManager.Instance.DoesBoardHasThingsToDo = hasItemToMove || hasMatchToRun || hasItemToRemove || hasFillToSpawn || hasActionToRun;
+            
         }
- 
         private void HandleBoardShake()
         {
-            if (_isBoardShaking)
+            if (_isBoardShaking||!_isBoardInitialized)
                 return;
-            BoardShake().Forget();
-        }
-        private async UniTaskVoid BoardShake()
-        {
-            _isBoardShaking = true;
-            Vector3 originalPosition = transform.position;
-            float elapsed = 0.0f;
-            while (elapsed < ShakeDuration)
+            transform.DOShakePosition(ShakeDuration, ShakeMagnitude, 10, 90, false).SetUpdate(UpdateType.Fixed).OnComplete(() =>
             {
-                float x = Random.Range(-1f, 1f) * ShakeMagnitude;
-                float y = Random.Range(-1f, 1f) * ShakeMagnitude;
-                transform.position = new Vector3(originalPosition.x+x,originalPosition.y+ y, originalPosition.z);
-                elapsed += Time.deltaTime;
-                await UniTask.Yield();
-            }
-            transform.position = originalPosition;
-            _isBoardShaking = false;
+                _isBoardShaking = false;
+                transform.localPosition = Vector3.zero;
+            });
         }
     }
 }
