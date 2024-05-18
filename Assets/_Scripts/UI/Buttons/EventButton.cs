@@ -1,9 +1,7 @@
 ﻿using DG.Tweening;
-using Microsoft.Unity.VisualStudio.Editor;
 using Rimaethon.Scripts.Managers;
-using TMPro;
 using UnityEngine;
-using Image = UnityEngine.UI.Image;
+using UnityEngine.UI;
 
 namespace _Scripts.UI.Buttons
 {
