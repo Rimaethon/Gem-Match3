@@ -10,7 +10,6 @@ public class CanvasChangerButton : UIButton
 
     protected override void DoOnClick()
     {
-        Debug.Log("Clicked");
         base.DoOnClick();
         _canvasToClose.enabled = false;
         _canvasToOpen.enabled = true;

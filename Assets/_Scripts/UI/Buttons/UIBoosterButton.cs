@@ -13,9 +13,9 @@ namespace Rimaethon.Runtime.UI
         public Button boosterButton;
         public Image boosterBackground;
         public GameObject unClickedCounter;
-        //This will be used as background particle effect in In Game Power Up Panel
         public GameObject clickedCounter;
         public GameObject unlimitedCounter;
+        public TextMeshProUGUI unlimitedCounterText;
         public bool isClicked;
         public RectTransform boosterTransform;
         public GameObject boosterPanel;

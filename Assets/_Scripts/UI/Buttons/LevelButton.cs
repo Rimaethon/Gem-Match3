@@ -26,7 +26,6 @@ namespace _Scripts.UI.Buttons
         }
         protected override void DoOnClick()
         {
-            Debug.Log("Level Button Clicked");
             if(!_isLevelExist)
                 return;
             base.DoOnClick();
