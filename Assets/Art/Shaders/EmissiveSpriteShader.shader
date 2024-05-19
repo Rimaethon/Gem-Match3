@@ -1,5 +1,4 @@
-﻿
-Shader "Sprites/Outline"
+﻿Shader "Sprites/EmissiveSprite"
 {
     Properties
     {
@@ -138,7 +137,6 @@ Shader "Sprites/Outline"
             {
                 // Won't draw if effect is disabled, outline size is zero or sampled fragment is transparent.
                 if (isOutlineEnabled * outlineSize * sampledColor.a == 0) return 0;
-
                 float2 texDdx = ddx(texCoord);
                 float2 texDdy = ddy(texCoord);
 
