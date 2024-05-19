@@ -10,6 +10,7 @@ namespace Samples.Purchasing.Core.BuyingConsumables
 {
     public class InAppPurchasePanel : MonoBehaviour, IDetailedStoreListener
     {
+        [SerializeField] private ItemDatabaseSO itemDatabase;
         private IStoreController _storeController; // The Unity Purchasing system.
         //Your products IDs. They should match the ids of your products in your store.
         [SerializeField] Button closePanelButton;
@@ -22,7 +23,7 @@ namespace Samples.Purchasing.Core.BuyingConsumables
             foreach (var bundle in bundles)
             {
                 var offerPanel = Instantiate(offerPanelPrefab, transform).GetComponent<OfferPanel>();
-                offerPanel.InitializePanel(bundle);
+                offerPanel.InitializePanel(bundle, itemDatabase);
                 offerPanels.Add(offerPanel);
                 offerPanel.buyButton.onClick.AddListener(() => BuyBundle(bundle));
             }
@@ -34,7 +35,6 @@ namespace Samples.Purchasing.Core.BuyingConsumables
             foreach (var offerPanel in offerPanels)
             {
                 offerPanel.buyButton.onClick.RemoveAllListeners();
-                Destroy(offerPanel.gameObject);
             }
             closePanelButton.onClick.RemoveAllListeners();
         }
