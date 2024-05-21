@@ -11,19 +11,26 @@ namespace _Scripts.Core
     {
         
         private Dictionary<Vector2Int,int> _itemsToAddToBoard = new Dictionary<Vector2Int,int> ();
-        private Dictionary<Vector2Int,int>  _itemsToAddToBoardThisFrame = new Dictionary<Vector2Int,int> ();
         private readonly Board _board;
         private readonly int _width;
         private readonly int _height;
         private GameObject _boardInstance;
-        public SpawnHandler(GameObject boardInstance,Board board)
+        private bool[] _dirtyColumns;
+        private readonly List<int> _spawnAbleFillerItemIds;
+        public SpawnHandler(GameObject boardInstance,Board board,bool[] dirtyColumns, List<int> spawnAbleFillerItemIds)
         {
             _board = board;
             _width = _board.Width;
             _height = _board.Height;
             _boardInstance = boardInstance;
+            _dirtyColumns = dirtyColumns;
+            _spawnAbleFillerItemIds = spawnAbleFillerItemIds;
             EventManager.Instance.AddHandler<Vector2Int,int>(GameEvents.AddItemToAddToBoard, AddBoosterToAddToTheBoard);
-
+        }
+        public void OnDisable()
+        {
+            if (EventManager.Instance == null) return;
+            EventManager.Instance.RemoveHandler<Vector2Int,int>(GameEvents.AddItemToAddToBoard, AddBoosterToAddToTheBoard);
         }
         
         //I hope someday I don't be so brain dead  and give better names to these methods
@@ -33,46 +40,47 @@ namespace _Scripts.Core
         }
         public void HandleBoosterSpawn()
         {
-            _itemsToAddToBoardThisFrame= new Dictionary<Vector2Int, int>(_itemsToAddToBoard);
-            foreach (KeyValuePair<Vector2Int,int> itemData in _itemsToAddToBoardThisFrame)
+            foreach (KeyValuePair<Vector2Int,int> itemData in _itemsToAddToBoard)
             {
-                _board.GetCell(itemData.Key).SetIsLocked(true);
-                _itemsToAddToBoard.Remove(itemData.Key);
-                
-                IBoardItem boardItem = ObjectPool.Instance.GetBoosterItem(itemData.Value, LevelGrid.Instance.GetCellCenterWorld(itemData.Key), _board);
+                _board.Cells[itemData.Key.x,itemData.Key.y].SetIsLocked(true);
+                Vector3 pos = LevelGrid.Instance.GetCellCenterWorld(itemData.Key);
+                IBoardItem boardItem = ObjectPool.Instance.GetBoosterItem(itemData.Value, pos, _board);
                 boardItem.Transform.parent = _boardInstance.transform;
-                if (_board.GetCell(itemData.Key).HasItem)
+                boardItem.Transform.position = pos;
+                if (_board.Cells[itemData.Key.x,itemData.Key.y].HasItem)
                 {
                     ObjectPool.Instance.ReturnItem(_board.GetItem(itemData.Key), _board.GetItem(itemData.Key).ItemID);
                 }
-                _board.GetCell(itemData.Key).SetIsGettingEmptied(false);
-                _board.GetCell(itemData.Key).SetIsGettingFilled(false);
-                _board.GetCell(itemData.Key).SetItem(boardItem);
+                _board.Cells[itemData.Key.x,itemData.Key.y].SetIsGettingEmptied(false);
+                _board.Cells[itemData.Key.x,itemData.Key.y].SetIsGettingFilled(false);
+                _board.Cells[itemData.Key.x,itemData.Key.y].SetItem(boardItem);
                 _board.GetItem(itemData.Key).TargetToMove = itemData.Key;
-                _board.GetItem(itemData.Key).IsMoving = true;
-                _board.GetCell(itemData.Key).SetIsLocked(false);
-                boardItem.Transform.DOScale(Vector3.one * 1.2f, 0.15f)
+                _dirtyColumns[itemData.Key.x] = true;
+                _board.Cells[itemData.Key.x,itemData.Key.y].SetIsLocked(false);
+                boardItem.Transform.DOScale(Vector3.one * 1.4f, 0.15f)
                     .SetLoops(2, LoopType.Yoyo)
                     .SetUpdate(UpdateType.Fixed);
-
             }
-            _itemsToAddToBoardThisFrame.Clear();
+            _itemsToAddToBoard.Clear();
         }
-        public void HandleFillSpawn()
+        public bool HandleFillSpawn()
         {
+            bool isAnyCellEmpty = false;
             for (int x = 0; x < _width; x++)
             {
                 //           Debug.Log("Checking spawn"+x+" "+_height+" "+_board.GetCell(x,_height-1).HasItem+" "+_board.GetCell(x,_height-1).IsLocked);
-                if (_board.GetCell(x, _height - 1).HasItem||_board.GetCell(x,_height-1).IsLocked) continue;
-                int randomType = Random.Range(0, 4);
-                _board.GetCell(x,_height-1).SetItem(ObjectPool.Instance.GetItem(randomType, LevelGrid.Grid.GetCellCenterWorld(new Vector3Int(x, _height, 0)),_board));
+                if (_board.Cells[x,_height-1].HasItem||_board.Cells[x,_height-1].IsLocked) continue;
+                int randomType = _spawnAbleFillerItemIds[Random.Range(0, _spawnAbleFillerItemIds.Count)];
+                _board.Cells[x,_height-1].SetItem(ObjectPool.Instance.GetItem(randomType, LevelGrid.Grid.GetCellCenterWorld(new Vector3Int(x, _height, 0)),_board));
                 _board.GetItem(x, _height - 1).Transform.parent = _boardInstance.transform;
                 _board.GetItem(x, _height - 1).TargetToMove = new Vector2Int(x, _height - 1);
                  _board.GetItem(x,_height-1).IsMoving = true;
-                _board.GetCell(x,_height-1).SetIsGettingEmptied(false);
-                _board.GetCell(x,_height-1).SetIsGettingFilled(false);
+                _board.Cells[x,_height-1].SetIsGettingEmptied(false);
+                _board.Cells[x,_height-1].SetIsGettingFilled(false);
+                isAnyCellEmpty = true;
             
             }
+            return isAnyCellEmpty;
         }
 
         
