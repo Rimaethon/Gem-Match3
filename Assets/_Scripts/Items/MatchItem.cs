@@ -1,15 +1,12 @@
-﻿using Cysharp.Threading.Tasks;
-using DG.Tweening;
+﻿using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using Scripts.BoosterActions;
 using UnityEngine;
 
 namespace Scripts
 {
-    public class MatchItem:ItemBase
+    public class MatchItem:BoardItemBase
     {
-        private MatchItemAction _action;
-        [SerializeField] float _scaleDownTime;
         private void OnEnable()
         {
             transform.localScale = Vector3.one;
@@ -22,41 +19,32 @@ namespace Scripts
             _isHighlightAble = true;
             IsMoving = false;
             IsMatching = false;
+            _isShuffleAble = true;
             Highlight(0);
-            
         }
-     
         public override void OnExplode()
         {
-            if(_isExploding)
+            if(_isExploding||IsMatching||!_isActive)
                 return;
             _isExploding = true;
-            _action= new MatchItemAction(Board,Item,_scaleDownTime,false);
-            EventManager.Instance.Broadcast(GameEvents.AddActionToHandle, _action);
-        }
+            EventManager.Instance.Broadcast(GameEvents.AddActionToHandle, Position, _itemID, -1);
+            EventManager.Instance.Broadcast(GameEvents.OnItemExplosion, _position, _itemID);
 
+        }
         public override void OnMatch()
         {
             if(_isExploding||!IsMatching)
                 return;
             _isExploding = true;
-            _action= new MatchItemAction(Board,Item,_scaleDownTime,true);
-            EventManager.Instance.Broadcast(GameEvents.AddActionToHandle, _action);
+            EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,_position,ItemID,0);
         }
-
         public override void OnRemove()
         {
-            ObjectPool.Instance.ReturnItem(Item, ItemID);
             EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, Position);
+            EventManager.Instance.Broadcast(GameEvents.OnItemRemoval, BoardItem);
         }
         public override void OnClick(Board board, Vector2Int pos)
         {
-            if (IsMoving || _isExploding||_isClicked|| IsMatching)
-                return;
-            _isClicked = true;
-            Debug.Log("MatchItem Clicked"+pos);
-            transform.DOPunchRotation(new Vector3(0, 0, 20), 0.2f).OnComplete(() => {_isClicked = false;});            
-            
         }
     }
 }
