@@ -1,20 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using Scripts.BoosterActions;
 using UnityEngine;
 
 namespace Scripts
 {
-    public interface IItem
+    //I'm not monolithic, my font size is big.
+    public interface IBoardItem:IItem
     {
         public bool IsActive 
         { 
             get;
-            set; 
-        }
-        public int ItemID
-        {
-            get;
             set;
         }
+        
         public float FallSpeed
         {
             get;
@@ -23,18 +20,14 @@ namespace Scripts
         public bool IsFallAble 
         { 
             get;
-            set;
         }
         public bool IsMatchable
         {
             get;
-            set;
         }
-  
         public bool IsSwappable
         {
             get;
-            set;
         }
         public bool IsSwapping
         {
@@ -55,10 +48,6 @@ namespace Scripts
         {
             get;
             set;
-        }
-        public float Gravity
-        {
-            get;
         }
         public bool IsBooster
         {
@@ -87,6 +76,24 @@ namespace Scripts
             get;
             set;
         }
+
+        public bool IsExplodeAbleByNearMatches
+        {
+            get;
+        }
+        public bool IsGeneratorItem
+        {
+            get;
+        }
+        public bool IsShuffleAble
+        {
+            get;
+        }
+        //This is for checking if item is blocking under it such as a stone prevents bush from exploding.
+        public bool IsProtectingUnderIt
+        {
+            get;
+        }
         public void Highlight(float value);
         public abstract void SetSortingOrder(int order);
         public Transform Transform { get; }
@@ -95,8 +102,8 @@ namespace Scripts
         public void OnRemove();
         public void OnTouch();
         public void OnClick(Board board,Vector2Int pos);
-        public void OnSwap(IItem item,IItem otherItem);
-
+        public void OnSwap(IBoardItem boardItem,IBoardItem otherBoardItem);
     }
 
+ 
 }

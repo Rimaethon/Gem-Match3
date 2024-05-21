@@ -1,8 +1,9 @@
+using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using Scripts;
 using UnityEngine;
 
-public abstract class ItemBase : MonoBehaviour, IItem
+public abstract class BoardItemBase : MonoBehaviour, IBoardItem
 {
     #region Properties
     public  int ItemID
@@ -13,7 +14,7 @@ public abstract class ItemBase : MonoBehaviour, IItem
     public float FallSpeed
     {
         get => _fallSpeed;
-        set=> _fallSpeed=Mathf.Clamp(value,0,5f);
+        set=> _fallSpeed=Mathf.Clamp(value,1.5f, 5f);
     }
     public bool IsActive
     {
@@ -25,6 +26,12 @@ public abstract class ItemBase : MonoBehaviour, IItem
         get=> isFallAble;
         set=> isFallAble=value;
     }
+
+    public bool IsExplodeAbleByNearMatches => _isExplodeAbleByNearMatches;
+
+    public bool IsGeneratorItem => _isGeneratorItem;
+    public bool IsShuffleAble => _isShuffleAble;
+    public bool IsProtectingUnderIt => _isProtectingUnderIt;
     public bool IsMatchable
     {
         get=> _isMatchable;
@@ -62,7 +69,6 @@ public abstract class ItemBase : MonoBehaviour, IItem
         get=> _position;
         set=> _position=value;
     }
-    public float Gravity => _gravity;
     public bool IsBooster => _isBooster;
     public Transform Transform => transform;
     public bool IsHighlightAble => _isHighlightAble;
@@ -89,26 +95,27 @@ public abstract class ItemBase : MonoBehaviour, IItem
     [SerializeField] protected bool _isActive = true;
     [SerializeField] private float _fallSpeed;
     [SerializeField] protected bool _isHighlightAble = true;
+    [SerializeField] protected bool _isExplodeAbleByNearMatches = false;
+    [SerializeField] protected bool _isGeneratorItem = false;
+    [SerializeField] protected bool _isShuffleAble;
+    protected bool _isProtectingUnderIt=false;
     protected bool _isBooster = false;
-    protected Color _unTouchedColor= new Color(0.88f,0.88f,0.88f,1f);
-    private readonly float _gravity = 0.7f; 
+    protected Color _unTouchedColor= new Color(1f,1f,1f,1f);
     private Material _material;
     private MaterialPropertyBlock _materialPropertyBlock;
     private SpriteRenderer _spriteRenderer;
-    protected IItem Item;
+    protected IBoardItem BoardItem;
     protected bool _isClicked;
+    private Tween _highlightShake;
     #endregion
 
     public virtual void SetSortingOrder(int order)
     {
         _spriteRenderer.sortingOrder = order;
     }
-
-   
-
     protected virtual void Awake()
     {
-        Item = GetComponent<IItem>();
+        BoardItem = GetComponent<IBoardItem>();
         _materialPropertyBlock = new MaterialPropertyBlock();
         if (gameObject.TryGetComponent(out _spriteRenderer))
         {
@@ -117,36 +124,37 @@ public abstract class ItemBase : MonoBehaviour, IItem
             _spriteRenderer.color = _unTouchedColor;
         }
     }
-
-
     public void Highlight(float value)
     {
         value=value>=0.5f?1f:0f;
         _spriteRenderer.GetPropertyBlock(_materialPropertyBlock);
         _materialPropertyBlock.SetFloat("_IsOutlineEnabled",value);
         _spriteRenderer.SetPropertyBlock(_materialPropertyBlock);
+        if (value == 1)
+        {
+            _highlightShake=transform.DOShakeScale(0.8f, 0.08f, 5,90).SetLoops(-1,LoopType.Yoyo).SetUpdate(UpdateType.Fixed).SetEase(Ease.InOutSine);
+        }
+        else
+        {
+            _highlightShake.Kill();
+        }
     }
     public virtual void OnExplode()
     {
     }
-
     public virtual void OnRemove()
     {
-
     }
-
     public virtual void OnTouch()
     {
     }
     public virtual void OnMatch()
     {
     }
-
     public virtual void OnClick(Board board, Vector2Int pos)
     {
     }
-
-    public virtual void OnSwap(IItem item, IItem otherItem)
+    public virtual void OnSwap(IBoardItem boardItem, IBoardItem otherBoardItem)
     {
     }
 }
