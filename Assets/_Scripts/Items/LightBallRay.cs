@@ -26,6 +26,7 @@ namespace Scripts
         private Board _board;
         private bool _isTargetRemoved;
         private bool isSoundPlayed;
+        private bool isMovementPrevented;
         private void Awake()
         {
             lineRenderer = GetComponent<LineRenderer>();
@@ -43,42 +44,51 @@ namespace Scripts
             {
                 return;
             }
-            if((_targetItem==null||!_board.GetCell(_targetCell).HasItem)&& !_shouldSpawnBooster)
+            if((_targetItem==null||!_board.Cells[_targetCell.x,_targetCell.y].HasItem)||_targetItem.IsExploding&& !_shouldSpawnBooster)
             {
-                _lightBallBoosterAction.ItemsToExplode.Remove(_targetCell);
-                if(_board.GetCell(_targetCell).HasItem)
+                if (_board.Cells[_targetCell.x,_targetCell.y].HasItem)
+                {
                     _board.GetItem(_targetCell).Highlight(0);
+                    _board.GetItem(_targetCell).IsActive = true;
+                }
+              
+                _board.Cells[_targetCell.x,_targetCell.y].SetIsLocked(false);
+                _lightBallBoosterAction.ItemsToExplode.Remove(_targetItem);
                 ResetRay();
-                Debug.Log("Target is not active");
                 return;
             }
+  
             _targetCell = _targetItem.Position;
-            
-            if(Vector3.Distance(lineRenderer.GetPosition(1), _targetItem.Transform.position)>0.1f)
+            Vector3 localTargetPosition = transform.InverseTransformPoint(_targetItem.Transform.position);
+
+            if (Vector3.Distance(lineRenderer.GetPosition(1), localTargetPosition) > 0.1f)
             {
-                lineRenderer.SetPosition(1, Vector3.MoveTowards(lineRenderer.GetPosition(1),_targetItem.Transform.position, _rayStretchSpeed * Time.fixedDeltaTime));
+                lineRenderer.SetPosition(1,
+                    Vector3.MoveTowards(lineRenderer.GetPosition(1), localTargetPosition,
+                        _rayStretchSpeed * Time.fixedDeltaTime));
                 return;
             }
-
-            if (!_isTargetRemoved&&_shouldSpawnBooster)
+            if (!_isTargetRemoved && _shouldSpawnBooster)
             {
-                IBoardItem boardItem = ObjectPool.Instance.GetBoosterItem(_boosterID, LevelGrid.Instance.GetCellCenterWorld(_targetCell), _board);
+                IBoardItem boardItem = ObjectPool.Instance.GetBoosterItem(_boosterID,
+                    LevelGrid.Instance.GetCellCenterWorld(_targetCell), _board);
                 boardItem.Transform.parent = _board._boardInstance.transform;
-                if (_board.GetCell(_targetCell).HasItem)
+                if (_board.Cells[_targetCell.x,_targetCell.y].HasItem)
                 {
                     ObjectPool.Instance.ReturnItem(_board.GetItem(_targetCell), _board.GetItem(_targetCell).ItemID);
                 }
-                _board.GetCell(_targetCell).SetItem(boardItem);
+                
+                _board.Cells[_targetCell.x,_targetCell.y].SetItem(boardItem);
                 _isTargetRemoved = true;
-                return;
-            }
-            if(!_isTargetHighlighted)
+                _targetItem = boardItem;
+            } 
+            if (!_isTargetHighlighted)
             {
-
-                _board.GetCell(_targetCell).SetIsLocked(true);
+                _lightBallBoosterAction.ItemsToExplode.Add(_targetItem);
                 _targetItem.Highlight(1);
                 _isTargetHighlighted = true;
             }
+
             if(_rayAlpha>0)
             {
                 _rayAlpha = Math.Clamp(_rayAlpha-Time.fixedDeltaTime* _rayAlphaDecreaseSpeed,0,15);
@@ -103,22 +113,26 @@ namespace Scripts
             isSoundPlayed = false;
             _isTargetRemoved = false;
         }
-        public void SetTarget(Board board,bool shouldSpawnBooster,int boosterID,Vector2Int target)
+        public void SetTarget(Board board,bool shouldSpawnBooster,int boosterID,IBoardItem item)
         {
             _shouldSpawnBooster = shouldSpawnBooster;
             _boosterID = boosterID;
             _board = board;
             startPosition = transform.position;
             _isTargetHighlighted = false;
-            _targetItem = board.GetCell(target).BoardItem;
+            _targetItem = item;
+            _targetCell = item.Position;
             _rayAlpha = 15f;
-            lineRenderer.SetPosition(0,startPosition);
-            lineRenderer.SetPosition(1,startPosition);
+            lineRenderer.SetPosition(0,Vector3.zero);
+            lineRenderer.SetPosition(1,Vector3.zero);
             lineRenderer.GetPropertyBlock(_materialPropertyBlock);
             _materialPropertyBlock.SetFloat("_Emission",15);
             lineRenderer.SetPropertyBlock(_materialPropertyBlock);
             hasTarget = true;
+            item.IsActive = false;
+            _board.Cells[_targetCell.x,_targetCell.y].SetIsLocked(true);
         }
+
      
     }
 }
