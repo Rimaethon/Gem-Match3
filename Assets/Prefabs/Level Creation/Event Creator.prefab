@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &2317757849122836931
 GameObject:
@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &596008883548714740
 MonoBehaviour:
@@ -44,12 +44,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca9a7b845eb8d8f418fdaf97a64f2e05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemDatabase: {fileID: 0}
   eventPath: Assets/Data/Events/
   eventName: Event
   eventObjectiveSpriteID: 0
   eventRewardSpriteID: 0
-  eventStartTime: 000000000000000000000000
-  eventDuration: 
-  eventProgress: 0
-  eventGoal: 0
+  rewardCount: 0
+  isRewardUnlimitedUseForSpecificTime: 0
+  rewardUnlimitedUseTimeInSeconds: 0
+  eventStartTimeM_H_D_M_Y: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  eventDurationM_H_D: 000000000000000000000000000000000000000000000000
+  eventGoalCount: 0
   isMainEvent: 0
