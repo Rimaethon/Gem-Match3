@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &438376647648614430
+--- !u!1 &2084066833748096317
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,44 +8,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2878293655745755326}
-  - component: {fileID: 4064551129961286039}
+  - component: {fileID: 1493253276283445484}
+  - component: {fileID: 723911872171354164}
   m_Layer: 0
-  m_Name: SaveManager
+  m_Name: Time Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2878293655745755326
+--- !u!4 &1493253276283445484
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 438376647648614430}
+  m_GameObject: {fileID: 2084066833748096317}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.5932568, y: -2.1240537, z: 0.013129791}
+  m_LocalPosition: {x: -1.0230699, y: -0.47924814, z: 4.0296006}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4064551129961286039
+--- !u!114 &723911872171354164
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 438376647648614430}
+  m_GameObject: {fileID: 2084066833748096317}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7216ca56cb6b4c81a5e1ba6cb5a953d7, type: 3}
+  m_Script: {fileID: 11500000, guid: ba2eda3277374c4bbafaa39d04970ca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemDatabase: {fileID: 11400000, guid: 8d094825f63458c4b9537b7fd33c1265, type: 2}
-  _boosterIdsToInitialize: 640000006500000067000000
-  _powerUpIdsToInitialize: 690000006a0000006b0000006c000000
-  _initialBoosterCount: 10
-  currentLevelToStartIfExists: 1

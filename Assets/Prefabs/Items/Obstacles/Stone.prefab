@@ -55,6 +55,8 @@ MonoBehaviour:
   _isActive: 1
   _fallSpeed: 0
   _isHighlightAble: 1
+  _isExplodeAbleByNearMatches: 0
+  _isRemovableFromBoard: 1
 --- !u!212 &2901157794109000572
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -75,7 +77,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: 533ec90b18acd094ea07c7bc465a86f4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -95,7 +97,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 3
   m_Sprite: {fileID: 1509429896, guid: 58e1e070b085d0645af5768e8e07fbaa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -105,5 +107,5 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 2
   m_SpriteSortPoint: 0

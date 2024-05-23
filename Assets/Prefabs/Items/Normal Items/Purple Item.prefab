@@ -50,7 +50,7 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 2
+  m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 533ec90b18acd094ea07c7bc465a86f4, type: 2}
@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -2132334949
+  m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
   m_Sprite: {fileID: 21300000, guid: a4086a10650f88242a34ad5929670453, type: 3}
@@ -107,3 +107,5 @@ MonoBehaviour:
   _isActive: 1
   _fallSpeed: 0
   _isHighlightAble: 1
+  _isExplodeAbleByNearMatches: 0
+  _isRemovableFromBoard: 1

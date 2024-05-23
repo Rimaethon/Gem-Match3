@@ -55,6 +55,8 @@ MonoBehaviour:
   _isActive: 1
   _fallSpeed: 0
   _isHighlightAble: 1
+  _isExplodeAbleByNearMatches: 0
+  _isRemovableFromBoard: 1
 --- !u!212 &5861394797512319894
 SpriteRenderer:
   m_ObjectHideFlags: 0
