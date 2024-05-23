@@ -34,7 +34,7 @@ namespace _Scripts.Utility
         [SerializeField] private List<int> goalIds = new List<int>();
         public Dictionary<int,List<IBoardItem>> _goalPositions = new Dictionary<int, List<IBoardItem>>();
         public Dictionary<int,int> _goalCounts= new Dictionary<int, int>();
-    
+        private List<int> _spawnAbleFillerItemIds=new List<int>(){0,1,2,3,4};
         private IEnumerable<ValueDropdownItem<int>> GetNormalItemIds()
         {
             foreach (var item in itemDatabase.NormalItems)
@@ -78,7 +78,7 @@ namespace _Scripts.Utility
             Dictionary<Vector2Int,int> underlayItemIds= GenerateItemsAtRandomPositions(boardSpriteSaveData,underlayItemTypesToSpawn,totalUnderlayItemCount);
             Dictionary<Vector2Int,int> overlayItemIds= GenerateItemsAtRandomPositions(boardSpriteSaveData,overlayItemTypesToSpawn,totalOverlayItemCount);
             BoardData boardData = new BoardData(_boardID,boardPosition,normalItemArray,underlayItemIds,overlayItemIds);
-            Board board = new Board(boardSpriteSaveData,boardData,boardInstance);
+            Board board = new Board(boardSpriteSaveData,boardData,boardInstance,_spawnAbleFillerItemIds);
             InitializeGoalDictionaries(board, goalIds, _goalPositions, _goalCounts);
             backgroundSpriteRenderer.sprite = backgroundSprite;
             job.Board.Dispose();
@@ -208,21 +208,20 @@ namespace _Scripts.Utility
             {
                 for (int y = 0; y < board.Height; y++)
                 {
-                    if (board.GetCell(x, y).HasItem && goalIds.Contains(board.GetCell(x, y).BoardItem.ItemID))
+                    if (board.Cells[x, y].HasItem && goalIds.Contains(board.Cells[x, y].BoardItem.ItemID))
                     {
-                        Debug.Log("Goal Item Found");
-                        goalPositions[board.GetCell(x, y).BoardItem.ItemID].Add(board.GetCell(x, y).BoardItem);
-                        goalCounts[board.GetCell(x, y).BoardItem.ItemID]++;
+                        goalPositions[board.Cells[x, y].BoardItem.ItemID].Add(board.Cells[x, y].BoardItem);
+                        goalCounts[board.Cells[x, y].BoardItem.ItemID]++;
                     }
-                    if(board.GetCell(x, y).HasUnderLayItem && goalIds.Contains(board.GetCell(x, y).UnderLayBoardItem.ItemID))
+                    if(board.Cells[x, y].HasUnderLayItem && goalIds.Contains(board.Cells[x, y].UnderLayBoardItem.ItemID))
                     {
-                        goalPositions[board.GetCell(x, y).UnderLayBoardItem.ItemID].Add(board.GetCell(x, y).UnderLayBoardItem);
-                        goalCounts[board.GetCell(x, y).UnderLayBoardItem.ItemID]++;
+                        goalPositions[board.Cells[x, y].UnderLayBoardItem.ItemID].Add(board.Cells[x, y].UnderLayBoardItem);
+                        goalCounts[board.Cells[x, y].UnderLayBoardItem.ItemID]++;
                     }
-                    if(board.GetCell(x, y).HasOverLayItem && goalIds.Contains(board.GetCell(x, y).OverLayBoardItem.ItemID))
+                    if(board.Cells[x, y].HasOverLayItem && goalIds.Contains(board.Cells[x, y].OverLayBoardItem.ItemID))
                     {
-                        goalPositions[board.GetCell(x, y).OverLayBoardItem.ItemID].Add(board.GetCell(x, y).OverLayBoardItem);
-                        goalCounts[board.GetCell(x, y).OverLayBoardItem.ItemID]++;
+                        goalPositions[board.Cells[x, y].OverLayBoardItem.ItemID].Add(board.Cells[x, y].OverLayBoardItem);
+                        goalCounts[board.Cells[x, y].OverLayBoardItem.ItemID]++;
                     }
 
                 }

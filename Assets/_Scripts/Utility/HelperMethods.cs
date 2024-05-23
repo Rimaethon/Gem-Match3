@@ -7,25 +7,6 @@ namespace _Scripts.Utility
 {
     public static class HelperMethods
     {
-        
-        public static Cell GetCell(this Board board, int x,int y)
-        {
-            return board.Cells[x, y];
-        }
-        public static Cell GetCell(this Board board, Vector2Int position)
-        {
-            
-            return board.Cells[position.x, position.y];
-        }
-        public static Cell GetCell(this Cell[,] array, int x,int y)
-        {
-            return array[x, y];
-        }
-        public static Cell GetCell(this Cell[,] array, Vector2Int position)
-        {
-            return array[position.x, position.y];
-        }
-        
         public static float GetBoardBoundaryLeftX(this Cell[,] array)
         {
             return LevelGrid.Instance.GetCellCenterWorld(array[0,0].CellPosition).x-LevelGrid.Grid.cellSize.x;
@@ -45,6 +26,7 @@ namespace _Scripts.Utility
   
         public static bool IsInBoundaries(this Board board, Vector2Int pos)
         {
+        
             return pos.x >= 0 && pos.x < board.Width&& pos.y >= 0 && pos.y < board.Height;
         }
         public static bool IsInBoundaries(this Board board, int x,int y)
@@ -53,18 +35,18 @@ namespace _Scripts.Utility
         }
         public static IBoardItem GetItem(this Board board, int x,int y)
         {
-            if(board.Cells.GetCell(x,y).HasItem)
+            if(board.Cells[x,y].HasItem)
             {
-                return board.Cells.GetCell(x,y).BoardItem;
+                return board.Cells[x,y].BoardItem;
             }
           
             return null;
         }
         public static IBoardItem GetItem(this Board board ,Vector2Int position)
         {
-            if(board.IsInBoundaries(position)&&board.Cells.GetCell(position).HasItem)
+            if(board.IsInBoundaries(position)&&board.Cells[position.x,position.y].HasItem)
             {
-                return board.Cells.GetCell(position).BoardItem;
+                return board.Cells[position.x,position.y].BoardItem;
             }
 
             return null;
@@ -99,11 +81,7 @@ namespace _Scripts.Utility
                 new Vector2Int(pos.x - 1, pos.y)  // Left
             };
         }
-
         #endregion
-        
-        
-        
 
     }
 }
