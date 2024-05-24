@@ -1,92 +1,294 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using _Scripts.Data_Classes;
 using _Scripts.Utility;
-using JetBrains.Annotations;
+using Cysharp.Threading.Tasks;
+using DefaultNamespace;
+using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using Rimaethon.Scripts.Utility;
 using Scripts;
-using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace _Scripts.Managers
 {
     public class LevelManager:Singleton<LevelManager>
     {
         [SerializeField] private ItemDatabaseSO itemDatabase;
-        [ValueDropdown("GetNormalItemIds")]
-        [SerializeField] private List<int> goalIds = new List<int>();
-        private readonly Dictionary<int,List<Vector2Int>> _goals = new Dictionary<int, List<Vector2Int>>();
-        private IEnumerable<ValueDropdownItem<int>> GetNormalItemIds()
+        [SerializeField] private GameObject boardPrefab;
+        [SerializeField] private GameObject backgroundPrefab;
+        [SerializeField] private bool shouldGenerateRandomLevel;
+        [SerializeField] private RandomLevelGenerator randomLevelGenerator;
+        private Dictionary<int,List<IBoardItem>> _goalPositions = new Dictionary<int, List<IBoardItem>>();
+        private Dictionary<int,int> _goalCounts= new Dictionary<int, int>();
+        private readonly List<Board> _boards=new List<Board>();
+        private int _moveCount=20;
+        private bool _isLevelSet;
+        private LevelData _levelData;
+        private EventData _mainEvent;
+        private bool _hasMainEvent;
+        public readonly HashSet<int> ItemsGettingMatchedByLightBall = new HashSet<int>();
+        private const float BoardStretchAmount = -1f;
+        private float initialXPos;
+        public bool DoesBoardHasThingsToDo;
+        private bool isLevelCompleted;
+
+        protected override void Awake()
         {
-            foreach (var item in itemDatabase.NormalItems)
-            {
-                yield return new ValueDropdownItem<int>(item.Value.ItemPrefab.name, item.Key);
-            }
+            base.Awake();
+            GC.Collect();
         }
 
         private void OnEnable()
         {
-            EventManager.Instance.AddHandler<Board>(GameEvents.FindGoals, CheckGoal);
+            EventManager.Instance.AddHandler<Vector2Int,int>(GameEvents.OnItemExplosion, HandleItemExplosion);
+            EventManager.Instance.AddHandler<int>(GameEvents.OnMoveCountChanged, HandleMoveCount);
         }
-        
         private void OnDisable()
         {
             if(EventManager.Instance==null)
                 return;
-            EventManager.Instance.RemoveHandler<Board>(GameEvents.FindGoals, CheckGoal);
+            EventManager.Instance.RemoveHandler<Vector2Int,int>(GameEvents.OnItemExplosion, HandleItemExplosion);
+            EventManager.Instance.RemoveHandler<int>(GameEvents.OnMoveCountChanged, HandleMoveCount);
         }
 
-
-        private void CheckGoal(Board board)
+        private void Start()
         {
-            foreach (var id in goalIds)
-            {
-                _goals.Add(id, new List<Vector2Int>());
-            }
+            _levelData=SaveManager.Instance.GetCurrentLevelData();
+            _hasMainEvent = SaveManager.Instance.HasMainEvent();
+            if (_hasMainEvent)
+                _mainEvent = SaveManager.Instance.GetMainEventData();
+            _isLevelSet = true;
+            InitializeLevel().Forget();
+        }
+        //Actually It would be better to have a specified logic for where to put Cloche or user added boosters but it is not in the scope of this project
+        private async UniTask InitializeLevel()
+        {
+            EventManager.Instance.Broadcast(GameEvents.OnPlayerInputLock);
 
-            for (int i = 0; i < board.Width; i++)
+            SpriteRenderer backgroundSpriteRenderer= Instantiate(backgroundPrefab, Vector3.zero,Quaternion.identity).GetComponent<SpriteRenderer>();
+            if(shouldGenerateRandomLevel)
             {
-                for (int j = 0; j < board.Height; j++)
+                GameObject boardInstance=Instantiate(boardPrefab, transform.position, Quaternion.identity);
+                boardInstance.transform.SetParent(transform);
+                Board board = randomLevelGenerator.GenerateRandomBoard(backgroundSpriteRenderer, boardInstance);
+                _boards.Add(board);
+                _goalPositions = randomLevelGenerator._goalPositions;
+                _goalCounts = randomLevelGenerator._goalCounts;
+                boardInstance.GetComponent<BoardManager>().InitializeBoard(board);
+            }
+            else if(_isLevelSet)
+            {
+                HashSet<int> spawnAbleItems =_levelData.SpawnAbleFillerItemIds.ToHashSet();
+                spawnAbleItems.AddRange(_levelData.GoalSaveData.GoalIDs.ToList());
+                backgroundSpriteRenderer.sprite= itemDatabase.Backgrounds[_levelData.backgroundID];
+                await ObjectPool.Instance.InitializeStacks(spawnAbleItems,25,15,_mainEvent.eventObjectiveID);
+                foreach (var  boardData in _levelData.Boards)
                 {
-
-                    Cell cell = board.GetCell(i, j);
-                    Vector2Int pos = new Vector2Int(i, j);
-                    if (cell.HasItem && _goals.ContainsKey(cell.Item.ItemID))
+                    GameObject boardInstance=Instantiate(boardPrefab, transform.position, Quaternion.identity);
+                    boardInstance.transform.SetParent(transform);
+                    Board board= new Board(itemDatabase.GetBoardSpriteData(boardData.BoardSpriteID),boardData,boardInstance,_levelData.SpawnAbleFillerItemIds);
+                    _boards.Add(board);
+                    boardInstance.GetComponent<BoardManager>().InitializeBoard(board);
+                    randomLevelGenerator.InitializeGoalDictionaries(board,_levelData.GoalSaveData.GoalIDs.ToList(),_goalPositions,_goalCounts);
+                    for(int i=0;i<_levelData.GoalSaveData.GoalAmounts.Length;i++)
                     {
-                        _goals[cell.Item.ItemID].Add(pos);
+                        _goalCounts[_levelData.GoalSaveData.GoalIDs[i]]=_levelData.GoalSaveData.GoalAmounts[i];
                     }
-
-                    if (cell.HasUnderLayItem && _goals.ContainsKey(cell.UnderLayItem.ItemID))
-                    {
-                        _goals[cell.UnderLayItem.ItemID].Add(pos);
-                    }
-
-                    if (cell.HasOverLayItem && _goals.ContainsKey(cell.OverLayItem.ItemID))
-                    {
-                        _goals[cell.OverLayItem.ItemID].Add(pos);
-
-                    }
-                    Debug.Log("Goal Check");
                 }
+                _moveCount = _levelData.MoveCount;
             }
-            foreach (var id in goalIds)
+            Vector3 boardInitialOffset= new Vector3(2.5f, transform.position.y, transform.position.z);
+            initialXPos = transform.position.x;
+            transform.position=boardInitialOffset;
+            await InGameUIManager.Instance.HandleGoalAndPowerUpUI(_goalCounts,_moveCount);
+            await HandleBoardAnimation();
+        }
+        private async UniTask HandleBoardAnimation()
+        {
+            await UniTask.Delay(400);
+            await transform.DOMoveX(initialXPos + BoardStretchAmount, 0.4f).SetUpdate(UpdateType.Fixed).SetEase(Ease.InOutSine).ToUniTask();
+            await transform.DOMoveX(initialXPos, 0.2f).SetUpdate(UpdateType.Fixed).SetEase(Ease.InOutSine).ToUniTask();
+            await UniTask.Delay(200);
+            List<int> boostersUsedThisLevel=SceneController.Instance.GetBoostersUsedThisLevel();
+            if (boostersUsedThisLevel != null)
             {
-                if (_goals[id].Count == 0)
-                    _goals.Remove(id);
+                HashSet<Vector2Int> spawnablePositions = GetRandomSpawnablePos(boostersUsedThisLevel.Count);
+    
+                foreach (var boosterID in boostersUsedThisLevel )
+                {
+                    Vector2Int spawnPos = spawnablePositions.First();
+                    EventManager.Instance.Broadcast(GameEvents.OnItemRemoval, spawnPos);
+                    EventManager.Instance.Broadcast<Vector2Int,int>(GameEvents.AddItemToAddToBoard, spawnPos, boosterID);
+                    spawnablePositions.Remove(spawnPos);
+                    await UniTask.Delay(200);
+                }
+                boostersUsedThisLevel.Clear();
             }
-
-            EventManager.Instance.Broadcast<Dictionary<int, List<Vector2Int>>>(GameEvents.OnGoalInitialization, _goals);
-            Debug.Log("Goals Initialized");
+            EventManager.Instance.Broadcast(GameEvents.OnPlayerInputUnlock);
         }
         
+        private void HandleMoveCount(int valueToAdd)
+        {
+            _moveCount+=valueToAdd;
+            if (_moveCount > 0) return;
+            AudioManager.Instance.PlaySFX(SFXClips.LevelLoseSound);
+            EventManager.Instance.Broadcast(GameEvents.OnNoMovesLeft);
+        }
+        public bool IsGoalReached(int itemID)
+        {
+            return _goalCounts[itemID] <= 0;
+        }
+        private void HandleItemExplosion(Vector2Int pos,int itemID)
+        {
+            if (_goalCounts.ContainsKey(itemID))
+            {
+                IBoardItem boardItem;
+                if (_boards[0].Cells[pos.x, pos.y].HasItem && _boards[0].Cells[pos.x, pos.y].BoardItem.ItemID == itemID)
+                {
+                    boardItem = _boards[0].Cells[pos.x, pos.y].BoardItem;
+                }else if (_boards[0].Cells[pos.x, pos.y].HasUnderLayItem && _boards[0].Cells[pos.x, pos.y].UnderLayBoardItem.ItemID == itemID)
+                {
+                    boardItem = _boards[0].Cells[pos.x, pos.y].UnderLayBoardItem;
+                }
+                else
+                {
+                    return;
+                }                
+                if (_goalCounts[itemID] > 0)
+                {
+                    _goalCounts[itemID]--;
+                    if (!boardItem.IsGeneratorItem)
+                    {
+                        _goalPositions[boardItem.ItemID].Remove(boardItem);
+                    }
+                    EventManager.Instance.Broadcast<int,int>(GameEvents.OnGoalUIUpdate, boardItem.ItemID, _goalCounts[boardItem.ItemID]);
+                    if (_goalCounts[boardItem.ItemID] == 0)
+                    {
+                        if (boardItem.IsGeneratorItem)
+                        {
+                            _goalPositions[boardItem.ItemID].Clear();
+                        }
+                        CheckForLevelCompletion();
+                        
+                    }
+
+                }
+            }
+         
+        }
+        private void CheckForLevelCompletion()
+        {
+            if(isLevelCompleted)
+                return;
+            if (_goalCounts.Values.All(count => count == 0))
+            {
+                isLevelCompleted = true;
+                HandleCompletion().Forget();
+            }
+            
+        }
+        private async UniTask HandleCompletion()
+        {
+            EventManager.Instance.Broadcast(GameEvents.OnPlayerInputLock);
+            EventManager.Instance.Broadcast(GameEvents.OnBoardLock);
+            await UniTask.Delay( 500);
+            while (DoesBoardHasThingsToDo)
+            {
+                await UniTask.Delay( 100);
+            }
+            EventManager.Instance.Broadcast(GameEvents.OnLevelCompleted);
+            EventManager.Instance.Broadcast(GameEvents.OnPlayerInputUnlock);
+        }
+  
+        //To Accommodate Power Up usage in multiple board levels I believe its best to put these methods here instead of BoardManager
+        public bool IsValidPosition(Vector2Int pos)
+        {
+            foreach (var board in _boards)
+            {
+                if (board.IsInBoundaries(pos))
+                {
+                    
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        public Board GetBoard(Vector2Int pos)
+        {
+            foreach (var board in _boards)
+            {
+                if (board.IsInBoundaries(pos))
+                {
+                    return board;
+                }
+            }
+
+            return null;
+        }
+        public void CheckHammerHit(Vector2Int pos)
+        {
+            foreach (var board in _boards)
+            {
+                if (!board.IsInBoundaries(pos)) continue;
+                if (board.Cells[pos.x, pos.y].HasItem)
+                {
+
+                    IBoardItem item = board.GetItem(pos);
+                    item.OnExplode();
+                }
+            }
+        }
+        
+        //https://youtu.be/iSaTx0T9GFw?t=3697 as can be seen in here cells that has underlay item is considered valid position so I will do the same.
+        public HashSet<Vector2Int> GetRandomSpawnablePos(int numberOfPositions)
+        {
+            int maxTries = 30 * numberOfPositions; // Increase max tries based on number of positions needed
+            HashSet<Vector2Int> spawnablePositions = new HashSet<Vector2Int>(); // Use HashSet to ensure uniqueness
+
+            foreach (var board in _boards)
+            {
+                while (maxTries > 0 && spawnablePositions.Count < numberOfPositions)
+                {
+                    maxTries--;
+                    Cell cell = board.Cells[Random.Range(0, board.Width), Random.Range(0, board.Height)];
+                    if (cell.HasItem && cell.BoardItem.IsShuffleAble && !cell.HasOverLayItem&&!cell.BoardItem.IsMoving && !cell.BoardItem.IsBooster&&
+                        !cell.BoardItem.IsExploding && !cell.BoardItem.IsMoving &&
+                        !cell.IsLocked && !cell.BoardItem.IsMatching&&cell.BoardItem.IsActive)
+                    {
+                        spawnablePositions.Add(cell.CellPosition); // Add position to HashSet
+                    }
+                }
+            }
+            if (spawnablePositions.Count < numberOfPositions)
+            {
+                Debug.LogWarning("Could not find enough unique spawnable positions.");
+            }
+            return spawnablePositions; 
+        }
+        //Actually this part deserves its own class with specialized methods for finding suitable goal areas for TNT and rockets such as finding most goals in a column for vertical rocket.
+        //So that player doesn't feel like missile is making bad and unpredictable decisions
         public Vector2Int GetRandomGoalPos()
         {
-            foreach (var goalID in  _goals.Keys)
+            foreach (var goalList in  _goalPositions.Values)
             {
-               if (_goals[goalID].Count > 0)
+               if (goalList.Count > 0)
                { 
-                   return _goals[goalID][UnityEngine.Random.Range(0, _goals[goalID].Count)];
+                   Vector2Int goalPos = goalList[UnityEngine.Random.Range(0, goalList.Count)].Position;
+                   return goalPos;
                }
+            }
+            foreach (var board in _boards)
+            {
+                foreach (var cell in board.Cells)
+                {
+                    if(cell.HasItem)
+                        return cell.CellPosition;
+                }
             }
             return new Vector2Int(-1, -1);
         }
