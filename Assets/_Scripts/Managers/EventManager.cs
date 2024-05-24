@@ -1,146 +1,135 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Rimaethon.Scripts.Utility;
-using UnityEngine;
 
 namespace Rimaethon.Scripts.Managers
 {
     public class EventManager : PersistentSingleton<EventManager>
     {
-        #region Fields And Properties
-        private readonly Dictionary<GameEvents, List<Delegate>> _eventHandlers = new();
-        [SerializeField] private bool showEventNames; 
-        #endregion
-
-
-        #region Unity Methods
-
-        [SerializeField] private List<string> eventNames = new();
-
-        private void Start()
-        {
-            if (!showEventNames) return;
-            foreach (var events in _eventHandlers.Keys)
-            {
-                eventNames.Add(events.ToString());
-                foreach (var value in _eventHandlers[events].ToList())
-                {
-                    Type type = value.Method.DeclaringType;
-                    if (type == null) continue;
-                    string className = type.Name;
-                    eventNames.Add(className+ "." + value.Method.Name);
-                }
-               
-            }
-
-        }
-
-        private void OnApplicationQuit()
-        {
-            _eventHandlers.Clear();
-            Debug.LogWarning("Event Manager is cleared");
-        }
-
-        #endregion
-
-        #region Event Handlers
+        private readonly Dictionary<GameEvents, HashSet<Action>> _actionHandlers = new();
+        private readonly Dictionary<GameEvents, HashSet<Action<object>>> _actionHandlersWithOneArg = new();
+        private readonly Dictionary<GameEvents, HashSet<Action<object, object>>> _actionHandlersWithTwoArgs = new();
+        private readonly Dictionary<GameEvents, HashSet<Action<object, object, object>>> _actionHandlersWithThreeArgs = new();
 
         public void AddHandler(GameEvents gameEvent, Action handler)
         {
-            if (!_eventHandlers.ContainsKey(gameEvent)) _eventHandlers[gameEvent] = new List<Delegate>();
+            if (!_actionHandlers.ContainsKey(gameEvent)) _actionHandlers[gameEvent] = new HashSet<Action>();
 
-            _eventHandlers[gameEvent].Add(handler);
-            Debug.Log($"Added handler {handler.Method.Name} for game event {gameEvent}");
+            _actionHandlers[gameEvent].Add(handler);
         }
 
         public void AddHandler<T>(GameEvents gameEvent, Action<T> handler)
         {
-            if (!_eventHandlers.ContainsKey(gameEvent)) _eventHandlers[gameEvent] = new List<Delegate>();
+            if (!_actionHandlersWithOneArg.ContainsKey(gameEvent))
+                _actionHandlersWithOneArg[gameEvent] = new HashSet<Action<object>>();
 
-            _eventHandlers[gameEvent].Add(handler);
-            Debug.Log($"Added handler {handler.Method.Name} for game event {gameEvent}");
+            _actionHandlersWithOneArg[gameEvent].Add(arg => handler((T)arg));
         }
-        public void AddHandler<T,T1>(GameEvents gameEvent, Action<T,T1> handler)
+
+        public void AddHandler<T, T1>(GameEvents gameEvent, Action<T, T1> handler)
         {
-            if (!_eventHandlers.ContainsKey(gameEvent)) _eventHandlers[gameEvent] = new List<Delegate>();
+            if (!_actionHandlersWithTwoArgs.ContainsKey(gameEvent))
+                _actionHandlersWithTwoArgs[gameEvent] = new HashSet<Action<object, object>>();
 
-            _eventHandlers[gameEvent].Add(handler);
-            Debug.Log($"Added handler {handler.Method.Name} for game event {gameEvent}");
+            _actionHandlersWithTwoArgs[gameEvent].Add((arg1, arg2) => handler((T)arg1, (T1)arg2));
         }
+
+        public void AddHandler<T, T1, T2>(GameEvents gameEvent, Action<T, T1, T2> handler)
+        {
+            if (!_actionHandlersWithThreeArgs.ContainsKey(gameEvent))
+                _actionHandlersWithThreeArgs[gameEvent] = new HashSet<Action<object, object, object>>();
+
+            _actionHandlersWithThreeArgs[gameEvent].Add((arg1, arg2, arg3) => handler((T)arg1, (T1)arg2, (T2)arg3));
+        }
+
 
         public void RemoveHandler(GameEvents gameEvent, Action handler)
         {
-            if (_eventHandlers.TryGetValue(gameEvent, out var handlers))
+            if (_actionHandlers.ContainsKey(gameEvent))
             {
-                handlers.Remove(handler);
-                Debug.Log($"Removed handler {handler.Method.Name} for game event {gameEvent}");
-
-                if (handlers.Count == 0)
-                {
-                    _eventHandlers.Remove(gameEvent);
-                    Debug.Log($"No more handlers for game event {gameEvent}");
-                }
+                if(_actionHandlers[gameEvent].Count == 1)
+                    _actionHandlers[gameEvent] = new HashSet<Action>();
+                _actionHandlers[gameEvent].Remove(handler);
+                
             }
         }
 
         public void RemoveHandler<T>(GameEvents gameEvent, Action<T> handler)
         {
-            if (_eventHandlers.TryGetValue(gameEvent, out var handlers))
+            if (_actionHandlersWithOneArg.ContainsKey(gameEvent))
             {
-                handlers.Remove(handler);
-                Debug.Log($"Removed handler {handler.Method.Name} for game event {gameEvent}");
-
-                if (handlers.Count == 0)
+                if (_actionHandlersWithOneArg[gameEvent].Count == 1)
                 {
-                    _eventHandlers.Remove(gameEvent);
-                    Debug.Log($"No more handlers for game event {gameEvent}");
+                    _actionHandlersWithOneArg[gameEvent] = new HashSet<Action<object>>();
                 }
+                _actionHandlersWithOneArg[gameEvent].Remove(arg => handler((T)arg));
+             
             }
         }
-        public void RemoveHandler<T,T1>(GameEvents gameEvent, Action<T,T1> handler)
-        {
-            if (_eventHandlers.TryGetValue(gameEvent, out var handlers))
-            {
-                handlers.Remove(handler);
-                Debug.Log($"Removed handler {handler.Method.Name} for game event {gameEvent}");
 
-                if (handlers.Count == 0)
-                {
-                    _eventHandlers.Remove(gameEvent);
-                    Debug.Log($"No more handlers for game event {gameEvent}");
-                }
+        public void RemoveHandler<T, T1>(GameEvents gameEvent, Action<T, T1> handler)
+        {
+            if (_actionHandlersWithTwoArgs.ContainsKey(gameEvent))
+            {
+                if( _actionHandlersWithTwoArgs[gameEvent].Count == 1)
+                    _actionHandlersWithTwoArgs[gameEvent] = new HashSet<Action<object, object>>();
+                _actionHandlersWithTwoArgs[gameEvent].Remove((arg1, arg2) => handler((T)arg1, (T1)arg2));
             }
         }
-        #endregion
 
-        #region Event Broadcasting
-
-        public void Broadcast(GameEvents gameEvents)
+        public void RemoveHandler<T, T1, T2>(GameEvents gameEvent, Action<T, T1, T2> handler)
         {
-            ProcessEvent(gameEvents);
+            if (_actionHandlersWithThreeArgs.ContainsKey(gameEvent))
+            {
+                if (_actionHandlersWithThreeArgs[gameEvent].Count == 1)
+                    _actionHandlersWithThreeArgs[gameEvent] = new HashSet<Action<object, object, object>>();
+                _actionHandlersWithThreeArgs[gameEvent]
+                    .Remove((arg1, arg2, arg3) => handler((T)arg1, (T1)arg2, (T2)arg3));
+            }
+        }
+
+        public void Broadcast(GameEvents gameEvent)
+        {
+            if (_actionHandlers.TryGetValue(gameEvent, out var handlers))
+            {
+                foreach (var handler in handlers)
+                {
+                    handler();
+                }
+            }
         }
 
         public void Broadcast<T>(GameEvents gameEvent, T arg)
         {
-            ProcessEvent(gameEvent, arg);
-        }
-
-        public void Broadcast<T,T1>(GameEvents gameEvent, T arg, T1 arg1)
-        {
-            ProcessEvent(gameEvent, arg, arg1);
-        }
-    
-        private void ProcessEvent(GameEvents gameEvents, params object[] args)
-        {
-            if (_eventHandlers.TryGetValue(gameEvents, out var eventHandler))
-                foreach (var handler in eventHandler)
+            if (_actionHandlersWithOneArg.TryGetValue(gameEvent, out var handlers))
+            {
+                foreach (var handler in handlers)
                 {
-                    handler.DynamicInvoke(args);
-                    //Debug.Log($"Broadcasted event {gameEvents} with arguments {string.Join(", ", args.Select(arg => arg.ToString()))} to handler {handler.Method.Name}");
+                    handler(arg);
                 }
+            }
         }
 
-        #endregion
+        public void Broadcast<T, T1>(GameEvents gameEvent, T arg1, T1 arg2)
+        {
+            if (_actionHandlersWithTwoArgs.TryGetValue(gameEvent, out var handlers))
+            {
+                foreach (var handler in handlers)
+                {
+                    handler(arg1, arg2);
+                }
+            }
+        }
+
+        public void Broadcast<T, T1, T2>(GameEvents gameEvent, T arg1, T1 arg2, T2 arg3)
+        {
+            if (_actionHandlersWithThreeArgs.TryGetValue(gameEvent, out var handlers))
+            {
+                foreach (var handler in handlers)
+                {
+                    handler(arg1, arg2, arg3);
+                }
+            }
+        }
     }
 }
