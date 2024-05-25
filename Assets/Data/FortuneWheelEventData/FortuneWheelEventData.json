@@ -1,7 +1,8 @@
-﻿{
+{
     "$id": 0,
     "$type": "0|_Scripts.UI.Events.FortuneWheelEventData, Assembly-CSharp",
-    "userSpinAmount": 38,
+    "userSpinAmount": 15,
     "eventStartTime": 1716650162,
-    "eventEndTime": 1716909362
+    "eventDuration": 7500,
+    "prizes": null
 }

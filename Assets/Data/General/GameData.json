@@ -1,6 +1,6 @@
-﻿{
+{
     "$id": 0,
     "$type": "0|_Scripts.Data_Classes.GameData, Assembly-CSharp",
     "Version": "1.0",
-    "NumberOfLevels": 4
+    "NumberOfLevels": 6
 }

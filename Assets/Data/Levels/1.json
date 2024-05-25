@@ -1,0 +1,503 @@
+﻿{
+    "$id": 0,
+    "$type": "0|DefaultNamespace.LevelData, Assembly-CSharp",
+    "isCastleLevel": false,
+    "CastleData": null,
+    "Boards": {
+        "$id": 1,
+        "$type": "1|System.Collections.Generic.List`1[[_Scripts.Data_Classes.BoardData, Assembly-CSharp]], mscorlib",
+        "$rlength": 1,
+        "$rcontent": [
+            {
+                "$id": 2,
+                "$type": "2|_Scripts.Data_Classes.BoardData, Assembly-CSharp",
+                "BoardPosition": {
+                    "$type": "3|UnityEngine.Vector3, UnityEngine.CoreModule",
+                    0,
+                    0,
+                    0
+                },
+                "NormalItemIds": {
+                    "$id": 3,
+                    "$type": "4|System.Int32[,], mscorlib",
+                    "$rlength": 80,
+                    "$rcontent": [
+                        "ranks": "8|10",
+                        9,
+                        9,
+                        9,
+                        9,
+                        9,
+                        9,
+                        9,
+                        9,
+                        4,
+                        4,
+                        9,
+                        4,
+                        3,
+                        0,
+                        3,
+                        0,
+                        0,
+                        3,
+                        3,
+                        1,
+                        9,
+                        3,
+                        0,
+                        4,
+                        3,
+                        3,
+                        1,
+                        2,
+                        4,
+                        0,
+                        9,
+                        2,
+                        0,
+                        1,
+                        1,
+                        0,
+                        1,
+                        2,
+                        3,
+                        1,
+                        9,
+                        3,
+                        3,
+                        0,
+                        0,
+                        3,
+                        4,
+                        3,
+                        4,
+                        0,
+                        9,
+                        0,
+                        1,
+                        1,
+                        0,
+                        3,
+                        2,
+                        3,
+                        1,
+                        1,
+                        9,
+                        2,
+                        0,
+                        0,
+                        2,
+                        2,
+                        0,
+                        4,
+                        3,
+                        4,
+                        9,
+                        9,
+                        9,
+                        9,
+                        9,
+                        9,
+                        9,
+                        9,
+                        3,
+                        3
+                    ]
+                },
+                "UnderlayItemIds": {
+                    "$id": 4,
+                    "$type": "5|System.Collections.Generic.Dictionary`2[[UnityEngine.Vector2Int, UnityEngine.CoreModule],[System.Int32, mscorlib]], mscorlib",
+                    "comparer": {
+                        "$id": 5,
+                        "$type": "6|System.Collections.Generic.GenericEqualityComparer`1[[UnityEngine.Vector2Int, UnityEngine.CoreModule]], mscorlib"
+                    },
+                    "$rlength": 42,
+                    "$rcontent": [
+                        {
+                            "$k": {
+                                "$type": "7|UnityEngine.Vector2Int, UnityEngine.CoreModule",
+                                1,
+                                1
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                1,
+                                2
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                1,
+                                3
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                1,
+                                4
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                1,
+                                5
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                1,
+                                6
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                1,
+                                7
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                2,
+                                1
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                2,
+                                2
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                2,
+                                3
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                2,
+                                4
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                2,
+                                5
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                2,
+                                6
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                2,
+                                7
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                3,
+                                1
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                3,
+                                2
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                3,
+                                3
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                3,
+                                4
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                3,
+                                5
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                3,
+                                6
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                3,
+                                7
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                4,
+                                1
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                4,
+                                2
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                4,
+                                3
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                4,
+                                4
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                4,
+                                5
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                4,
+                                6
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                4,
+                                7
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                5,
+                                1
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                5,
+                                2
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                5,
+                                3
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                5,
+                                4
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                5,
+                                5
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                5,
+                                6
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                5,
+                                7
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                6,
+                                1
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                6,
+                                2
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                6,
+                                3
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                6,
+                                4
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                6,
+                                5
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                6,
+                                6
+                            },
+                            "$v": 6
+                        },
+                        {
+                            "$k": {
+                                "$type": 7,
+                                6,
+                                7
+                            },
+                            "$v": 6
+                        }
+                    ]
+                },
+                "OverlayItemIds": {
+                    "$id": 6,
+                    "$type": 5,
+                    "comparer": $iref:5,
+                    "$rlength": 0,
+                    "$rcontent": [
+                    ]
+                },
+                "BoardSpriteID": 0
+            }
+        ]
+    },
+    "SpawnAbleFillerItemIds": {
+        "$id": 7,
+        "$type": "8|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib",
+        "$rlength": 5,
+        "$rcontent": [
+            0,
+            1,
+            2,
+            3,
+            4
+        ]
+    },
+    "GoalSaveData": {
+        "$id": 8,
+        "$type": "9|_Scripts.Data_Classes.GoalSaveData, Assembly-CSharp",
+        "GoalIDs": {
+            "$id": 9,
+            "$type": "10|System.Int32[], mscorlib",
+            "$plength": 2,
+            "$pcontent": [
+                9,
+                6
+            ]
+        },
+        "GoalAmounts": {
+            "$id": 10,
+            "$type": 10,
+            "$plength": 2,
+            "$pcontent": [
+                50,
+                42
+            ]
+        }
+    },
+    "backgroundID": 0,
+    "MoveCount": 30
+}

@@ -1,0 +1,167 @@
+{
+    "$id": 0,
+    "$type": "0|DefaultNamespace.LevelData, Assembly-CSharp",
+    "isCastleLevel": false,
+    "CastleData": null,
+    "Boards": {
+        "$id": 1,
+        "$type": "1|System.Collections.Generic.List`1[[_Scripts.Data_Classes.BoardData, Assembly-CSharp]], mscorlib",
+        "$rlength": 1,
+        "$rcontent": [
+            {
+                "$id": 2,
+                "$type": "2|_Scripts.Data_Classes.BoardData, Assembly-CSharp",
+                "BoardPosition": {
+                    "$type": "3|UnityEngine.Vector3, UnityEngine.CoreModule",
+                    0,
+                    0,
+                    0
+                },
+                "NormalItemIds": {
+                    "$id": 3,
+                    "$type": "4|System.Int32[,], mscorlib",
+                    "$rlength": 80,
+                    "$rcontent": [
+                        "ranks": "8|10",
+                        9,
+                        9,
+                        9,
+                        5,
+                        5,
+                        5,
+                        5,
+                        5,
+                        0,
+                        1,
+                        5,
+                        5,
+                        5,
+                        5,
+                        5,
+                        5,
+                        5,
+                        5,
+                        2,
+                        2,
+                        5,
+                        1,
+                        1,
+                        2,
+                        4,
+                        2,
+                        4,
+                        2,
+                        4,
+                        0,
+                        5,
+                        2,
+                        3,
+                        1,
+                        4,
+                        0,
+                        2,
+                        0,
+                        1,
+                        2,
+                        5,
+                        2,
+                        3,
+                        1,
+                        2,
+                        2,
+                        3,
+                        4,
+                        4,
+                        0,
+                        5,
+                        3,
+                        2,
+                        3,
+                        2,
+                        0,
+                        3,
+                        0,
+                        2,
+                        0,
+                        5,
+                        5,
+                        5,
+                        5,
+                        5,
+                        5,
+                        5,
+                        5,
+                        0,
+                        1,
+                        9,
+                        9,
+                        9,
+                        5,
+                        5,
+                        5,
+                        5,
+                        5,
+                        1,
+                        0
+                    ]
+                },
+                "UnderlayItemIds": {
+                    "$id": 4,
+                    "$type": "5|System.Collections.Generic.Dictionary`2[[UnityEngine.Vector2Int, UnityEngine.CoreModule],[System.Int32, mscorlib]], mscorlib",
+                    "comparer": {
+                        "$id": 5,
+                        "$type": "6|System.Collections.Generic.GenericEqualityComparer`1[[UnityEngine.Vector2Int, UnityEngine.CoreModule]], mscorlib"
+                    },
+                    "$rlength": 0,
+                    "$rcontent": [
+                    ]
+                },
+                "OverlayItemIds": {
+                    "$id": 6,
+                    "$type": 5,
+                    "comparer": $iref:5,
+                    "$rlength": 0,
+                    "$rcontent": [
+                    ]
+                },
+                "BoardSpriteID": 0
+            }
+        ]
+    },
+    "SpawnAbleFillerItemIds": {
+        "$id": 7,
+        "$type": "7|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib",
+        "$rlength": 5,
+        "$rcontent": [
+            0,
+            1,
+            2,
+            3,
+            4
+        ]
+    },
+    "GoalSaveData": {
+        "$id": 8,
+        "$type": "8|_Scripts.Data_Classes.GoalSaveData, Assembly-CSharp",
+        "GoalIDs": {
+            "$id": 9,
+            "$type": "9|System.Int32[], mscorlib",
+            "$plength": 2,
+            "$pcontent": [
+                9,
+                5
+            ]
+        },
+        "GoalAmounts": {
+            "$id": 10,
+            "$type": 9,
+            "$plength": 2,
+            "$pcontent": [
+                15,
+                30
+            ]
+        }
+    },
+    "backgroundID": 0,
+    "MoveCount": 20
+}
