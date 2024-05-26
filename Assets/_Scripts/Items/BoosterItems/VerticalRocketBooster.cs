@@ -6,49 +6,37 @@ using UnityEngine;
 
 namespace Scripts
 {
-    public class VerticalRocketBooster:ItemBase
+    public class VerticalRocketBooster:BoosterBoardItem
     {
-        VerticalRocketBoosterAction _action = new VerticalRocketBoosterAction();
         
-        private void OnEnable()
-        {
-            transform.localScale = Vector3.one;
-            _isBooster = true;
-            _isSwappable = true;
-            _isMatchable = false;
-            isFallAble = true;
-            IsActive = true;
-            _isExploding = false;
-            _isHighlightAble = true;
-            IsMoving = false;
-            IsMatching = false;
-
-        }
-
-
- 
+        
         public override void OnClick(Board board, Vector2Int pos)
         {
-            if(IsMoving||IsExploding)
+            if(IsMoving||IsExploding||_isClicked)
                 return;
+            _isClicked = true;
             OnExplode();
         }
-    
-        
+        public override void OnSwap(IBoardItem boardItem, IBoardItem otherBoardItem)
+        {
+            if(IsMoving||IsExploding||_isClicked)
+                return;
+            _isClicked = true;
+            OnExplode();
+        }
+
         public override void OnExplode()
         {
-            if(IsExploding)
+            if(IsExploding||!IsActive)
                 return;
             _isExploding= true;
-            _action.Execute(Board,Position,_itemID);
             OnRemove();
+            AudioManager.Instance.PlaySFX(SFXClips.Rocket);
+            EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,  Position,_itemID,-1);
         }
         public override void OnRemove()
         {
-            ObjectPool.Instance.ReturnItem(Item, ItemID);
             EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, Position);
         }
-
-
     }
 }
