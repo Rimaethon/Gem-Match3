@@ -1,62 +1,51 @@
 using System.Collections.Generic;
+using _Scripts.Managers;
 using _Scripts.Utility;
 using Rimaethon.Scripts.Managers;
 using Scripts;
 using Scripts.BoosterActions;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class LightBallBooster : ItemBase  
+public class LightBallBooster : BoosterBoardItem  
 {
-    private LightBallBoosterAction _action;
     private int _idToMatch;
 
-    private void OnEnable()
-    {
-        transform.localScale = Vector3.one;
-        _isBooster = true;
-        _isSwappable = true;
-        _isMatchable = false;
-        isFallAble = true;
-        IsActive = true;
-        _isExploding = false;
-        _isHighlightAble = true;
-        IsMoving = false;
-        IsMatching = false;
 
-    }
-
-    
     public override void OnClick(Board board, Vector2Int pos)
     {
-        if(IsMoving||IsExploding)
+        if(IsMoving||IsExploding||IsSwapping||_isClicked)
             return;
+        _isClicked = true;
+        _position = pos;
         OnExplode();
     }
-    public override void OnSwap(IItem item, IItem otherItem)
+    public override void OnSwap(IBoardItem boardItem, IBoardItem otherBoardItem)
     {
         if(IsMoving||IsExploding)
             return;
         _isExploding= true;
-        _idToMatch = otherItem.ItemID;
-        _action= new LightBallBoosterAction(Board,_itemID,_idToMatch,Position,2.0f,3f);
-        EventManager.Instance.Broadcast(GameEvents.AddActionToHandle, _action);
+        _idToMatch = otherBoardItem.ItemID;
         OnRemove();
+
+        EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,_position,_itemID,_idToMatch);
+        
     }
-    
     public override void OnExplode()
     {
-        if(IsExploding)
+        if(IsExploding||!IsActive)
             return;
-        _isExploding= true;
+        _isExploding= true; 
         FindMostCommonItem(Board);
-        _action= new LightBallBoosterAction(Board,_itemID,_idToMatch,Position,2.0f,3f);
-        EventManager.Instance.Broadcast(GameEvents.AddActionToHandle, _action);
         OnRemove();
+        if (_idToMatch == -1)
+            return;
+        EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,_position,_itemID,_idToMatch);
+
     }
     
     public override void OnRemove()
     {
-        ObjectPool.Instance.ReturnItem(Item, ItemID);
         EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, Position);
     }
     private void FindMostCommonItem(Board board)
@@ -80,15 +69,19 @@ public class LightBallBooster : ItemBase
                 }
             }
         }
-
         int max = 0;
+        _idToMatch = -1;
         foreach (var item in itemCounter)
         {
-            if (item.Value > max)
+            if (item.Value > max&& !LevelManager.Instance.ItemsGettingMatchedByLightBall.Contains(item.Key))
             {
                 max = item.Value;
                 _idToMatch = item.Key;
             }
+        }
+        if (_idToMatch != -1)
+        {
+            LevelManager.Instance.ItemsGettingMatchedByLightBall.Add(_idToMatch);
         }
     }
 
