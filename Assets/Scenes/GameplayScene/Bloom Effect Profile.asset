@@ -21,9 +21,9 @@ MonoBehaviour:
     m_Value: 1.65
   intensity:
     m_OverrideState: 1
-    m_Value: 50
+    m_Value: 40
   scatter:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 0.5
   clamp:
     m_OverrideState: 1
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
-  m_Name: LightBall Effect Profile
+  m_Name: Bloom Effect Profile
   m_EditorClassIdentifier: 
   components:
   - {fileID: -33798463823739686}
