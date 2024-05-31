@@ -20,7 +20,7 @@ namespace Rimaethon.Scripts.Utility
                 _instance = FindObjectOfType<T>();
 
                 if (_instance != null) return _instance;
-                return _instance;
+                return null;
             }
             protected set => _instance = value;
         }
@@ -37,11 +37,9 @@ namespace Rimaethon.Scripts.Utility
             if (this is T instance)
             {
                 Instance = instance;
-                Debug.Log($"Instance of type {typeof(T)} created.");
             }
             else
             {
-                Debug.LogError($"Instance of type {typeof(T)} could not be created.");
                 throw new InvalidOperationException($"Instance of type {typeof(T)} could not be created.");
             }
         }
@@ -60,9 +58,15 @@ namespace Rimaethon.Scripts.Utility
             if (this is T instance)
             {
                 if (Instance != null && Instance != this)
+                {
+                    Debug.LogWarning($"Instance of type {typeof(T)} already exists. Destroying {gameObject.name}.");
                     Destroy(gameObject);
+                }
                 else
+                {
                     Instance = instance;
+                }
+         
             }
             else
             {

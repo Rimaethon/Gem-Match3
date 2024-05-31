@@ -50,7 +50,7 @@ public class EventDataGenerator : MonoBehaviour
             eventObjectiveID = eventObjectiveSpriteID,
             eventRewardID = eventRewardSpriteID,
             eventStartUnixTime = ((DateTimeOffset)dateTime).ToUnixTimeSeconds(),
-            eventRemainingTimeInSecond = eventDurationM_H_D[0] * 60 + eventDurationM_H_D[1] * 3600 +
+            eventDuration = eventDurationM_H_D[0] * 60 + eventDurationM_H_D[1] * 3600 +
                                          eventDurationM_H_D[2] * 86400,
             eventProgressCount = _eventProgressCount,
             eventGoalCount = eventGoalCount,

@@ -30,18 +30,16 @@ namespace _Scripts.Utility
         {
             _tilemap = GetComponent<Tilemap>();
             _tilemap.CompressBounds();
-            _boardWidth = _tilemap.cellBounds.size.x;
-            _boardHeight = _tilemap.cellBounds.size.y;
             InitializeItemIDMatrix(_boardWidth, _boardHeight);
             foreach (Vector3Int pos in _tilemap.cellBounds.allPositionsWithin)
             {
-                int x = pos.x - _tilemap.cellBounds.x;
-                int y = pos.y - _tilemap.cellBounds.y;
+
                 TileBase tile = _tilemap.GetTile(pos);
                 if(tile==null)
                     continue;
                 var tileItem=tile as ItemTileDataSO;
-                ItemIDMatrix[x, _boardHeight - y - 1] = tileItem.gameObject.GetComponent<ItemBase>().ItemID;
+                Debug.Log("Tile Item: "+pos);
+                ItemIDMatrix[pos.x, pos.y] = tileItem.gameObject.GetComponent<BoardItemBase>().ItemID;
             }
         }
         public void InitializeItemIDMatrix(int width, int height)

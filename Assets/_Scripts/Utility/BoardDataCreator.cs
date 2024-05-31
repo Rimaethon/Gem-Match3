@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace _Scripts.Utility
 {
-    
     [RequireComponent(typeof(SpriteRenderer))][ExecuteInEditMode]
     public class BoardDataCreator:MonoBehaviour
     {
@@ -56,11 +55,10 @@ namespace _Scripts.Utility
         }
         public BoardData CreateBoardData()
         {
-            
             int[,] normalItemIds = normalItemIDMatrixCreator.ItemIDMatrix;
             Dictionary<Vector2Int,int> underlayItemIds= new Dictionary<Vector2Int,int>();
             Dictionary<Vector2Int,int> overlayItemIds= new Dictionary<Vector2Int,int>();
-            CreateDictionaryFromMatrix(normalItemIDMatrixCreator.ItemIDMatrix,underlayItemIds);
+            CreateDictionaryFromMatrix(overlayItemIDMatrixCreator.ItemIDMatrix,overlayItemIds);
             CreateDictionaryFromMatrix(underlayItemIDMatrixCreator.ItemIDMatrix,underlayItemIds);
             _board = new BoardData(BoardID,Vector3.zero, normalItemIds, underlayItemIds, overlayItemIds);
             return _board;
@@ -79,6 +77,5 @@ namespace _Scripts.Utility
                 }
             }
         }
-
     }
 }

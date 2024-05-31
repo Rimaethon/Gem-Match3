@@ -18,7 +18,7 @@ namespace Scripts
          minAnchor.x /= Screen.width;
          minAnchor.y = 0;
          maxAnchor.x /= Screen.width;
-         maxAnchor.y /= Screen.height;
+         maxAnchor.y /= Screen.height*1.1f;
          _rectTransform.anchorMin = minAnchor;
          _rectTransform.anchorMax = maxAnchor;
       }
