@@ -1,51 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using _Scripts.Utility;
-using Cysharp.Threading.Tasks;
-using Rimaethon.Scripts.Managers;
+﻿using Rimaethon.Scripts.Managers;
 using Scripts.BoosterActions;
 using UnityEngine;
 
 namespace Scripts
 {
-    public class TNTBooster:ItemBase
+    public class TNTBooster:BoosterBoardItem
     {
-        private TNTBoosterAction _tntBoosterAction = new TNTBoosterAction();
 
-        private void OnEnable()
+        public override void OnSwap(IBoardItem boardItem, IBoardItem otherBoardItem)
         {
-            transform.localScale = Vector3.one;
-            _isBooster = true;
-            _isSwappable = true;
-            _isMatchable = false;
-            isFallAble = true;
-            IsActive = true;
-            _isExploding = false;
-            _isHighlightAble = true;
-            IsMoving = false;
-            IsMatching = false;
-
+            if(IsMoving||IsExploding||_isClicked)
+                return;
+            _isClicked = true;
+            OnExplode();
         }
-
 
         public override void OnClick(Board board, Vector2Int pos)
         {
-            if(IsMoving||IsExploding)
+            if(IsMoving||IsExploding||_isClicked)
                 return;
+            _isClicked = true;
             OnExplode();
         }
         
         public override void OnExplode()
         {
-            if(IsExploding)
+            if(IsExploding||!IsActive)
                 return;
-            _isExploding= true;
-            _tntBoosterAction.Execute(Board,Position,_itemID);
+            _isExploding = true;
+            AudioManager.Instance.PlaySFX(SFXClips.TNTSound);
+            EventManager.Instance.Broadcast(GameEvents.AddActionToHandle, Position, _itemID, -1);
             OnRemove();
         }
         public override void OnRemove()
         {
-            ObjectPool.Instance.ReturnItem(Item, ItemID);
             EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, Position);
         }
      

@@ -1,56 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using _Scripts.Managers;
-using _Scripts.Utility;
+﻿using _Scripts.Managers;
 using Rimaethon.Scripts.Managers;
 using Scripts.BoosterActions;
 using UnityEngine;
 
 namespace Scripts
 {
-    public class MissileBooster:ItemBase
+    public class MissileBooster:BoosterBoardItem
     {
-        private MissileBoosterAction _action;
-
-        private void OnEnable()
+        public override void OnSwap(IBoardItem boardItem, IBoardItem otherBoardItem)
         {
-            transform.localScale = Vector3.one;
-            _isBooster = true;
-            _isSwappable = true;
-            _isMatchable = false;
-            isFallAble = true;
-            IsActive = true;
-            _isExploding = false;
-            _isHighlightAble = true;
-            IsMoving = false;
+            if(IsExploding||!IsActive)
+                return;
+            OnExplode();
         }
 
-    
         public override void OnClick(Board board, Vector2Int pos)
         {
-            if(IsMoving||IsExploding)
+            if(IsMoving||IsExploding||IsSwapping||_isClicked||IsMatching)
                 return;
+            _isClicked = true;
             OnExplode();
         }
         public override void OnExplode()
         {
-            if(IsExploding)
+            if(IsExploding||!IsActive)
                 return;
             _isExploding= true;
-            Vector2Int goalPos = LevelManager.Instance.GetRandomGoalPos();
-            if (goalPos is { x: -1, y: -1 })
-            {
-                return;
-            }
-            _action = new MissileBoosterAction(goalPos);
-            _action.Execute(Board, Position, _itemID);
             OnRemove();
+            EventManager.Instance.Broadcast(GameEvents.AddActionToHandle, Position, ItemID, -1);
+
         }
         public override void OnRemove()
         {
-            ObjectPool.Instance.ReturnItem(Item, ItemID);
-            EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, Position);
+            EventManager.Instance.Broadcast<Vector2Int>(GameEvents.AddItemToRemoveFromBoard, Position);
         }
     }
+    
+
 }
