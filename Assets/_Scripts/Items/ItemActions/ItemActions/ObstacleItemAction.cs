@@ -4,22 +4,16 @@ namespace Scripts.BoosterActions
 {
     public class ObstacleItemAction : IItemAction
     {
-        private readonly Board _board;
-        private readonly IBoardItem _boardItem;
-        private readonly float _explodeTime;
+        private readonly float _explodeTime=0.2f;
         private float _counter;
         public bool IsFinished { get; set; }
+        public int ItemID { get; set; }
+        public Board Board { get; set; }
 
-        public ObstacleItemAction(Board board, IBoardItem boardItem, float explodeTime, bool isMatch)
+        public void InitializeAction(Board board, Vector2Int pos, int value1, int value2)
         {
-            _boardItem = boardItem;
-            _board = board;
-            _explodeTime = explodeTime;
-        }
-
-        public void InitializeAction()
-        {
-            ObjectPool.Instance.GetItemParticleEffect(_boardItem.ItemID, _boardItem.Transform.position);
+            Board = board;
+            ObjectPool.Instance.GetItemParticleEffect(ItemID, LevelGrid.Instance.GetCellCenterWorld(pos));
         }
 
         public void Execute()
