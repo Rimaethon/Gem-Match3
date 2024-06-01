@@ -10,7 +10,8 @@ namespace Scripts
             isFallAble = false;
             _isMatchable = false;
             _isSwappable = false;
-            
+            _isProtectingUnderIt = true;
+            _isExplodeAbleByNearMatches = true;            
         }
         public override void OnExplode()
         {
