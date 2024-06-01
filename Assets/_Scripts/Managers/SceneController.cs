@@ -1,14 +1,12 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using _Scripts.Managers;
 using DefaultNamespace;
 using Rimaethon.Scripts.Managers;
 using Rimaethon.Scripts.Utility;
-using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using UnityEngine.Scripting;
 
 namespace Scripts
 {
@@ -23,12 +21,23 @@ namespace Scripts
             get;
             private set;
         }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            SceneManager.LoadScene(0);
+            
+            
+        }
         private void OnEnable()
         {
+            SceneManager.sceneUnloaded += OnSceneLoaded;
+
             EventManager.Instance.AddHandler(GameEvents.OnLevelButtonPressed, SwitchToGameScene);
             EventManager.Instance.AddHandler<int>(GameEvents.OnBoosterUsed, AddBoostersUsed);
             EventManager.Instance.AddHandler<int>(GameEvents.OnBoosterRemoved, RemoveBoostersUsed);
-            EventManager.Instance.AddHandler<IBoardItem,int>(GameEvents.OnMainEventGoalRemoval, HandleMainEventGoalRemoved);
+            EventManager.Instance.AddHandler<int,int>(GameEvents.OnMainEventGoalRemoval, HandleMainEventGoalRemoved);
+            EventManager.Instance.AddHandler(GameEvents.OnLevelRestart,HandleRestart);
             EventManager.Instance.AddHandler(GameEvents.OnLevelFailed, () =>
             {
                 CollectedItems.Clear();
@@ -40,20 +49,39 @@ namespace Scripts
                 IsLevelCompleted = true;
                 SceneManager.LoadScene(0);
             });
+            EventManager.Instance.AddHandler(GameEvents.OnLevelCompleted, () =>
+            {
+                IsLevelCompleted = true;
+            });
+        }
+
+        private void OnSceneLoaded(Scene arg0)
+        {
+            GC.Collect();
+        }
+    
+        private void HandleRestart()
+        {
+            CollectedItems.Clear();
+            IsLevelCompleted = false;
+            SceneManager.LoadScene(1);
         }
 
 
         private void OnDisable()
         {
+            SceneManager.sceneUnloaded -= OnSceneLoaded;
+
             if (EventManager.Instance == null) return;
             EventManager.Instance.RemoveHandler(GameEvents.OnLevelFailed, () => { SceneManager.LoadScene(0); });
             EventManager.Instance.RemoveHandler<int>(GameEvents.OnBoosterUsed, AddBoostersUsed);
             EventManager.Instance.RemoveHandler<int>(GameEvents.OnBoosterRemoved, RemoveBoostersUsed);
             EventManager.Instance.RemoveHandler(GameEvents.OnLevelButtonPressed, SwitchToGameScene);
-            EventManager.Instance.RemoveHandler<IBoardItem,int>(GameEvents.OnMainEventGoalRemoval, HandleMainEventGoalRemoved);
+            EventManager.Instance.RemoveHandler<int,int>(GameEvents.OnMainEventGoalRemoval, HandleMainEventGoalRemoved);
             EventManager.Instance.RemoveHandler(GameEvents.OnReturnToMainMenu, () =>
             {
                 SceneManager.LoadScene(0);
+                
             });
         }
 
@@ -67,11 +95,8 @@ namespace Scripts
                 return null; 
             // Create a copy of the list
             List<int> boostersUsedCopy = new List<int>(_boostersUsedThisLevel.ToList());
-
-            Debug.Log("Boosters Used This Level: " + boostersUsedCopy.Count);
             // Clear the original list
             _boostersUsedThisLevel.Clear();
-
             // Return the copy
             return boostersUsedCopy;
         }
@@ -83,15 +108,15 @@ namespace Scripts
         {
             _boostersUsedThisLevel.Remove(boosterId);
         }
-        private void HandleMainEventGoalRemoved(IBoardItem item, int amount)
+        private void HandleMainEventGoalRemoved(int itemID, int amount)
         {
-            if (CollectedItems.ContainsKey(item.ItemID))
+            if (CollectedItems.ContainsKey(itemID))
             {
-                CollectedItems[item.ItemID] += amount;
+                CollectedItems[itemID] += amount;
             }
             else
             {
-                CollectedItems.Add(item.ItemID, amount);
+                CollectedItems.Add(itemID, amount);
             }
         }
         
