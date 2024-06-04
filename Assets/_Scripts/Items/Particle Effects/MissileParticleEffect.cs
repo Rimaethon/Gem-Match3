@@ -6,9 +6,8 @@ namespace Scripts
     public class MissileParticleEffect:BoosterParticleEffect
     {
         public GameObject missileShadow;
-        public GameObject missileHitEffect;
-        public GameObject missileSprite;
+        public GameObject hitPoint;
+        public GameObject missileCompany;
 
-   
     }
 }
