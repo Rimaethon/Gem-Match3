@@ -28,8 +28,6 @@ namespace _Scripts.Managers
         private int _moveCount=20;
         private bool _isLevelSet;
         private LevelData _levelData;
-        private EventData _mainEvent;
-        private bool _hasMainEvent;
         public readonly HashSet<int> ItemsGettingMatchedByLightBall = new HashSet<int>();
         private const float BoardStretchAmount = -1f;
         private float initialXPos;
@@ -58,9 +56,7 @@ namespace _Scripts.Managers
         private void Start()
         {
             _levelData=SaveManager.Instance.GetCurrentLevelData();
-            _hasMainEvent = SaveManager.Instance.HasMainEvent();
-            if (_hasMainEvent)
-                _mainEvent = SaveManager.Instance.GetMainEventData();
+    
             _isLevelSet = true;
             InitializeLevel().Forget();
         }
@@ -85,7 +81,7 @@ namespace _Scripts.Managers
                 HashSet<int> spawnAbleItems =_levelData.SpawnAbleFillerItemIds.ToHashSet();
                 spawnAbleItems.AddRange(_levelData.GoalSaveData.GoalIDs.ToList());
                 backgroundSpriteRenderer.sprite= itemDatabase.Backgrounds[_levelData.backgroundID];
-                await ObjectPool.Instance.InitializeStacks(spawnAbleItems,25,15,_mainEvent.eventObjectiveID);
+                await ObjectPool.Instance.InitializeStacks(spawnAbleItems,25,15);
                 foreach (var  boardData in _levelData.Boards)
                 {
                     GameObject boardInstance=Instantiate(boardPrefab, transform.position, Quaternion.identity);

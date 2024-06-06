@@ -84,6 +84,9 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
         {
             _mainEvent=LoadFromJson<EventData>(eventDataFolder+eventDataName+Extension);
             _hasMainEvent = true;
+        }else
+        {
+           Debug.LogError("Main Event Data is missing");
         }
 #if UNITY_EDITOR
         if (shouldStartFromSpecificLevel)
@@ -345,7 +348,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
     public void SaveMainEventData(EventData eventData)
     {
         _mainEvent = eventData;
-        SaveToJson(_mainEvent, eventDataFolder + eventDataName + Extension);
+        SaveToJson(_mainEvent, eventDataFolder + eventDataName );
     }
 
     #endregion

@@ -26,7 +26,7 @@ public class ObjectPool : Singleton<ObjectPool>
     public GameObject lightBallLightBallEffect;
     private bool _isInitialized;
     
-    public async UniTask InitializeStacks(HashSet<int> spawnAbleItems,int itemAmount,int boosterAmount,int mainEventID)
+    public async UniTask InitializeStacks(HashSet<int> spawnAbleItems,int itemAmount,int boosterAmount)
     {
         if (_isInitialized)
             return;
@@ -47,7 +47,8 @@ public class ObjectPool : Singleton<ObjectPool>
         await AddItemsToPool(_boosterCreationEffects, _ => itemDatabase.boosterCreationEffect, 0, boosterAmount);
         await AddItemsToPool(_missileHitEffects, _ => itemDatabase.missileHitEffect, 0, boosterAmount);
         await AddItemsToPool(_missileExplosionEffects, _ => itemDatabase.missileExplosionEffect, 0, boosterAmount);
-        await AddMainEventUIEffect(itemAmount,mainEventID);
+        if(SaveManager.Instance.HasMainEvent())
+            await AddMainEventUIEffect(itemAmount,SaveManager.Instance.GetMainEventData().eventObjectiveID);
         foreach (int key in itemDatabase.Boosters.Keys)
         {
             if(key>104)
