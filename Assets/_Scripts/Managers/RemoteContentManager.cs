@@ -13,8 +13,6 @@ namespace DefaultNamespace
         {
             AmazonS3Config s3Config = new AmazonS3Config();
             s3Config.RegionEndpoint = Amazon.RegionEndpoint.USEast1;
-            
-           
         }
         
         public async UniTask GetObjects()
@@ -24,7 +22,6 @@ namespace DefaultNamespace
                 BucketName = "match3contentbucket",
                 Key = "Level1.json"
             };
-
             S3Client.GetObjectAsync(request, (response) =>
             {
                 using (Stream responseStream = response.Response.ResponseStream)
@@ -35,7 +32,6 @@ namespace DefaultNamespace
                 }
             });
             await UniTask.Yield();
-          
         }
         
     }

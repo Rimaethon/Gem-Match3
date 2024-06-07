@@ -1,11 +1,8 @@
 ﻿using _Scripts.Managers.Matching;
 using _Scripts.Utility;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using Scripts;
-using Scripts.BoosterActions;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace _Scripts.Core
@@ -18,7 +15,7 @@ namespace _Scripts.Core
         private  Board _board;
         private  MatchChecker _matchChecker;
         private bool _isSwiping;
-        private bool isDisabled;
+        private bool _isDisabled;
 
         public InputHandler(Board board,MatchChecker matchChecker)
         {
@@ -31,7 +28,7 @@ namespace _Scripts.Core
         }
         public void OnDisable()
         {
-            isDisabled = true;
+            _isDisabled = true;
             _board = null;
             _matchChecker = null;
             _isSwipedThisFrame = false;
@@ -48,7 +45,7 @@ namespace _Scripts.Core
         }
         public void HandleInputs()
         {
-            if (isDisabled)
+            if (_isDisabled)
             {
                 return;
             }
@@ -160,7 +157,7 @@ namespace _Scripts.Core
         }
         private  void OnSwipe(Vector2Int direction, Vector2 clickPos)
         {
-            if (isDisabled)
+            if (_isDisabled)
             {
                 return;
             }
@@ -218,7 +215,7 @@ namespace _Scripts.Core
         }
         private void OnTouch(Vector2 touchPos)
         {
-            if (isDisabled)
+            if (_isDisabled)
             {
                 return;
             }
