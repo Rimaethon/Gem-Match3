@@ -21,9 +21,11 @@ namespace Rimaethon.Runtime.UI
         {
             _hasMainEvent = SaveManager.Instance.HasMainEvent();
             if (_hasMainEvent)
+            {
                 _mainEvent = SaveManager.Instance.GetMainEventData();
+                _mainEventID = _mainEvent.eventObjectiveID;
+            }
             _boosterCanvas = GetComponent<Canvas>();
-            _mainEventID = _mainEvent.eventObjectiveID;
             _boosterCanvasRectTransformSizeDelta= GetComponent<RectTransform>().sizeDelta;
         }
         private void OnEnable()
