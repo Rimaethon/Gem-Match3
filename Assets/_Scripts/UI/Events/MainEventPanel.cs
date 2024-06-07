@@ -34,7 +34,7 @@ namespace Rimaethon.Runtime.UI
                 InitializeEvent();
             }
         }
-
+        
         public void OnTimeUpdate(long currentTime)
         {
             GetRemainingTime(currentTime);
