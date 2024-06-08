@@ -26,7 +26,6 @@ namespace _Scripts.Core
 
         }
 
-        //This shouldn't work every frame and it wasn't before. But obstacles made my dirty column logic useless. 
         public bool MoveItems()
         {
             bool isAnyItemMoving = false;
@@ -44,7 +43,6 @@ namespace _Scripts.Core
                         isAnyItemMovingInColumn = true;
                         continue;
                     }
-//                    Debug.Log("Checking cell " + x+" "+y+" "+_board.GetCell(x,y).HasItem+" "+_board.GetItem(x,y).IsActive+" "+_board.GetCell(x,y).BoardItem.IsSwapping+" "+_board.GetItem(x,y).IsExploding+" "+_board.GetItem(x,y).IsMatching);
                     if (_board.Cells[x, y].BoardItem.IsSwapping || _board.GetItem(x, y).IsExploding ||
                         _board.GetItem(x, y).IsMatching)
                     {
@@ -124,7 +122,6 @@ namespace _Scripts.Core
                      IsItemCloseToTarget(newPos, targetPos, LevelGrid.Grid.cellSize.x) &&
                      !_board.Cells[target.x, target.y].HasItem)
             {
-                //           Debug.Log(x+" "+y+" changed with "+target.x+" "+target.y+" and it was null "+_board.GetCell(target).HasItem);
                 _board.Cells[target.x, target.y].SetItem(_board.GetItem(x, y));
                 _board.Cells[x, y].SetIsGettingEmptied(false);
                 _board.Cells[target.x, target.y].SetIsGettingFilled(false);
@@ -135,7 +132,6 @@ namespace _Scripts.Core
 
         private void GiveTargetToItem(int x, int y, int targetX, int targetY)
         {
-            //         Debug.Log("Adding position to queue "+x+" "+y+" to "+targetX+" "+targetY+" "+_board.GetCell(targetX,targetY).HasItem+" "+_board.GetCell(targetX,targetY).IsGettingFilled+" "+_board.GetCell(targetX,targetY).IsGettingEmptied);
             _board.GetItem(x, y).TargetToMove = new Vector2Int(targetX, targetY);
             _board.Cells[targetX, targetY].SetIsGettingFilled(true);
             _board.GetItem(x, y).IsMoving = true;
@@ -208,7 +204,6 @@ namespace _Scripts.Core
         {
             if (_board.Cells[x,y-1].IsLocked)
                 return false;
-//            Debug.Log(_board.Cells[x,y-1].HasItem+" "+_board.Cells[x,y-1].IsGettingFilled+" "+_board.Cells[x,y-1].IsGettingEmptied+" "+x+" "+(y-1));
             return (!_board.Cells[x,y-1].HasItem && !_board.Cells[x,y-1].IsGettingFilled) ||
                    (_board.Cells[x,y-1].HasItem && _board.Cells[x,y-1].IsGettingEmptied);
         }

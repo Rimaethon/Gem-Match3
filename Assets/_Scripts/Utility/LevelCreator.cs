@@ -21,25 +21,25 @@ namespace _Scripts.Editor
         [FoldoutGroup("Save Settıngs")]
         [SerializeField] private string levelDataPath = "Assets/Data/Levels/";
         [FoldoutGroup("Save Settıngs")]
-        [SerializeField] string Extension = ".json";
+        [SerializeField] private string extension = ".json";
         [FoldoutGroup("Save Settıngs")]
         [SerializeField] DataFormat dataFormat=DataFormat.JSON;
         [FoldoutGroup("Save Settıngs")]
         [SerializeField] private bool ifExistsDoNotGenerate;
         [FoldoutGroup("References")]
-        private List<BoardDataCreator> boardDataCreators;
+        private List<BoardDataCreator> _boardDataCreators;
         [FoldoutGroup("References")]
         [SerializeField] private ItemDatabaseSO itemDatabase;
         [ValueDropdown("GetNormalItemIds")]
-        [SerializeField] private List<int> GoalIds = new List<int>();
-        [SerializeField] private List<int> GoalCounts = new List<int>();
+        [SerializeField] private List<int> goalIds = new List<int>();
+        [SerializeField] private List<int> goalCounts = new List<int>();
         [ValueDropdown("GetNormalItemIds")]
-        [SerializeField] private List<int> _spawnAbleFillerItemIds = new List<int>();
+        [SerializeField] private List<int> spawnAbleFillerItemIds = new List<int>();
         [Tooltip("Write -1 if unlimited, this is specifically for spawning certain amount goals ")]
-        [SerializeField] private List<int> _spawnAbleFillerItemCounts = new List<int>();
+        [SerializeField] private List<int> spawnAbleFillerItemCounts = new List<int>();
         [SerializeField] private int levelID;
-        [SerializeField] private int MoveCount;
-        [SerializeField] private int BackgroundID=0;
+        [SerializeField] private int moveCount;
+        [SerializeField] private int backgroundID;
         
         private IEnumerable<ValueDropdownItem<int>> GetNormalItemIds()
         {
@@ -52,31 +52,31 @@ namespace _Scripts.Editor
         [Button]
         public void CreateLevelData()
         {
-            boardDataCreators = gameObject.GetComponentsInChildren<BoardDataCreator>().ToList();
-            if(_spawnAbleFillerItemIds.Count!=_spawnAbleFillerItemCounts.Count)
+            _boardDataCreators = gameObject.GetComponentsInChildren<BoardDataCreator>().ToList();
+            if(spawnAbleFillerItemIds.Count!=spawnAbleFillerItemCounts.Count)
             {
                 Debug.LogError("Spawnable Filler Item Ids and Counts are not equal");
                 return;
             }
-            if(GoalIds.Count!=GoalCounts.Count)
+            if(goalIds.Count!=goalCounts.Count)
             {
                 Debug.LogError("Goal Ids and Counts are not equal");
                 return;
             }
-            if (ifExistsDoNotGenerate && File.Exists(levelDataPath + levelID + Extension))
+            if (ifExistsDoNotGenerate && File.Exists(levelDataPath + levelID + extension))
             {
                 Debug.Log("Level Data Already Exists");
                 return;
             }
-            List<BoardData> _boards = GetBoardData();
-            LevelData levelData = new LevelData(_boards, _spawnAbleFillerItemIds, GetGoalData(_boards), BackgroundID, MoveCount);
+            List<BoardData> boards = GetBoardData();
+            LevelData levelData = new LevelData(boards, spawnAbleFillerItemIds, GetGoalData(boards), backgroundID, moveCount);
             string levelDataFinalPath = levelDataPath + levelID;
             SaveToJson(levelDataFinalPath, levelData);
         }
         private GoalSaveData GetGoalData(List<BoardData> boards)
         {
-            int[] goalIDs = GoalIds.ToArray();
-            int[] goalCounts = GoalCounts.ToArray();
+            int[] goalIDs = goalIds.ToArray();
+            int[] goalCounts = this.goalCounts.ToArray();
             return new GoalSaveData(goalIDs, goalCounts);
         }
         
@@ -84,9 +84,9 @@ namespace _Scripts.Editor
         [Button]
         public void GetNumberOfGoalsInBoard()
         {
-            boardDataCreators = gameObject.GetComponentsInChildren<BoardDataCreator>().ToList();
-            GoalCounts = new List<int>(GoalIds.Count);
-            foreach (var boardDataCreator in boardDataCreators)
+            _boardDataCreators = gameObject.GetComponentsInChildren<BoardDataCreator>().ToList();
+            goalCounts = new List<int>(goalIds.Count);
+            foreach (var boardDataCreator in _boardDataCreators)
             {
                 
                 BoardData boardData = boardDataCreator.CreateBoardData();
@@ -95,27 +95,27 @@ namespace _Scripts.Editor
                     for (int j = 0; j < boardData.NormalItemIds.GetLength(1); j++)
                     {
                         int itemId = boardData.NormalItemIds[i, j];
-                        int index = GoalIds.IndexOf(itemId);
+                        int index = goalIds.IndexOf(itemId);
                         Debug.Log("Index: "+index);
                         if (index != -1)
                         {
-                            GoalCounts[index]++;
+                            goalCounts[index]++;
                         }
                         if(boardData.UnderlayItemIds.TryGetValue(new Vector2Int(i,j),out itemId))
                         {
-                            index =  GoalIds.IndexOf(itemId);
+                            index =  goalIds.IndexOf(itemId);
                             if (index != -1)
                             {
-                                GoalCounts[index]++;
+                                goalCounts[index]++;
                             }
                         }
 
                         if (boardData.OverlayItemIds.TryGetValue(new Vector2Int(i, j), out itemId))
                         {
-                            index =  GoalIds.IndexOf(itemId);
+                            index =  goalIds.IndexOf(itemId);
                             if (index != -1)
                             {
-                                GoalCounts[index]++;
+                                goalCounts[index]++;
                             }
                         }
 
@@ -127,7 +127,7 @@ namespace _Scripts.Editor
         private List<BoardData> GetBoardData()
         {
             List<BoardData> boards = new List<BoardData>();
-            foreach (var boardDataCreator in boardDataCreators)
+            foreach (var boardDataCreator in _boardDataCreators)
             {
                 boards.Add(boardDataCreator.CreateBoardData());
             }
@@ -137,7 +137,7 @@ namespace _Scripts.Editor
         private void SaveToJson(string path, LevelData levelData)
         {
             var serializedData = SerializationUtility.SerializeValue(levelData, dataFormat);
-            File.WriteAllBytes(path+Extension, serializedData);
+            File.WriteAllBytes(path+extension, serializedData);
         }
         /// <summary>
         /// This method creates the Tile Scriptable Objects from the Item Database and saves them to the specified path
