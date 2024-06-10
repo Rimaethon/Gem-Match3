@@ -25,7 +25,7 @@ namespace Scripts
         protected override void Awake()
         {
             base.Awake();
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
             
             
         }
@@ -42,12 +42,12 @@ namespace Scripts
             {
                 CollectedItems.Clear();
                 IsLevelCompleted = false;
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene(1);
             });
             EventManager.Instance.AddHandler(GameEvents.OnReturnToMainMenu, () =>
             {
                 IsLevelCompleted = true;
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene(1);
             });
             EventManager.Instance.AddHandler(GameEvents.OnLevelCompleted, () =>
             {
@@ -64,7 +64,7 @@ namespace Scripts
         {
             CollectedItems.Clear();
             IsLevelCompleted = false;
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene(2);
         }
 
 
@@ -73,7 +73,7 @@ namespace Scripts
             SceneManager.sceneUnloaded -= OnSceneLoaded;
 
             if (EventManager.Instance == null) return;
-            EventManager.Instance.RemoveHandler(GameEvents.OnLevelFailed, () => { SceneManager.LoadScene(0); });
+            EventManager.Instance.RemoveHandler(GameEvents.OnLevelFailed, () => { SceneManager.LoadScene(1); });
             EventManager.Instance.RemoveHandler<int>(GameEvents.OnBoosterUsed, AddBoostersUsed);
             EventManager.Instance.RemoveHandler<int>(GameEvents.OnBoosterRemoved, RemoveBoostersUsed);
             EventManager.Instance.RemoveHandler(GameEvents.OnLevelButtonPressed, SwitchToGameScene);
@@ -87,7 +87,7 @@ namespace Scripts
 
         private void SwitchToGameScene()
         {
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene(2);
         }
         public List<int> GetBoostersUsedThisLevel()
         {

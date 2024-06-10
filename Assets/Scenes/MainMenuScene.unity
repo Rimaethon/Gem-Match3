@@ -447,6 +447,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5055465759636884839, guid: d824eaad81754b94f9915909e03485de, type: 3}
+      propertyPath: UIAnimationSnapDuration
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5055465759636884839, guid: d824eaad81754b94f9915909e03485de, type: 3}
+      propertyPath: UIAnimationStrecthDuration
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 5195833491155812171, guid: d824eaad81754b94f9915909e03485de, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

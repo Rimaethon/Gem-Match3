@@ -9,7 +9,7 @@
     "unlimitedHeartStartTime": 0,
     "unlimitedHeartDuration": 0,
     "maxHeartAmount": 5,
-    "firstHeartNotBeingFullUnixTime": 1717879528,
+    "firstHeartNotBeingFullUnixTime": 1718057594,
     "heartRefillTimeInSeconds": 1200,
     "BoosterAmounts": {
         "$id": 1,
@@ -79,7 +79,7 @@
             }
         ]
     },
-    "isMusicOn": true,
+    "isMusicOn": false,
     "isSfxOn": true,
     "isNotificationOn": false,
     "isHintOn": false

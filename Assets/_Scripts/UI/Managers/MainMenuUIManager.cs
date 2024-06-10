@@ -26,13 +26,15 @@ namespace Rimaethon.Runtime.UI
         [SerializeField] private int rightEventPanelXStart;
         [SerializeField] private int xStrechtAmount;
         [SerializeField] private int yStrechtAmount;
+        [SerializeField] float UIAnimationStrecthDuration = 0.3f;
+        [SerializeField] float UIAnimationSnapDuration = 0.1f;
         [SerializeField] private GameObject mainMenuPanel;
         [SerializeField] private ItemDatabaseSO itemDatabase;
         [SerializeField] private RectTransform coinAndStarSpawnPosition;
         [SerializeField] private CoinResourceBar coinResourceBar;
         [SerializeField] private StarResourceBar starResourceBar;
         [SerializeField] private GameObject starBombParticleEffect;
-        [SerializeField] private float duration;
+        [SerializeField] private float starEffectDuration;
         [SerializeField] private AnimationCurve animationCurve;
         [SerializeField] private MainEventPanel mainEventPanel;
         private GraphicRaycaster _graphicRaycaster;
@@ -79,22 +81,22 @@ namespace Rimaethon.Runtime.UI
             leftEventPanel.anchoredPosition = new Vector2(leftEventPanelXStart, leftEventPanel.anchoredPosition.y);
             rightEventPanel.anchoredPosition = new Vector2(rightEventPanelXStart, rightEventPanel.anchoredPosition.y);
             await UniTask.Delay(200);
-            upperPanel.DOAnchorPosY(upperPanelYEnd - yStrechtAmount, 0.2f).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
+            upperPanel.DOAnchorPosY(upperPanelYEnd - yStrechtAmount, UIAnimationStrecthDuration).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
             {
-                upperPanel.DOAnchorPosY(upperPanelYEnd, 0.1f).SetUpdate(UpdateType.Fixed);
+                upperPanel.DOAnchorPosY(upperPanelYEnd, UIAnimationSnapDuration).SetUpdate(UpdateType.Fixed);
             };
-            lowerPanel.DOAnchorPosY(lowerPanelYEnd + yStrechtAmount, 0.2f).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
+            lowerPanel.DOAnchorPosY(lowerPanelYEnd + yStrechtAmount, UIAnimationStrecthDuration).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
             {
-                lowerPanel.DOAnchorPosY(lowerPanelYEnd, 0.1f).SetUpdate(UpdateType.Fixed);
+                lowerPanel.DOAnchorPosY(lowerPanelYEnd, UIAnimationSnapDuration).SetUpdate(UpdateType.Fixed);
             };
             await UniTask.Delay(200);
-            leftEventPanel.DOAnchorPosX(leftEventPanelXEnd + xStrechtAmount, 0.2f).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
+            leftEventPanel.DOAnchorPosX(leftEventPanelXEnd + xStrechtAmount, UIAnimationStrecthDuration).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
             {
-                leftEventPanel.DOAnchorPosX(leftEventPanelXEnd, 0.1f).SetUpdate(UpdateType.Fixed);
+                leftEventPanel.DOAnchorPosX(leftEventPanelXEnd, UIAnimationSnapDuration).SetUpdate(UpdateType.Fixed);
             };
-            rightEventPanel.DOAnchorPosX(rightEventPanelXEnd - xStrechtAmount, 0.2f).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
+            rightEventPanel.DOAnchorPosX(rightEventPanelXEnd - xStrechtAmount, UIAnimationStrecthDuration).SetEase(Ease.OutQuad).SetUpdate(UpdateType.Fixed).onComplete += () =>
             {
-                rightEventPanel.DOAnchorPosX(rightEventPanelXEnd, 0.1f).SetUpdate(UpdateType.Fixed);
+                rightEventPanel.DOAnchorPosX(rightEventPanelXEnd, UIAnimationSnapDuration).SetUpdate(UpdateType.Fixed);
             };
             await UniTask.Delay(300);
         }
@@ -110,7 +112,7 @@ namespace Rimaethon.Runtime.UI
 
         private async UniTask MoveStarEffectToTarget()
         {
-            while (time <= duration)
+            while (time <= starEffectDuration)
             {
                 time += Time.fixedDeltaTime;
                 UpdateStarEffectPositionAndRotation();
@@ -123,9 +125,9 @@ namespace Rimaethon.Runtime.UI
 
         private void UpdateStarEffectPositionAndRotation()
         {
-            float remainingTime = duration - time;
-            starTransform.rotation = remainingTime < 0.01f ? Quaternion.Euler(0f, 0f, 0f) : Quaternion.Euler(0f, 0f, remainingTime * 360f / duration);
-            float linearT = time / duration;
+            float remainingTime = starEffectDuration - time;
+            starTransform.rotation = remainingTime < 0.01f ? Quaternion.Euler(0f, 0f, 0f) : Quaternion.Euler(0f, 0f, remainingTime * 360f / starEffectDuration);
+            float linearT = time / starEffectDuration;
             float widthT = animationCurve.Evaluate(linearT);
             float width = Mathf.Lerp(0f, Screen.width * 0.001f, widthT);
             starTransform.position = Vector3.Lerp(start, end, linearT)+new Vector3(width,0f,0f);
