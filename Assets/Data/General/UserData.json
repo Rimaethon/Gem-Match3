@@ -1,15 +1,15 @@
 {
     "$id": 0,
     "$type": "0|Data.UserData, Assembly-CSharp",
-    "currentLevel": 1,
-    "coinAmount": 28000,
+    "currentLevel": 2,
+    "coinAmount": 33000,
     "heartAmount": 5,
-    "starAmount": 38,
+    "starAmount": 40,
     "hasUnlimitedHearts": false,
     "unlimitedHeartStartTime": 0,
     "unlimitedHeartDuration": 0,
     "maxHeartAmount": 5,
-    "firstHeartNotBeingFullUnixTime": 1718057594,
+    "firstHeartNotBeingFullUnixTime": 1718134403,
     "heartRefillTimeInSeconds": 1200,
     "BoosterAmounts": {
         "$id": 1,
@@ -25,10 +25,10 @@
                 "$v": {
                     "$id": 3,
                     "$type": "3|Data.BoosterData, Assembly-CSharp",
-                    "boosterAmount": 25,
-                    "isUnlimited": false,
-                    "unlimitedStartTime": 0,
-                    "unlimitedDuration": 0
+                    "boosterAmount": 35,
+                    "isUnlimited": true,
+                    "unlimitedStartTime": 1718134924,
+                    "unlimitedDuration": 21591
                 }
             },
             {
@@ -37,9 +37,9 @@
                     "$id": 4,
                     "$type": 3,
                     "boosterAmount": 10,
-                    "isUnlimited": false,
-                    "unlimitedStartTime": 0,
-                    "unlimitedDuration": 0
+                    "isUnlimited": true,
+                    "unlimitedStartTime": 1718134924,
+                    "unlimitedDuration": 21591
                 }
             },
             {
@@ -48,9 +48,9 @@
                     "$id": 5,
                     "$type": 3,
                     "boosterAmount": 10,
-                    "isUnlimited": false,
-                    "unlimitedStartTime": 0,
-                    "unlimitedDuration": 0
+                    "isUnlimited": true,
+                    "unlimitedStartTime": 1718134924,
+                    "unlimitedDuration": 21591
                 }
             }
         ]
@@ -63,24 +63,24 @@
         "$rcontent": [
             {
                 "$k": 105,
-                "$v": 20
+                "$v": 23
             },
             {
                 "$k": 106,
-                "$v": 35
+                "$v": 40
             },
             {
                 "$k": 107,
-                "$v": 35
+                "$v": 40
             },
             {
                 "$k": 108,
-                "$v": 20
+                "$v": 22
             }
         ]
     },
-    "isMusicOn": false,
+    "isMusicOn": true,
     "isSfxOn": true,
-    "isNotificationOn": false,
-    "isHintOn": false
+    "isNotificationOn": true,
+    "isHintOn": true
 }

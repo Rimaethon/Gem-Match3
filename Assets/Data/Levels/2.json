@@ -126,6 +126,18 @@
             }
         ]
     },
+    "SpawnAbleFillerItemIds": {
+        "$id": 7,
+        "$type": "8|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib",
+        "$rlength": 5,
+        "$rcontent": [
+            0,
+            1,
+            2,
+            3,
+            4
+        ]
+    },
     "GoalSaveData": {
         "$id": 7,
         "$type": "7|_Scripts.Data_Classes.GoalSaveData, Assembly-CSharp",
