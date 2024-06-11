@@ -44,19 +44,6 @@ namespace Scripts
             {
                 return;
             }
-            if((_targetItem==null||!_board.Cells[_targetCell.x,_targetCell.y].HasItem)||_targetItem.IsExploding&& !_shouldSpawnBooster)
-            {
-                if (_board.Cells[_targetCell.x,_targetCell.y].HasItem)
-                {
-                    _board.GetItem(_targetCell).Highlight(0);
-                    _board.GetItem(_targetCell).IsActive = true;
-                }
-              
-                _board.Cells[_targetCell.x,_targetCell.y].SetIsLocked(false);
-                _lightBallBoosterAction.ItemsToExplode.Remove(_targetItem);
-                ResetRay();
-                return;
-            }
   
             _targetCell = _targetItem.Position;
             Vector3 localTargetPosition = transform.InverseTransformPoint(_targetItem.Transform.position);
@@ -129,8 +116,7 @@ namespace Scripts
             _materialPropertyBlock.SetFloat("_Emission",15);
             lineRenderer.SetPropertyBlock(_materialPropertyBlock);
             hasTarget = true;
-            item.IsActive = false;
-            _board.Cells[_targetCell.x,_targetCell.y].SetIsLocked(true);
+
         }
 
      

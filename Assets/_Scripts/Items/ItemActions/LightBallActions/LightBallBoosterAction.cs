@@ -238,6 +238,9 @@ namespace Scripts.BoosterActions
                         !cell.IsLocked && !cell.BoardItem.IsMatching&& !ItemsToExplode.Contains(cell.BoardItem)&&cell.BoardItem.IsActive)
                     {
                         _rayDestinationQueue.Enqueue(Board.GetItem(new Vector2Int(x,y)));
+                        ItemsToExplode.Add(cell.BoardItem);
+                        Board.Cells[x,y].SetIsLocked(true);
+                        cell.BoardItem.IsActive = false;
                     }
                 }
             }
