@@ -16,6 +16,7 @@ namespace _Scripts.Core
         private  MatchChecker _matchChecker;
         private bool _isSwiping;
         private bool _isDisabled;
+        private const float SwapDuration = 0.15f;
 
         public InputHandler(Board board,MatchChecker matchChecker)
         {
@@ -87,7 +88,7 @@ namespace _Scripts.Core
 
             if(item1.IsBooster&&item2.IsBooster)
             {
-                await MoveItemAsync(item1.Transform, LevelGrid.Instance.GetCellCenterLocalVector2(pos2), 0.2f);
+                await MoveItemAsync(item1.Transform, LevelGrid.Instance.GetCellCenterLocalVector2(pos2), SwapDuration);
                 item1.IsActive = false;
                 item2.IsActive = false;
                 item1.IsSwapping = false;
@@ -101,7 +102,7 @@ namespace _Scripts.Core
                 return;
             }
             
-            await UniTask.WhenAll(MoveItemAsync(item1.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos2),0.2f),MoveItemAsync(item2.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos1),0.2f));
+            await UniTask.WhenAll(MoveItemAsync(item1.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos2),SwapDuration),MoveItemAsync(item2.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos1),SwapDuration));
             SwapItems(pos1,pos2);
             if ((item1.IsBooster && _board.Cells[pos2.x,pos2.y].HasItem )|| (item2.IsBooster&& _board.Cells[pos1.x,pos1.y].HasItem))
             {
@@ -118,7 +119,7 @@ namespace _Scripts.Core
                 if (!swap1 && !swap2)
                 {
                     AudioManager.Instance.PlaySFX(SFXClips.SwapBackWardSound);
-                    await UniTask.WhenAll(MoveItemAsync(item1.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos1),0.2f),MoveItemAsync(item2.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos2),0.2f));
+                    await UniTask.WhenAll(MoveItemAsync(item1.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos1),SwapDuration),MoveItemAsync(item2.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos2),SwapDuration));
                     SwapItems(pos1,pos2);
                 }
                 else
@@ -142,7 +143,7 @@ namespace _Scripts.Core
             while (elapsedTime < duration)
             {
                 itemTransform.localPosition = Vector3.Lerp(startingPos, targetPos, elapsedTime / duration);
-                elapsedTime += Time.fixedDeltaTime;
+                elapsedTime += Time.deltaTime;
                 await UniTask.Yield();
             }
 
