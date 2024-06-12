@@ -16,7 +16,7 @@ namespace Scripts.BoosterActions
         private float moveDownAndScaleCounter;
         private float waitTime = 0.1f;
         private float waitCounter;
-        private float moveUpTime = 0.3f;
+        private float moveUpTime = 0.5f;
         private float moveUpCounter;
         private Vector3 initalPos;
         private Vector3 moveDownPos;
@@ -46,6 +46,7 @@ namespace Scripts.BoosterActions
             }
             if(waitCounter<waitTime)
             {
+                initalPos=_particleEffect.transform.position;
                 waitCounter += Time.fixedDeltaTime;
                 return;
             }
