@@ -26,6 +26,8 @@ public class InGameUIManager : Singleton<InGameUIManager>
     private const int BoosterAndSettingsYStart = -370;
     private const int BoosterAndSettingsYEnd = -150;
     private const int StretchAmount = 100;
+    [SerializeField] private float stretchDuration = 0.5f;
+    [SerializeField] private float snapDuration = 0.15f;
     private bool isDisabled;
 
     private void OnEnable()
@@ -58,14 +60,15 @@ public class InGameUIManager : Singleton<InGameUIManager>
         InitializeGaolsAndMoveCount();
         boosterAndSettingsPanel.anchoredPosition = new Vector2(boosterAndSettingsPanel.anchoredPosition.x, BoosterAndSettingsYStart);
         movesAndGoalsPanel.anchoredPosition = new Vector2(movesAndGoalsPanel.anchoredPosition.x, MovesAndGoalsYStart);
+        await UniTask.Delay(200);
         await UniTask.WhenAll(
-            movesAndGoalsPanel.DOAnchorPosY(MovesAndGoalsYEnd - StretchAmount, 0.5f).SetEase(Ease.OutSine)
+            movesAndGoalsPanel.DOAnchorPosY(MovesAndGoalsYEnd - StretchAmount, stretchDuration).SetEase(Ease.OutQuad)
                 .SetUpdate(UpdateType.Fixed).ToUniTask(),
-            boosterAndSettingsPanel.DOAnchorPosY(BoosterAndSettingsYEnd + StretchAmount, 0.5f).SetEase(Ease.OutSine)
+            boosterAndSettingsPanel.DOAnchorPosY(BoosterAndSettingsYEnd + StretchAmount, stretchDuration).SetEase(Ease.OutQuad)
                 .SetUpdate(UpdateType.Fixed).ToUniTask());
         await UniTask.WhenAll(
-            movesAndGoalsPanel.DOAnchorPosY(MovesAndGoalsYEnd, 0.15f).SetUpdate(UpdateType.Fixed).ToUniTask(),
-            boosterAndSettingsPanel.DOAnchorPosY(BoosterAndSettingsYEnd, 0.15f).SetUpdate(UpdateType.Fixed)
+            movesAndGoalsPanel.DOAnchorPosY(MovesAndGoalsYEnd, snapDuration).SetUpdate(UpdateType.Fixed).ToUniTask(),
+            boosterAndSettingsPanel.DOAnchorPosY(BoosterAndSettingsYEnd, snapDuration).SetUpdate(UpdateType.Fixed)
                 .ToUniTask());
     }
     private void InitializeGaolsAndMoveCount()
