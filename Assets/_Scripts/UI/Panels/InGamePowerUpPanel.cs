@@ -83,7 +83,6 @@ public class InGamePowerUpPanel : MonoBehaviour
         if(_currentBooster==cannonBooster)
         {
             HandleCannonPowerUp(gridPos);
-            return;
         }
     }
 
@@ -129,6 +128,7 @@ public class InGamePowerUpPanel : MonoBehaviour
                                 EventManager.Instance.Broadcast(GameEvents.OnBoardUnlock);
                                 jesterHatVisualTransform.position = new Vector3(-_jesterHatStartPos, jesterHatVisualTransform.position.y, jesterHatVisualTransform.position.z);
                                 unFadeAbleSettingsButton.SetActive(false);
+                                UnClickBooster(_currentBooster);
                             };
                     };
             };
@@ -208,7 +208,7 @@ public class InGamePowerUpPanel : MonoBehaviour
     private void ClickBooster(UIBoosterButton booster)
     {
         EventManager.Instance.Broadcast(GameEvents.OnBoardUnlock);
-        canvas.sortingOrder = 0;
+        canvas.sortingOrder = 30;
         booster.isClicked = true;
         booster.unClickedCounter.SetActive(false);
         booster.clickedCounter.SetActive(true);

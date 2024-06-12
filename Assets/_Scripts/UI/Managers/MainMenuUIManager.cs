@@ -1,11 +1,9 @@
-﻿using System;
-using _Scripts.UI.Panels;
+﻿using _Scripts.UI.Panels;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using Scripts;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Rimaethon.Runtime.UI

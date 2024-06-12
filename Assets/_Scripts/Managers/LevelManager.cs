@@ -97,7 +97,7 @@ namespace _Scripts.Managers
                 }
                 _moveCount = _levelData.MoveCount;
             }
-            Vector3 boardInitialOffset= new Vector3(2.5f, transform.position.y, transform.position.z);
+            Vector3 boardInitialOffset= new Vector3(3f, transform.position.y, transform.position.z);
             initialXPos = transform.position.x;
             transform.position=boardInitialOffset;
             await InGameUIManager.Instance.HandleGoalAndPowerUpUI(_goalCounts,_moveCount);

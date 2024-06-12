@@ -9,7 +9,7 @@
     "unlimitedHeartStartTime": 0,
     "unlimitedHeartDuration": 0,
     "maxHeartAmount": 5,
-    "firstHeartNotBeingFullUnixTime": 1718134403,
+    "firstHeartNotBeingFullUnixTime": 1718155311,
     "heartRefillTimeInSeconds": 1200,
     "BoosterAmounts": {
         "$id": 1,
@@ -27,8 +27,8 @@
                     "$type": "3|Data.BoosterData, Assembly-CSharp",
                     "boosterAmount": 35,
                     "isUnlimited": true,
-                    "unlimitedStartTime": 1718134924,
-                    "unlimitedDuration": 21591
+                    "unlimitedStartTime": 1718155309,
+                    "unlimitedDuration": 1200
                 }
             },
             {
@@ -38,8 +38,8 @@
                     "$type": 3,
                     "boosterAmount": 10,
                     "isUnlimited": true,
-                    "unlimitedStartTime": 1718134924,
-                    "unlimitedDuration": 21591
+                    "unlimitedStartTime": 1718155309,
+                    "unlimitedDuration": 1200
                 }
             },
             {
@@ -49,8 +49,8 @@
                     "$type": 3,
                     "boosterAmount": 10,
                     "isUnlimited": true,
-                    "unlimitedStartTime": 1718134924,
-                    "unlimitedDuration": 21591
+                    "unlimitedStartTime": 1718155309,
+                    "unlimitedDuration": 1200
                 }
             }
         ]
