@@ -64,6 +64,8 @@ MonoBehaviour:
   movesAndGoalsPanel: {fileID: 4027013804215129267}
   goalPrefab: {fileID: 5652016071797196863, guid: 5fc5010496b6dff45a36e91da4dcb71a, type: 3}
   goalParent: {fileID: 2562991255734214044}
+  stretchDuration: 0.4
+  snapDuration: 0.2
 --- !u!1001 &3206202051147076291
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -79,6 +81,10 @@ PrefabInstance:
     - target: {fileID: 1950467120699592943, guid: c9edc6f6de225f849b6dc3651d2109c9, type: 3}
       propertyPath: m_RaycastTarget
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1989575633240737392, guid: c9edc6f6de225f849b6dc3651d2109c9, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 250.00006
       objectReference: {fileID: 0}
     - target: {fileID: 3607696737052843902, guid: c9edc6f6de225f849b6dc3651d2109c9, type: 3}
       propertyPath: m_IsActive
@@ -183,6 +189,10 @@ PrefabInstance:
     - target: {fileID: 6287124468065641080, guid: c9edc6f6de225f849b6dc3651d2109c9, type: 3}
       propertyPath: m_Name
       value: In Game UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 6819200765876039523, guid: c9edc6f6de225f849b6dc3651d2109c9, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -370.00006
       objectReference: {fileID: 0}
     - target: {fileID: 7519689439279638178, guid: c9edc6f6de225f849b6dc3651d2109c9, type: 3}
       propertyPath: fadeEffect
@@ -300,15 +310,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 24239157713868697, guid: f4ed5debae284404492830494c6c7297, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 200.00015
+      value: 200.00009
       objectReference: {fileID: 0}
     - target: {fileID: 360112322771347362, guid: f4ed5debae284404492830494c6c7297, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 200.00015
+      value: 200.00009
       objectReference: {fileID: 0}
     - target: {fileID: 471881140915866213, guid: f4ed5debae284404492830494c6c7297, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 200.00015
+      value: 200.00009
       objectReference: {fileID: 0}
     - target: {fileID: 641966860506172377, guid: f4ed5debae284404492830494c6c7297, type: 3}
       propertyPath: m_SizeDelta.x
@@ -456,7 +466,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3292714093026840195, guid: f4ed5debae284404492830494c6c7297, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -499.99994
+      value: -500
       objectReference: {fileID: 0}
     - target: {fileID: 4173229703373859818, guid: f4ed5debae284404492830494c6c7297, type: 3}
       propertyPath: m_AnchorMax.y
@@ -498,6 +508,10 @@ PrefabInstance:
       propertyPath: m_RaycastTarget
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6631725569742588710, guid: f4ed5debae284404492830494c6c7297, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6688572290650363401, guid: f4ed5debae284404492830494c6c7297, type: 3}
       propertyPath: m_SizeDelta.x
       value: 16.359953
@@ -529,6 +543,10 @@ PrefabInstance:
     - target: {fileID: 6947687032654841622, guid: f4ed5debae284404492830494c6c7297, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -75
+      objectReference: {fileID: 0}
+    - target: {fileID: 6998392496755263580, guid: f4ed5debae284404492830494c6c7297, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7284750925762643967, guid: f4ed5debae284404492830494c6c7297, type: 3}
       propertyPath: _settingsOpenerButton

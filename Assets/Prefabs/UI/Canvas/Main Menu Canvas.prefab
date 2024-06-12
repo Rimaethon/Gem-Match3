@@ -1153,13 +1153,15 @@ MonoBehaviour:
   rightEventPanelXStart: 200
   xStrechtAmount: 30
   yStrechtAmount: 60
+  UIAnimationStrecthDuration: 0.4
+  UIAnimationSnapDuration: 0.2
   mainMenuPanel: {fileID: 8809483970784037377}
   itemDatabase: {fileID: 11400000, guid: 8d094825f63458c4b9537b7fd33c1265, type: 2}
   coinAndStarSpawnPosition: {fileID: 2037553360744990069}
   coinResourceBar: {fileID: 5105861674014177773}
   starResourceBar: {fileID: 879349133867482470}
   starBombParticleEffect: {fileID: 9054655667951052335, guid: b058a472cbe939745bdbaa2991de1625, type: 3}
-  duration: 0.6
+  starEffectDuration: 0
   animationCurve:
     serializedVersion: 2
     m_Curve:
