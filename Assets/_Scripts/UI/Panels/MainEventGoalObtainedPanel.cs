@@ -21,6 +21,7 @@ namespace _Scripts.UI.Panels
         {
             _image = imageGameObject.GetComponent<Image>();
             _imageTransform = imageGameObject.GetComponent<RectTransform>();
+            particleEffect.gameObject.SetActive(false);
         }
 
         public async UniTask HandleMainEventGoalObtained(int count,Sprite sprite,Vector3 goalPos,GameObject reachedEffect=null)
@@ -34,12 +35,11 @@ namespace _Scripts.UI.Panels
             var countTextFadeInTask = countText.DOFade(1, 0.2f).SetUpdate(UpdateType.Fixed).ToUniTask();
 
             await UniTask.WhenAll(fadeImageTask, scaleImageTask, countTextFadeInTask);
-            particleEffect.Play(true);
+            particleEffect.gameObject.SetActive(true);
             countText.gameObject.SetActive(true);
             countText.text = count.ToString();
-
             await UniTask.Delay(1000);
-            particleEffect.Stop(true,ParticleSystemStopBehavior.StopEmitting);
+            particleEffect.gameObject.SetActive(false);
 
             var fadeImageOutTask = fadeImage.DOFade(0, 0.5f).SetUpdate(UpdateType.Fixed).ToUniTask();
             var moveImageTask = _imageTransform.transform.DOMove(goalPos, 0.5f).SetEase(Ease.InOutSine).ToUniTask();
