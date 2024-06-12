@@ -28,14 +28,15 @@ namespace _Scripts.Items.ItemActions
             Board = board;
             _pos = new Vector2Int(0,pos.y);
             _startWorldPos = LevelGrid.Instance.GetCellCenterWorld(_pos);
-            _startWorldPos.x -= 0.2f;
+            _startWorldPos.x -= 0.7f;
             _endWorldPos = LevelGrid.Instance.GetCellCenterWorld(new Vector2Int(Board.Width-1,pos.y));
-            _endWorldPos.x += 0.2f;
+            _endWorldPos.x += 0.7f;
             particleEffect= ObjectPool.Instance.GetBoosterParticleEffect(ItemID,_startWorldPos).GetComponent<BowParticleEffect>();
             _isFinished = false;
             SetRowLock(true);
             _beforeFiringTimer = 0;
             _afterFiringTimer = 0;
+            _visitedCells.Clear();
         }
 
         public void Execute()

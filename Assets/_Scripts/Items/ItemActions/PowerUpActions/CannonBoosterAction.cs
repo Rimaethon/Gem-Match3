@@ -29,11 +29,12 @@ namespace _Scripts.Items.ItemActions
             Board = board;
             _pos = new Vector2Int(pos.x,0);
             _startWorldPos = LevelGrid.Instance.GetCellCenterWorld(_pos);
-            _startWorldPos.y -= 0.7f;
+            _startWorldPos.y -= 0.85f;
             _endWorldPos = LevelGrid.Instance.GetCellCenterWorld(new Vector2Int(pos.x,Board.Height-1));
             _endWorldPos.y += 2f;
             particleEffect= ObjectPool.Instance.GetBoosterParticleEffect(ItemID,_startWorldPos).GetComponent<CannonParticleEffect>();
             _isFinished = false;
+            _visitedCells.Clear();
         }
 
         public void Execute()
