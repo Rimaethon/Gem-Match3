@@ -21,7 +21,7 @@ namespace _Scripts.Core
             _dirtyColumns = dirtyColumns;
             EventManager.Instance.AddHandler<Vector2Int>(GameEvents.AddItemToRemoveFromBoard, AddItemToRemoveFromBoard);
         }
-       
+
         public void OnDisable()
         {
             if (EventManager.Instance == null) return;
@@ -30,17 +30,16 @@ namespace _Scripts.Core
         private void AddItemToRemoveFromBoard(Vector2Int itemPos)
         {
             _itemsToRemoveFromBoard.Add(itemPos);
-            
+
         }
 
         public bool HandleItemRemoval()
         {
             _itemsToRemoveFromBoardThisFrame.AddRange(_itemsToRemoveFromBoard);
-            
+
             foreach (Vector2Int itemPos in _itemsToRemoveFromBoardThisFrame)
             {
                 _itemsToRemoveFromBoard.Remove(itemPos);
-//                Debug.Log("Item Removed from board"+itemPos.x+" "+itemPos.y);
                 Cell cell = _board.Cells[itemPos.x,itemPos.y];
                 cell.SetIsGettingEmptied(false);
                 cell.SetIsGettingFilled(false);
@@ -48,8 +47,12 @@ namespace _Scripts.Core
                 if (cell.HasOverLayItem)
                 {
                     cell.OverLayBoardItem.OnExplode();
-                    if(cell.OverLayBoardItem.IsProtectingUnderIt)
+
+                    if (cell.OverLayBoardItem.IsProtectingUnderIt)
+                    {
+                        cell.SetOverLayItem(null);
                         continue;
+                    }
                 }
                 if (cell.HasItem)
                 {
@@ -59,14 +62,20 @@ namespace _Scripts.Core
                         cell.BoardItem.IsMoving = false;
                     }
                     ObjectPool.Instance.ReturnItem(cell.BoardItem, cell.BoardItem.ItemID);
-                    if(cell.BoardItem.IsProtectingUnderIt)
+
+                    if (cell.BoardItem.IsProtectingUnderIt)
+                    {
+                        cell.SetItem(null);
                         continue;
+                    }
+                    cell.SetItem(null);
                 }
                 if (cell.HasUnderLayItem)
                 {
                     cell.UnderLayBoardItem.OnExplode();
+                    cell.SetUnderLayItem(null);
                 }
-                cell.SetItem(null);
+
             }
             _itemsToRemoveFromBoardThisFrame.Clear();
             return _itemsToRemoveFromBoard.Count > 0;
