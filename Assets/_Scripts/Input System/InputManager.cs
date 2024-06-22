@@ -16,7 +16,7 @@ namespace Scripts
         private bool _isDragging=true;
         private bool _isBoardLocked;
         private int _boardLockCount;
-        private int _userInputLockCount; 
+        private int _userInputLockCount;
         private int _playerInputLockCount;
         private void Awake()
         {
@@ -48,7 +48,7 @@ namespace Scripts
             EventManager.Instance.RemoveHandler(GameEvents.OnBoardLock, OnBoardLock);
             EventManager.Instance.RemoveHandler(GameEvents.OnBoardUnlock, OnBoardUnlock);
         }
-    
+
         private void OnBoardLock()
         {
             _boardLockCount++;
@@ -102,7 +102,7 @@ namespace Scripts
                 EventManager.Instance.Broadcast(GameEvents.OnTouch, _clickPos);
             }
         }
-        
+
         private void OnDrag(InputAction.CallbackContext context)
         {
             if(_isMainMenu) return;
@@ -111,22 +111,18 @@ namespace Scripts
             _dragPos = _mainCamera.ScreenToWorldPoint(_playerInputs.Player.Drag.ReadValue<Vector2>());
             float xDiff = _dragPos.x- _clickPos.x  ;
             float yDiff =_dragPos.y-_clickPos.y ;
-            if(Mathf.Abs(yDiff) > Mathf.Abs(xDiff) && Mathf.Abs(yDiff) > 0.1f)
+            if(Mathf.Abs(yDiff) > Mathf.Abs(xDiff) && Mathf.Abs(yDiff) > 0.25f)
             {
                 EventManager.Instance.Broadcast(GameEvents.OnSwipe,
                     yDiff > 0 ? new Vector2Int(0, 1) : new Vector2Int(0, -1), _clickPos);
                 _isDragging = false;
             }
-            else if(Mathf.Abs(xDiff) > 0.1f)
+            else if(Mathf.Abs(xDiff) > 0.25f)
             {
                 EventManager.Instance.Broadcast(GameEvents.OnSwipe,
-                    xDiff > 0 ? new Vector2Int(1, 0) : new Vector2Int(-1, 0), _clickPos); 
+                    xDiff > 0 ? new Vector2Int(1, 0) : new Vector2Int(-1, 0), _clickPos);
                 _isDragging = false;
             }
         }
-            
-        
     }
-    
-       
     }
