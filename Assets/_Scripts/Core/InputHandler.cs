@@ -16,13 +16,15 @@ namespace _Scripts.Core
         private  MatchChecker _matchChecker;
         private bool _isSwiping;
         private bool _isDisabled;
-        private const float SwapDuration = 0.15f;
+        private const float swap_duration = 0.15f;
+        private bool _isClickedThisFrame;
+        private Vector2Int _clickPos;
 
         public InputHandler(Board board,MatchChecker matchChecker)
         {
             _board = board;
             _matchChecker = matchChecker;
-            
+
             EventManager.Instance.AddHandler<Vector2Int, Vector2>(GameEvents.OnSwipe, OnSwipe);
             EventManager.Instance.AddHandler<Vector2>(GameEvents.OnClick, OnClick);
             EventManager.Instance.AddHandler<Vector2>(GameEvents.OnTouch, OnTouch);
@@ -42,7 +44,7 @@ namespace _Scripts.Core
             EventManager.Instance.RemoveHandler<Vector2Int, Vector2>(GameEvents.OnSwipe, OnSwipe);
             EventManager.Instance.RemoveHandler<Vector2>(GameEvents.OnClick, OnClick);
             EventManager.Instance.RemoveHandler<Vector2>(GameEvents.OnTouch, OnTouch);
-            
+
         }
         public void HandleInputs()
         {
@@ -54,7 +56,7 @@ namespace _Scripts.Core
             {
                 HandleClick();
             }
-           
+
             if (!_isSwipedThisFrame||_isSwiping)
             {
                 return;
@@ -73,8 +75,8 @@ namespace _Scripts.Core
             }
             SwipeItemsAsync(_swipedItemPos, _swipeTargetPos).Forget();
         }
-        
-  
+
+
         private async UniTask SwipeItemsAsync(Vector2Int pos1, Vector2Int pos2)
         {
             _isSwiping = true;
@@ -88,21 +90,20 @@ namespace _Scripts.Core
 
             if(item1.IsBooster&&item2.IsBooster)
             {
-                await MoveItemAsync(item1.Transform, LevelGrid.Instance.GetCellCenterLocalVector2(pos2), SwapDuration);
+                await MoveItemAsync(item1.Transform, LevelGrid.Instance.GetCellCenterLocalVector2(pos2), swap_duration);
                 item1.IsActive = false;
                 item2.IsActive = false;
                 item1.IsSwapping = false;
                 item2.IsSwapping = false;
                 _isSwiping = false;
                 _isSwipedThisFrame = false;
-                //SMALL BUT DOES A LOT
                 EventManager.Instance.Broadcast(GameEvents.AddMergeActionToHandle, pos1, pos2);
                 item1.OnRemove();
                 item2.OnRemove();
                 return;
             }
-            
-            await UniTask.WhenAll(MoveItemAsync(item1.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos2),SwapDuration),MoveItemAsync(item2.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos1),SwapDuration));
+
+            await UniTask.WhenAll(MoveItemAsync(item1.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos2),swap_duration),MoveItemAsync(item2.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos1),swap_duration));
             SwapItems(pos1,pos2);
             if ((item1.IsBooster && _board.Cells[pos2.x,pos2.y].HasItem )|| (item2.IsBooster&& _board.Cells[pos1.x,pos1.y].HasItem))
             {
@@ -119,7 +120,7 @@ namespace _Scripts.Core
                 if (!swap1 && !swap2)
                 {
                     AudioManager.Instance.PlaySFX(SFXClips.SwapBackWardSound);
-                    await UniTask.WhenAll(MoveItemAsync(item1.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos1),SwapDuration),MoveItemAsync(item2.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos2),SwapDuration));
+                    await UniTask.WhenAll(MoveItemAsync(item1.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos1),swap_duration),MoveItemAsync(item2.Transform,LevelGrid.Instance.GetCellCenterLocalVector2(pos2),swap_duration));
                     SwapItems(pos1,pos2);
                 }
                 else
@@ -127,7 +128,7 @@ namespace _Scripts.Core
                     EventManager.Instance.Broadcast<int>(GameEvents.OnMoveCountChanged,-1);
                 }
             }
-           
+
             item1.IsSwapping = false;
             item2.IsSwapping = false;
             _isSwiping = false;
@@ -149,7 +150,7 @@ namespace _Scripts.Core
 
             itemTransform.localPosition = targetPos;
         }
-        
+
         private void SwapItems(Vector2Int pos1, Vector2Int pos2)
         {
             IBoardItem temp = _board.GetItem(pos1);
@@ -179,8 +180,7 @@ namespace _Scripts.Core
             _swipeTargetPos = swipingTo;
             _isSwipedThisFrame = true;
         }
-        private bool _isClickedThisFrame;
-        private Vector2Int _clickPos;
+
         private void HandleClick()
         {
             if (!_isClickedThisFrame)
@@ -197,7 +197,7 @@ namespace _Scripts.Core
                 {
                     EventManager.Instance.Broadcast<int>(GameEvents.OnMoveCountChanged,-1);
                 }
-                
+
             }
             if(_board.Cells[_clickPos.x,_clickPos.y].HasItem)
                 _board.GetItem(_clickPos).OnTouch();;
@@ -208,11 +208,9 @@ namespace _Scripts.Core
             {
                 return;
             }
-            
+
             _clickPos= LevelGrid.Instance.WorldToCellVector2Int(clickPosition);
-      
             _isClickedThisFrame = true;
-                        
         }
         private void OnTouch(Vector2 touchPos)
         {

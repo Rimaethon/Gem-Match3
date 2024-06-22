@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using _Scripts.Data_Classes;
 using _Scripts.Utility;
 using DG.Tweening;
 using Rimaethon.Scripts.Managers;
@@ -33,7 +34,6 @@ namespace _Scripts.Core
             {
                 bool isAnyItemMovingInColumn = false;
                 bool hasObstacle = false;
-              //  Debug.Log("Checking column " + x+" "+_dirtyColumns[x]);
                 if(!_dirtyColumns[x])
                     continue;
                 for (int y = _board.Height-1; y>=0; y--)
@@ -52,7 +52,7 @@ namespace _Scripts.Core
                     if (!_board.GetItem(x, y).IsFallAble&&!_board.GetItem(x,y).IsGeneratorItem)
                     {
                         hasObstacle = true;
-                        continue;     
+                        continue;
                     }
                     if (_board.GetItem(x, y).IsMoving)
                     {
@@ -109,7 +109,7 @@ namespace _Scripts.Core
                 {
                     _board.Cells[target.x, target.y].SetItem(_board.GetItem(x, y));
                     _board.Cells[x, y].SetItem(null);
-      
+
                     FinishItemMovement(target.x, target.y);
                 }
                 else
@@ -119,7 +119,7 @@ namespace _Scripts.Core
                 }
             }
             else if ((target != new Vector2Int(x, y)) &&
-                     IsItemCloseToTarget(newPos, targetPos, LevelGrid.Grid.cellSize.x) &&
+                     IsItemCloseToTarget(newPos, targetPos, LevelGrid.Grid.cellSize.x+(LevelGrid.Grid.cellSize.x*2*math.abs(target.y-y-1))) &&
                      !_board.Cells[target.x, target.y].HasItem)
             {
                 _board.Cells[target.x, target.y].SetItem(_board.GetItem(x, y));
@@ -157,12 +157,24 @@ namespace _Scripts.Core
                 return false;
             }
 
+            if (_board.Cells[x, y - 1].CellType == CellType.SHIFTER)
+            {
+                int posToFall=HasAnyEmptyCellAfterShifter(x, y);
+
+                if (posToFall != -1)
+                {
+                    GiveTargetToItem(x, y, x, posToFall);
+                    return true;
+                }
+                return false;
+            }
             if (CanFallBelow(x, y))
             {
                 GiveTargetToItem(x, y, x, y - 1);
 
                 return true;
             }
+
 
             if (IsAnyItemBelowFallingOrEmpty(x, y))
             {
@@ -199,18 +211,35 @@ namespace _Scripts.Core
             }
             return false;
         }
+        private int HasAnyEmptyCellAfterShifter(int x, int y)
+        {
+            y--;
+            while (y > 0&&_board.Cells[x,y].CellType==CellType.SHIFTER)
+            {
+                y--;
+            }
+            if(!CanFallBelow(x,y+1))
+                return -1;
+
+            while (y>0 &&CanFallBelow(x,y))
+            {
+                y--;
+            }
+            return y;
+        }
 
         private bool CanFallBelow(int x, int y)
         {
             if (_board.Cells[x,y-1].IsLocked)
                 return false;
+
             return (!_board.Cells[x,y-1].HasItem && !_board.Cells[x,y-1].IsGettingFilled) ||
                    (_board.Cells[x,y-1].HasItem && _board.Cells[x,y-1].IsGettingEmptied);
         }
 
         private bool CheckIfFallAble(int x, int y)
         {
-            if (!_board.IsInBoundaries(x, y - 1))
+            if (!_board.IsInBoundaries(x, y - 1)||_board.Cells[x,y-1].CellType==CellType.BLANK)
                 return false;
             return _board.Cells[x,y].HasItem && _board.GetItem(x, y).IsFallAble &&
                 !_board.Cells[x,y].BoardItem.IsSwapping || _board.Cells[x,y].IsLocked;
@@ -320,7 +349,7 @@ namespace _Scripts.Core
                         shuffleableCells.RemoveAt(index1);
                     }
                 }
-             
+
             }
             private void SwapItems(Vector2Int pos1, Vector2Int pos2)
             {
@@ -340,6 +369,6 @@ namespace _Scripts.Core
                     };
             }
         #endregion
-        
+
     }
 }
