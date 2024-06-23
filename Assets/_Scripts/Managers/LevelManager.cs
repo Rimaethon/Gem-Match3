@@ -56,7 +56,6 @@ namespace _Scripts.Managers
         private void Start()
         {
             _levelData=SaveManager.Instance.GetCurrentLevelData();
-    
             _isLevelSet = true;
             InitializeLevel().Forget();
         }
@@ -88,6 +87,7 @@ namespace _Scripts.Managers
                     boardInstance.transform.SetParent(transform);
                     Board board= new Board(itemDatabase.GetBoardSpriteData(boardData.BoardSpriteID),boardData,boardInstance,_levelData.SpawnAbleFillerItemIds);
                     _boards.Add(board);
+                    boardInstance.GetComponent<SpriteRenderer>().sprite=itemDatabase.GetBoardSpriteData(boardData.BoardSpriteID).Sprite;
                     boardInstance.GetComponent<BoardManager>().InitializeBoard(board);
                     randomLevelGenerator.InitializeGoalDictionaries(board,_levelData.GoalSaveData.GoalIDs.ToList(),_goalPositions,_goalCounts);
                     for(int i=0;i<_levelData.GoalSaveData.GoalAmounts.Length;i++)
@@ -113,7 +113,7 @@ namespace _Scripts.Managers
             if (boostersUsedThisLevel != null)
             {
                 HashSet<Vector2Int> spawnablePositions = GetRandomSpawnablePos(boostersUsedThisLevel.Count);
-    
+
                 foreach (var boosterID in boostersUsedThisLevel )
                 {
                     Vector2Int spawnPos = spawnablePositions.First();
@@ -126,7 +126,7 @@ namespace _Scripts.Managers
             }
             EventManager.Instance.Broadcast(GameEvents.OnPlayerInputUnlock);
         }
-        
+
         private void HandleMoveCount(int valueToAdd)
         {
             _moveCount+=valueToAdd;
@@ -153,7 +153,7 @@ namespace _Scripts.Managers
                 else
                 {
                     return;
-                }                
+                }
                 if (_goalCounts[itemID] > 0)
                 {
                     _goalCounts[itemID]--;
@@ -169,12 +169,12 @@ namespace _Scripts.Managers
                             _goalPositions[boardItem.ItemID].Clear();
                         }
                         CheckForLevelCompletion();
-                        
+
                     }
 
                 }
             }
-         
+
         }
         private void CheckForLevelCompletion()
         {
@@ -185,7 +185,7 @@ namespace _Scripts.Managers
                 isLevelCompleted = true;
                 HandleCompletion().Forget();
             }
-            
+
         }
         private async UniTask HandleCompletion()
         {
@@ -199,7 +199,7 @@ namespace _Scripts.Managers
             EventManager.Instance.Broadcast(GameEvents.OnLevelCompleted);
             EventManager.Instance.Broadcast(GameEvents.OnPlayerInputUnlock);
         }
-  
+
         //To Accommodate Power Up usage in multiple board levels I believe its best to put these methods here instead of BoardManager
         public bool IsValidPosition(Vector2Int pos)
         {
@@ -207,7 +207,7 @@ namespace _Scripts.Managers
             {
                 if (board.IsInBoundaries(pos))
                 {
-                    
+
                     return true;
                 }
             }
@@ -239,7 +239,7 @@ namespace _Scripts.Managers
                 }
             }
         }
-        
+
         //https://youtu.be/iSaTx0T9GFw?t=3697 as can be seen in here cells that has underlay item is considered valid position so I will do the same.
         public HashSet<Vector2Int> GetRandomSpawnablePos(int numberOfPositions)
         {
@@ -264,7 +264,7 @@ namespace _Scripts.Managers
             {
                 Debug.LogWarning("Could not find enough unique spawnable positions.");
             }
-            return spawnablePositions; 
+            return spawnablePositions;
         }
         //Actually this part deserves its own class with specialized methods for finding suitable goal areas for TNT and rockets such as finding most goals in a column for vertical rocket.
         //So that player doesn't feel like missile is making bad and unpredictable decisions
@@ -273,7 +273,7 @@ namespace _Scripts.Managers
             foreach (var goalList in  _goalPositions.Values)
             {
                if (goalList.Count > 0)
-               { 
+               {
                    Vector2Int goalPos = goalList[UnityEngine.Random.Range(0, goalList.Count)].Position;
                    return goalPos;
                }
