@@ -74,12 +74,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 21300000, guid: 67af65161383af74d8435e8c388e0b16, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e9291e5cb715df24bab3ae9cd9ca19c6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.12388888, y: 0.12388888}
+  m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -108,4 +108,5 @@ MonoBehaviour:
   _fallSpeed: 0
   _isHighlightAble: 1
   _isExplodeAbleByNearMatches: 0
-  _isRemovableFromBoard: 1
+  _isGeneratorItem: 0
+  _isShuffleAble: 0
