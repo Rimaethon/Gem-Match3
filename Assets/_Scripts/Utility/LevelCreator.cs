@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using _Scripts.Data_Classes;
@@ -40,7 +41,7 @@ namespace _Scripts.Editor
         [SerializeField] private int levelID;
         [SerializeField] private int moveCount;
         [SerializeField] private int backgroundID;
-        
+
         private IEnumerable<ValueDropdownItem<int>> GetNormalItemIds()
         {
             foreach (var item in itemDatabase.NormalItems)
@@ -48,7 +49,7 @@ namespace _Scripts.Editor
                 yield return new ValueDropdownItem<int>(item.Value.ItemPrefab.name, item.Key);
             }
         }
-    
+
         [Button]
         public void CreateLevelData()
         {
@@ -79,8 +80,8 @@ namespace _Scripts.Editor
             int[] goalCounts = this.goalCounts.ToArray();
             return new GoalSaveData(goalIDs, goalCounts);
         }
-        
-        
+
+
         [Button]
         public void GetNumberOfGoalsInBoard()
         {
@@ -88,7 +89,7 @@ namespace _Scripts.Editor
             goalCounts = new List<int>(goalIds.Count);
             foreach (var boardDataCreator in _boardDataCreators)
             {
-                
+
                 BoardData boardData = boardDataCreator.CreateBoardData();
                 for (int i = 0; i < itemDatabase.Boards[boardData.BoardSpriteID].Width; i++)
                 {
@@ -133,7 +134,7 @@ namespace _Scripts.Editor
             }
             return boards;
         }
-    
+
         private void SaveToJson(string path, LevelData levelData)
         {
             var serializedData = SerializationUtility.SerializeValue(levelData, dataFormat);
@@ -150,7 +151,7 @@ namespace _Scripts.Editor
                 Debug.LogError("Item Database is null");
                 return;
             }
-            //Normally I would make it delete old tiles but I believe it is too risky to do 
+            //Normally I would make it delete old tiles but I believe it is too risky to do
             foreach (var itemData in itemDatabase.NormalItems.Values)
             {
                 var itemTileDataSO = ScriptableObject.CreateInstance<ItemTileDataSO>();
@@ -163,7 +164,7 @@ namespace _Scripts.Editor
                     subPath = "UnderlayTiles/";
                 }else if (itemData.ItemPrefab.TryGetComponent(typeof(OverlayBoardItem), out _))
                 {
-                    subPath = "OverlayTiles/";   
+                    subPath = "OverlayTiles/";
                 }
                 AssetDatabase.CreateAsset(itemTileDataSO, tilePath +subPath+ itemData.ItemPrefab.name + ".asset");
             }

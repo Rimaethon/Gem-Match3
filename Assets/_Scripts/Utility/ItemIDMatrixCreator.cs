@@ -10,14 +10,14 @@ namespace _Scripts.Utility
     {
         [ShowInInspector] [TableMatrix( DrawElementMethod = "DrawElement",RowHeight = 20,IsReadOnly = true,HideColumnIndices = true,HideRowIndices = true)]
         public int[,] ItemIDMatrix;
-        public HashSet<Vector2Int> BlankCells;
+        [HideInInspector]public BoardSpriteSaveData boardSpriteSaveData;
         [ShowInInspector][ReadOnly]
         private int _boardWidth;
         [ShowInInspector][ReadOnly]
         private  int _boardHeight;
         private Tilemap _tilemap;
-        
-        
+
+
         [Button]
         public void ResetTilemap()
         {
@@ -58,7 +58,7 @@ namespace _Scripts.Utility
 
         public bool IsInBounds(Vector3Int position)
         {
-            if (position.x < 0 || position.y < 0 || position.x >= _boardWidth || position.y >= _boardHeight||(BlankCells!=null&&BlankCells.Contains(new Vector2Int(position.x,position.y))))
+            if (position.x < 0 || position.y < 0 || position.x >= _boardWidth || position.y >= _boardHeight|| boardSpriteSaveData.CellTypeMatrix[position.x, _boardHeight - position.y - 1] == CellType.BLANK|| boardSpriteSaveData.CellTypeMatrix[position.x, _boardHeight - position.y - 1] == CellType.SHIFTER)
                 return false;
             return true;
         }

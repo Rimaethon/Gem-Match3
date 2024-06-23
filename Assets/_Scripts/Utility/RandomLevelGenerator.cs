@@ -12,7 +12,7 @@ using Random = Unity.Mathematics.Random;
 namespace _Scripts.Utility
 {
     public class RandomLevelGenerator:MonoBehaviour
-    { 
+    {
         [SerializeField] private ItemDatabaseSO itemDatabase;
         [SerializeField] private Vector3 boardPosition;
         private int _boardID;
@@ -54,11 +54,11 @@ namespace _Scripts.Utility
         {
             foreach (var item in itemDatabase.Backgrounds)
             {
-                
+
                 yield return new ValueDropdownItem<Sprite>(item.Value.name, item.Value);
             }
         }
-        
+
          [BurstCompile]
         public Board GenerateRandomBoard(SpriteRenderer backgroundSpriteRenderer,GameObject boardInstance)
         {
@@ -71,7 +71,7 @@ namespace _Scripts.Utility
                 Board = new NativeArray<int>(boardSpriteSaveData.Width * boardSpriteSaveData.Height, Allocator.TempJob),
                 Random = random,
                 NormalItemTypes = normalItemTypesToSpawn.ToNativeArray(Allocator.TempJob),
-  
+
             };
             job.Schedule().Complete();
             int[,] normalItemArray =Create2DArrayFromNativeArray(job.Board, boardSpriteSaveData.Width, boardSpriteSaveData.Height);
@@ -85,7 +85,7 @@ namespace _Scripts.Utility
             job.NormalItemTypes.Dispose();
             return board;
         }
-        
+
         [BurstCompile]
         struct GenerateBoardJob : IJob
         {
@@ -122,7 +122,7 @@ namespace _Scripts.Utility
                 }
             }
         }
-        
+
         // Check if there is a matchable swap with swapping every two adjacent cells and checking for triplets
         [BurstCompile]
         private static bool HasMatchableSwap(NativeArray<int> board,int width, int height)
@@ -136,7 +136,7 @@ namespace _Scripts.Utility
                 int dy = i == 0 ? 1 : i == 1 ? 0 : i == 2 ? -1 : 0;
                 int nx = x + dx;
                 int ny = y + dy;
-                
+
                 if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue;
                 // Swap
                 int temp = board[y * width + x];
@@ -149,7 +149,7 @@ namespace _Scripts.Utility
                     // Swap back
                     board[ny * width + nx] = board[y * width + x];
                     board[y * width + x] = temp;
-                    
+
                     return true;
                 }
 
@@ -175,13 +175,13 @@ namespace _Scripts.Utility
         {
             Dictionary<Vector2Int, int> itemPositions = new Dictionary<Vector2Int, int>();
             int maxTries = 100;
-            
+
             while(maxItem>0)
             {
                 int x = UnityEngine.Random.Range(0, spriteSaveData.Width);
                 int y = UnityEngine.Random.Range(0, spriteSaveData.Height);
                 Vector2Int pos = new Vector2Int(x, y);
-                if (spriteSaveData.BlankCells.Contains(pos) || itemPositions.ContainsKey(pos))
+                if ( itemPositions.ContainsKey(pos))
                 {
                     maxTries--;
                     if (maxTries <= 0)
@@ -190,7 +190,7 @@ namespace _Scripts.Utility
                     }
                     continue;
                 }
-              
+
                 itemPositions.Add(pos, itemIDs[UnityEngine.Random.Range(0, itemIDs.Count)]);
                 maxItem--;
             }
@@ -225,7 +225,7 @@ namespace _Scripts.Utility
                     }
 
                 }
-            
+
             }
         }
         private static int[,] Create2DArrayFromNativeArray(NativeArray<int> array, int width, int height)
@@ -236,9 +236,9 @@ namespace _Scripts.Utility
                 for (int y = 0; y < height; y++)
                 {
                     result[x, y] = array[y * width + x];
-          
+
                 }
-            
+
             }
             return result;
         }

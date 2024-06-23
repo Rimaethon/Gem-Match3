@@ -10,7 +10,6 @@ namespace _Scripts.Utility
     public class BoardDataCreator:MonoBehaviour
     {
         public int BoardID;
-        private HashSet<Vector2Int> _blankCells;
         private SpriteRenderer _spriteRenderer;
         [SerializeField] private ItemDatabaseSO itemDatabase;
         [ShowInInspector][ReadOnly]
@@ -37,7 +36,9 @@ namespace _Scripts.Utility
             _spriteRenderer.sprite=_boardSpriteSaveData.Sprite;
             _boardWidth = _boardSpriteSaveData.Width;
             _boardHeight = _boardSpriteSaveData.Height;
-            _blankCells = _boardSpriteSaveData.BlankCells;
+            normalItemIDMatrixCreator.boardSpriteSaveData = _boardSpriteSaveData;
+            underlayItemIDMatrixCreator.boardSpriteSaveData = _boardSpriteSaveData;
+            overlayItemIDMatrixCreator.boardSpriteSaveData = _boardSpriteSaveData;
         }
         [Button]
         public void ResetAllTilemaps()
