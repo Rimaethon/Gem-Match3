@@ -10,12 +10,12 @@ namespace _Scripts.Data_Classes
         public int Width = 8;
         public int Height = 10;
         [TableMatrix(DrawElementMethod = "DrawCell", ResizableColumns = true)]
-        public CellType[,] CellValues;
+        public CellType[,] CellTypeMatrix;
         public Sprite Sprite;
         [Button]
         public void ResetCells()
         {
-            CellValues = new CellType[Width, Height];
+            CellTypeMatrix = new CellType[Width, Height];
         }
         private CellType DrawCell(Rect rect, CellType value)
         {

@@ -1,18 +1,19 @@
-﻿using UnityEngine;
+﻿using _Scripts.Data_Classes;
+using UnityEngine;
 
 namespace Scripts
 {
     public class Cell
     {
-        public Cell(Vector2Int cellPosition,IBoardItem boardItem=null,IBoardItem underLayBoardItem=null,IBoardItem overLayBoardItem=null,bool isNotInBoard=false)
+        public CellType CellType;
+        public Cell(Vector2Int cellPosition,CellType cellType=CellType.NORMAL,IBoardItem boardItem=null,IBoardItem underLayBoardItem=null,IBoardItem overLayBoardItem=null)
         {
             CellPosition = cellPosition;
             SetItem(boardItem);
             _underLayBoardItem = underLayBoardItem;
             _overLayBoardItem= overLayBoardItem;
-            IsNotInBoard = isNotInBoard;
+            CellType = cellType;
         }
-        public bool IsNotInBoard;
         public bool HasItem => BoardItem != null;
         public bool HasUnderLayItem => UnderLayBoardItem != null;
         public bool HasOverLayItem => OverLayBoardItem != null;
@@ -36,7 +37,7 @@ namespace Scripts
             if (BoardItem != null)
             {
                 BoardItem.Position = CellPosition;
-            } 
+            }
         }
         public void SetUnderLayItem(IBoardItem boardItem)
         {
@@ -54,7 +55,7 @@ namespace Scripts
                 OverLayBoardItem.Position = CellPosition;
             }
         }
-        
+
         public void SetIsGettingFilled(bool value)
         {
             _isGettingFilled = value;
@@ -69,7 +70,7 @@ namespace Scripts
             if (_lockCount <= 0)
             {
                 _isLocked = false;
-                
+
             }else
             {
                 _isLocked = true;

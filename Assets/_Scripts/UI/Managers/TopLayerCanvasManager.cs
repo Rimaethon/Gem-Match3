@@ -41,13 +41,25 @@ namespace Rimaethon.Runtime.UI
         }
         private void OnDisable()
         {
+            RemoveEventHandlers();
+        }
+        private void RemoveEventHandlers()
+        {
             if (EventManager.Instance == null) return;
             EventManager.Instance.RemoveHandler(GameEvents.OnNoMovesLeft, HandleNoMovesLeft);
             EventManager.Instance.RemoveHandler<Vector3,int,int>(GameEvents.OnMainEventGoalMatch, HandleItemMatched);
             EventManager.Instance.RemoveHandler<Vector2Int,int>(GameEvents.OnItemExplosion, HandleItemExplosion);
+            EventManager.Instance.RemoveHandler(GameEvents.OnLevelCompleted, () =>
+            {
+                _boosterCanvas.enabled = true;
+                levelCompletePanel.SetActive(true);
+            });
         }
+
         private void HandleMainEventGoalRemoved(Vector3 pos,int count)
         {
+            if(_boosterCanvas==null)
+                return;
             MainEventUIEffect effect = ObjectPool.Instance.GetMainEventUIEffect(_mainEventID);
            effect.gameObject.transform.SetParent( _boosterCanvas.transform);
            effect.rectTransform.localScale = Vector3.one;
@@ -56,7 +68,7 @@ namespace Rimaethon.Runtime.UI
            effect.Move();
            EventManager.Instance.Broadcast<int,int>(GameEvents.OnMainEventGoalRemoval, _mainEventID, count);
         }
-   
+
         private void HandleItemMatched(Vector3 item, int itemID,int amount)
         {
             if (_hasMainEvent&& _mainEvent.eventObjectiveID == itemID)
@@ -68,7 +80,7 @@ namespace Rimaethon.Runtime.UI
         private void HandleItemExplosion(Vector2Int itemPos, int itemID)
         {
             if (_hasMainEvent&& _mainEvent.eventObjectiveID == itemID)
-            { 
+            {
                 Vector3 item = LevelGrid.Instance.GetCellCenterWorld(itemPos);
                 HandleMainEventGoalRemoved(item, 1);
             }
@@ -78,7 +90,7 @@ namespace Rimaethon.Runtime.UI
             _boosterCanvas.enabled = true;
             noMovesLeftPanel.SetActive(true);
         }
-         
+
         private void SetUIPosition(RectTransform uiElement,Vector3 position)
         {
 
@@ -88,6 +100,6 @@ namespace Rimaethon.Runtime.UI
                 ((viewportPosition.y*_boosterCanvasRectTransformSizeDelta.y)-(_boosterCanvasRectTransformSizeDelta.y*0.5f)));
             uiElement.localPosition=worldObjectScreenPosition;
         }
-     
+
     }
 }
