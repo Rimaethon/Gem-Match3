@@ -1,7 +1,7 @@
 {
     "$id": 0,
     "$type": "0|Data.UserData, Assembly-CSharp",
-    "currentLevel": 2,
+    "currentLevel": 1,
     "coinAmount": 33000,
     "heartAmount": 5,
     "starAmount": 40,
@@ -9,7 +9,7 @@
     "unlimitedHeartStartTime": 0,
     "unlimitedHeartDuration": 0,
     "maxHeartAmount": 5,
-    "firstHeartNotBeingFullUnixTime": 1718155311,
+    "firstHeartNotBeingFullUnixTime": 1719110563,
     "heartRefillTimeInSeconds": 1200,
     "BoosterAmounts": {
         "$id": 1,
@@ -26,9 +26,9 @@
                     "$id": 3,
                     "$type": "3|Data.BoosterData, Assembly-CSharp",
                     "boosterAmount": 35,
-                    "isUnlimited": true,
-                    "unlimitedStartTime": 1718155309,
-                    "unlimitedDuration": 1200
+                    "isUnlimited": false,
+                    "unlimitedStartTime": 0,
+                    "unlimitedDuration": 0
                 }
             },
             {
@@ -37,9 +37,9 @@
                     "$id": 4,
                     "$type": 3,
                     "boosterAmount": 10,
-                    "isUnlimited": true,
-                    "unlimitedStartTime": 1718155309,
-                    "unlimitedDuration": 1200
+                    "isUnlimited": false,
+                    "unlimitedStartTime": 0,
+                    "unlimitedDuration": 0
                 }
             },
             {
@@ -48,9 +48,9 @@
                     "$id": 5,
                     "$type": 3,
                     "boosterAmount": 10,
-                    "isUnlimited": true,
-                    "unlimitedStartTime": 1718155309,
-                    "unlimitedDuration": 1200
+                    "isUnlimited": false,
+                    "unlimitedStartTime": 0,
+                    "unlimitedDuration": 0
                 }
             }
         ]
@@ -79,7 +79,7 @@
             }
         ]
     },
-    "isMusicOn": true,
+    "isMusicOn": false,
     "isSfxOn": true,
     "isNotificationOn": true,
     "isHintOn": true
