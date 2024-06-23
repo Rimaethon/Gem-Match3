@@ -17,6 +17,7 @@ namespace Scripts
         public Vector3 boardPosition;
         public readonly GameObject _boardInstance;
         public readonly List<int> _spawnAbleFillerItemIds;
+        public readonly List<Vector2Int> _spawnCells = new List<Vector2Int>();
 
         public Board(BoardSpriteSaveData boardSpriteSaveData, BoardData boardData, GameObject boardInstance,List<int> spawnAbleFillerItemIds)
         {
@@ -31,12 +32,17 @@ namespace Scripts
             {
                 for (int y = 0; y < _height; y++)
                 {
-                    Cells[x, y] = new Cell(new Vector2Int(x, y));
-                    if (boardSpriteSaveData.BlankCells.Contains(new Vector2Int(x, y)))
+                    Cells[x, y] = new Cell(new Vector2Int(x, y), boardSpriteSaveData.CellTypeMatrix[x, _height-y-1]);
+                    switch (Cells[x,y].CellType)
                     {
-                        Cells[x, y].IsNotInBoard = true;
-                        continue;
+                        case CellType.BLANK:
+                        case CellType.SHIFTER:
+                            continue;
+                        case CellType.SPAWNER:
+                            _spawnCells.Add(new Vector2Int(x,y));
+                            break;
                     }
+
                     if(boardData.NormalItemIds[x,y]!=-1)
                         Cells[x, y].SetItem( ObjectPool.Instance
                             .GetItem(boardData.NormalItemIds[x,y], LevelGrid.Instance.GetCellCenterWorld(new Vector2Int(x,y)),this));
@@ -45,7 +51,7 @@ namespace Scripts
                         Cells[x, y].SetUnderLayItem( ObjectPool.Instance
                             .GetItem(itemID, LevelGrid.Instance.GetCellCenterWorld(new Vector2Int(x,y)),this));
                     }
-                     
+
                     if (boardData.OverlayItemIds.TryGetValue(new Vector2Int(x, y), out itemID))
                         Cells[x, y].SetOverLayItem( ObjectPool.Instance
                             .GetItem(itemID, LevelGrid.Instance.GetCellCenterWorld(new Vector2Int(x,y)),this));
