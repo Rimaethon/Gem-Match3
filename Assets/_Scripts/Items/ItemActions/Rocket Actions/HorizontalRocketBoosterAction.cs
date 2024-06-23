@@ -13,7 +13,7 @@ namespace Scripts.BoosterActions
         private float _boardRightEdge;
         private readonly float _rocketOffset = 0.1f;
         private readonly float _speed = 7f;
-        private readonly HashSet<Vector2Int> _visitedCells = new();
+        private readonly HashSet<Vector2Int> _visitedCells=new HashSet<Vector2Int>();
         private bool _isLockedSetToFalse;
         private Transform _leftRocket;
         private Vector2Int _pos;
@@ -37,6 +37,7 @@ namespace Scripts.BoosterActions
             if (Board.Cells[_pos.x,_pos.y].HasItem && !Board.GetItem(_pos).IsExploding)
                 Board.GetItem(_pos).OnExplode();
             IsFinished = false;
+            _visitedCells.Clear();
         }
 
         public void Execute()
@@ -67,7 +68,7 @@ namespace Scripts.BoosterActions
                         }
                     }
                 }
-    
+
                 return;
             }
             ObjectPool.Instance.ReturnBoosterParticleEffect(_leftRocket.gameObject, ItemID);

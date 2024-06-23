@@ -17,7 +17,7 @@ namespace _Scripts.Items.ItemActions
         private Vector3 _endWorldPos;
         private CannonParticleEffect particleEffect;
         private float _speed = 10f;
-        private readonly HashSet<Vector2Int> _visitedCells = new();
+        private readonly HashSet<Vector2Int> _visitedCells=new HashSet<Vector2Int>();
         private Vector3 _initialSpriteLocalPosition=new Vector3(0,0.1f,0);
         private readonly float _beforeFiringWait = 0.1f;
         private float _beforeFiringTimer;
@@ -35,6 +35,7 @@ namespace _Scripts.Items.ItemActions
             particleEffect= ObjectPool.Instance.GetBoosterParticleEffect(ItemID,_startWorldPos).GetComponent<CannonParticleEffect>();
             _isFinished = false;
             _visitedCells.Clear();
+
         }
 
         public void Execute()
@@ -47,7 +48,7 @@ namespace _Scripts.Items.ItemActions
             if (particleEffect.hitPoint.transform.position.y < _endWorldPos.y)
             {
                 particleEffect.cannonBallSprite.transform.position += Vector3.up * (_speed * Time.fixedDeltaTime);
-        
+
                 var ballCell = LevelGrid.Instance.WorldToCellVector2Int(particleEffect.hitPoint.transform.position);
                 if (Board.IsInBoundaries(ballCell) && Board.Cells[ballCell.x,ballCell.y].HasItem &&!Board.GetItem(ballCell).IsExploding)
                 {

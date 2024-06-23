@@ -42,7 +42,7 @@ namespace Scripts
                 OnComplete(() =>
                 {
                     _isClicked = false;
-                });            
+                });
         }
     }
 }
