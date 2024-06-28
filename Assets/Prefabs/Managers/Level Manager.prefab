@@ -49,8 +49,9 @@ MonoBehaviour:
   itemDatabase: {fileID: 11400000, guid: 8d094825f63458c4b9537b7fd33c1265, type: 2}
   boardPrefab: {fileID: 3313875633017515939, guid: 22ee7afd5b9f995478169afbad970107, type: 3}
   backgroundPrefab: {fileID: 8129429676171936332, guid: e8e81d7c35a608945ab866e75b1c1ca1, type: 3}
-  shouldGenerateRandomLevel: 1
+  shouldGenerateRandomLevel: 0
   randomLevelGenerator: {fileID: 0}
+  DoesBoardHasThingsToDo: 0
 --- !u!114 &1098446187112807524
 MonoBehaviour:
   m_ObjectHideFlags: 0
