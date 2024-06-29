@@ -47,5 +47,6 @@ public enum GameEvents
     OnMusicToggle,
     OnLevelRestart,
     OnMainEventInitialization,
-    AddMergeActionToHandle
+    AddMergeActionToHandle,
+    OnLevelDownloaded
 }

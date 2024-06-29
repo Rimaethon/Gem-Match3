@@ -21,4 +21,7 @@ public enum SFXClips
 	LevelWinSound = 18,
 	TntTntMergeExplosionSound = 19,
 	FuseSoundEffect = 20,
+	MailBoxSound = 21,
+	CannonSoundEffect = 22,
+	StoneBreakingSound = 23,
 }
