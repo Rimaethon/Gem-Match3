@@ -19,8 +19,10 @@ namespace Rimaethon.Runtime.UI
         [SerializeField] private Button notificationsToggle;
         [SerializeField] private RectTransform notificationsToggleImage;
         [SerializeField] private TextMeshProUGUI versionText;
-        [SerializeField] private float _toggleOffPivotXMax = 0.96f;
-        [SerializeField] private float _toggleOnPivotXMin = 0.1f;
+        private float _toggleOffPivotXMax = 0.6f;
+        private float _toggleOffPivotXMin = 0.035f;
+        private float _toggleOnPivotXMin = 0.36f;
+        private float _toggleOnPivotXMax = 1f;
         bool _isMusicOn;
         bool _isSoundOn;
         bool _isHintOn;
@@ -75,13 +77,13 @@ namespace Rimaethon.Runtime.UI
         {
             if (toogleState)
             {
-                toggleImage.DOAnchorMin(new Vector2(0.34f, 0f), 0.1f).SetUpdate(UpdateType.Fixed);
-                toggleImage.DOAnchorMax(new Vector2(_toggleOffPivotXMax, 1f), 0.1f).SetUpdate(UpdateType.Fixed);
+                toggleImage.DOAnchorMin(new Vector2(_toggleOnPivotXMin, 0f), 0.1f).SetUpdate(UpdateType.Fixed);
+                toggleImage.DOAnchorMax(new Vector2(_toggleOnPivotXMax, 1f), 0.1f).SetUpdate(UpdateType.Fixed);
             }
             else
             {
-                toggleImage.DOAnchorMin(new Vector2(_toggleOnPivotXMin, 0f), 0.1f).SetUpdate(UpdateType.Fixed);
-                toggleImage.DOAnchorMax(new Vector2(0.6f, 1f), 0.1f).SetUpdate(UpdateType.Fixed);
+                toggleImage.DOAnchorMin(new Vector2(_toggleOffPivotXMin, 0f), 0.1f).SetUpdate(UpdateType.Fixed);
+                toggleImage.DOAnchorMax(new Vector2(_toggleOffPivotXMax, 1f), 0.1f).SetUpdate(UpdateType.Fixed);
             }
 
             return toogleState;
