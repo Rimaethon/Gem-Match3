@@ -18,11 +18,12 @@ namespace Scripts
          minAnchor.x /= Screen.width;
          minAnchor.y = 0;
          maxAnchor.x /= Screen.width;
-         maxAnchor.y /= Screen.height*1.1f;
+         maxAnchor.y /=  Screen.height;
+         maxAnchor.y = Mathf.Max(0.96f, maxAnchor.y);
          _rectTransform.anchorMin = minAnchor;
          _rectTransform.anchorMax = maxAnchor;
       }
 
-   
+
    }
 }
