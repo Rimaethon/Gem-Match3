@@ -1,21 +1,24 @@
 ﻿using System;
-namespace _Scripts.Data_Classes 
+namespace _Scripts.Data_Classes
 {
     [Serializable]
     public class EventData
     {
-        public int eventObjectiveID;
+        public int eventGoalID;
+        public long eventStartUnixTime;
+        public long eventDuration;
+        public int eventProgressCount;
+    }
+
+    [Serializable]
+    public class EventRewardData
+    {
+        public bool isRewardUnlimitedUseForSpecificTime;
+        public int rewardUnlimitedUseTimeInSeconds;
         public int eventRewardID;
         public bool isRewardBooster;
         public bool isRewardCoin;
-        public int rewardCount;
-        //Come on I can give better names
-        public bool isRewardUnlimitedUseForSpecificTime;
-        public int rewardUnlimitedUseTimeInSeconds;
-        public long eventStartUnixTime;
-        public long eventDuration;
-        public int eventGoalCount;
-        public bool isMainEvent;
-        public int eventProgressCount;
+        public int rewardAmount;
+        public int eventGoalAmount;
     }
 }
