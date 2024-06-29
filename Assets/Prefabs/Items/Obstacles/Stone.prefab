@@ -9,15 +9,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5199285289599289307}
-  - component: {fileID: 3989561705226697576}
   - component: {fileID: 2901157794109000572}
+  - component: {fileID: 4544590200191713482}
   m_Layer: 0
   m_Name: Stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5199285289599289307
 Transform:
   m_ObjectHideFlags: 0
@@ -33,30 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3989561705226697576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5796264548630047562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ec9cece1c0849478dddaccf495efd92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _position: {x: 0, y: 0}
-  _targetPosition: {x: 0, y: 0}
-  _itemID: 5
-  isFallAble: 1
-  _isMatchable: 1
-  _isSwappable: 1
-  _isExploding: 0
-  _isActive: 1
-  _fallSpeed: 0
-  _isHighlightAble: 1
-  _isExplodeAbleByNearMatches: 0
-  _isRemovableFromBoard: 1
 --- !u!212 &2901157794109000572
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -109,3 +85,29 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 2
   m_SpriteSortPoint: 0
+--- !u!114 &4544590200191713482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5796264548630047562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8875b61ea0624810af6f8dbc537711fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _position: {x: 0, y: 0}
+  _targetPosition: {x: 0, y: 0}
+  _itemID: 5
+  isFallAble: 1
+  _isMatchable: 1
+  _isSwappable: 1
+  _isExploding: 0
+  _isActive: 1
+  _fallSpeed: 0
+  _isHighlightAble: 1
+  _isExplodeAbleByNearMatches: 0
+  _isGeneratorItem: 0
+  _isShuffleAble: 0
+  _isMoving: 0

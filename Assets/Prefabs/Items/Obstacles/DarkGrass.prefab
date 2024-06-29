@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2957818771682367830
 Transform:
   m_ObjectHideFlags: 0
@@ -108,4 +108,7 @@ MonoBehaviour:
   _fallSpeed: 0
   _isHighlightAble: 1
   _isExplodeAbleByNearMatches: 0
-  _isRemovableFromBoard: 1
+  _isGeneratorItem: 0
+  _isShuffleAble: 0
+  _isMoving: 0
+  _lightGrassSprite: {fileID: 21300000, guid: 25d5de296ee7ad9459c57144aafa0997, type: 3}
