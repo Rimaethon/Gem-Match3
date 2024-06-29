@@ -4,15 +4,16 @@ using Rimaethon.Scripts.Managers;
 using Rimaethon.Scripts.Utility;
 using UnityEngine;
 
-//Another Singleton? I think we have enough of those.  
+//Another Singleton? I think we have enough of those.
 public class AudioManager : PersistentSingleton<AudioManager>
 {
     [SerializeField] private AudioLibrary audioLibrary;
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private GameObject audioSourcePrefab;
-    private List<AudioSource> _sfxSources; 
+    private List<AudioSource> _sfxSources;
     private AudioClip[] _musicClips;
     private AudioClip[] _sfxClips;
+    private int initialSfxCount = 5;
 
 
     private void OnEnable()
@@ -31,6 +32,11 @@ public class AudioManager : PersistentSingleton<AudioManager>
     {
         base.Awake();
         _sfxSources = new List<AudioSource>();
+        for (int i = 0; i < initialSfxCount; i++)
+        {
+            GameObject newAudioSourceObject = Instantiate(audioSourcePrefab, transform);
+            _sfxSources.Add(newAudioSourceObject.GetComponent<AudioSource>());
+        }
         _musicClips = audioLibrary.MusicClips;
         _sfxClips = audioLibrary.SFXClips;
         PlayMusic(MusicClips.BackgroundMusic);
@@ -58,7 +64,12 @@ public class AudioManager : PersistentSingleton<AudioManager>
     public AudioSource PlaySFX(SFXClips clipEnum, bool isLooping = false)
     {
         if (!SaveManager.Instance.IsSfxOn()) return null;
-        
+
+        AudioSource playingSource = _sfxSources.FirstOrDefault(source => source.isPlaying && source.clip == _sfxClips[(int)clipEnum]);
+        if (playingSource != null)
+        {
+            return playingSource;
+        }
         AudioSource availableSource = _sfxSources.FirstOrDefault(source => !source.isPlaying);
 
         // If there is no available AudioSource, create a new one
