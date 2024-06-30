@@ -1,19 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using _Scripts.Core;
 using _Scripts.Managers;
 using _Scripts.Managers.Matching;
 using _Scripts.Utility;
-using Cysharp.Threading.Tasks;
-using Data;
 using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Scripting;
-using Random = UnityEngine.Random;
 
 //Bomb + rocket = triple rocket vertical and horizontal
 // LightBall + Any Booster= spawning that booster 10 times and also converting the matched position to that booster
@@ -26,6 +19,8 @@ namespace Scripts
 {
     public class BoardManager : MonoBehaviour
     {
+        public GameObject _spriteMask;
+
         [SerializeField] private bool[] dirtyColumns;
         private Board _board;
         private InputHandler _inputHandler;
@@ -39,11 +34,15 @@ namespace Scripts
         private bool _isBoardShaking;
         private const float ShakeDuration = 0.2f;
         private const float ShakeMagnitude = 0.06f;
-        private bool hasActionToRun;
-        private bool hasMatchToRun;
-        private bool hasItemToRemove;
-        private bool hasFillToSpawn;
-        private bool hasItemToMove;
+        [ShowInInspector] private bool hasActionToRun;
+        [ShowInInspector] private bool hasMatchToRun;
+        [ShowInInspector] private bool hasItemToRemove;
+        [ShowInInspector] private bool hasFillToSpawn;
+        [ShowInInspector] private bool hasItemToMove;
+        [ShowInInspector] private bool hasBoosterToSpawn;
+        [ShowInInspector] private bool hasMatch;
+
+
         private void OnEnable()
         {
             GC.Collect();
@@ -76,7 +75,7 @@ namespace Scripts
 
         public void InitializeBoard(Board board)
         {
-            _board = board;
+           _board = board;
             _board.SetBoardItemsParent(gameObject.transform);
             dirtyColumns = new bool[_board.Width];
             _matchChecker = new MatchChecker(_board);
@@ -96,13 +95,14 @@ namespace Scripts
                 return;
             hasItemToMove=_itemMovement.MoveItems();
             _inputHandler.HandleInputs();
-            _matchChecker.CheckForMatches();
+            hasMatch=_matchChecker.CheckForMatches();
             hasMatchToRun=_matchHandler.HandleMatches();
             hasItemToRemove= _itemRemovalHandler.HandleItemRemoval();
-            _spawnHandler.HandleBoosterSpawn();
+            hasBoosterToSpawn= _spawnHandler.HandleBoosterSpawn();
             hasFillToSpawn=_spawnHandler.HandleFillSpawn();
             hasActionToRun=_itemActionHandler.HandleActions();
-            LevelManager.Instance.DoesBoardHasThingsToDo = hasItemToMove || hasMatchToRun || hasItemToRemove || hasFillToSpawn || hasActionToRun;
+            LevelManager.Instance.DoesBoardHasThingsToDo = hasItemToMove || hasMatchToRun || hasItemToRemove
+                                                        || hasFillToSpawn || hasActionToRun || hasBoosterToSpawn||hasMatch;
 
         }
         private void HandleBoardShake()
