@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Scripts;
 using Scripts.DownWardItems;
 using UnityEngine;
@@ -17,15 +14,15 @@ using UnityEngine;
               _isExplodeAbleByNearMatches = false;
               _isGeneratorItem = false;
           }
-          public override void OnExplode()
-          { 
-              
-          }
-      
-  
-          public override void OnClick(Board board, Vector2Int pos)
+
+		  public override void OnExplode()
           {
-                   
-              
+
+          }
+
+		  public override void OnClick(Board board, Vector2Int pos)
+          {
+
+
           }
     }

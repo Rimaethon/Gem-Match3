@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using _Scripts.Utility;
 using Rimaethon.Scripts.Managers;
 using Scripts;
-using UnityEditor;
 using UnityEngine;
 
 namespace _Scripts.Core

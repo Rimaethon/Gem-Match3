@@ -1,11 +1,9 @@
 ﻿using Rimaethon.Scripts.Managers;
-using UnityEngine;
 
 namespace Scripts
 {
     public class StoneObstacleBoardItem:ObstacleBoardItem
     {
-
         public override void OnExplode()
         {
             if(_isExploding)

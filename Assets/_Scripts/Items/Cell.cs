@@ -5,7 +5,6 @@ namespace Scripts
 {
     public class Cell
     {
-        public CellType CellType;
         public Cell(Vector2Int cellPosition,CellType cellType=CellType.NORMAL,IBoardItem boardItem=null,IBoardItem underLayBoardItem=null,IBoardItem overLayBoardItem=null)
         {
             CellPosition = cellPosition;
@@ -14,6 +13,7 @@ namespace Scripts
             _overLayBoardItem= overLayBoardItem;
             CellType = cellType;
         }
+        public CellType CellType;
         public bool HasItem => BoardItem != null;
         public bool HasUnderLayItem => UnderLayBoardItem != null;
         public bool HasOverLayItem => OverLayBoardItem != null;
@@ -22,15 +22,17 @@ namespace Scripts
         public bool IsGettingEmptied => _isGettingEmptied;
         public bool IsLocked => _isLocked;
         public IBoardItem BoardItem=>_boardItem;
-        private IBoardItem _boardItem;
         public IBoardItem UnderLayBoardItem=>_underLayBoardItem;
-        private IBoardItem _underLayBoardItem;
         public IBoardItem OverLayBoardItem=>_overLayBoardItem;
+
+        private IBoardItem _underLayBoardItem;
+        private IBoardItem _boardItem;
         private IBoardItem _overLayBoardItem;
         private bool _isLocked;
         private bool _isGettingFilled ;
         private bool _isGettingEmptied;
         private int _lockCount=0;
+
         public void SetItem(IBoardItem boardItem)
         {
             _boardItem = boardItem;
@@ -39,6 +41,7 @@ namespace Scripts
                 BoardItem.Position = CellPosition;
             }
         }
+
         public void SetUnderLayItem(IBoardItem boardItem)
         {
             _underLayBoardItem = boardItem;
@@ -47,6 +50,7 @@ namespace Scripts
                 UnderLayBoardItem.Position = CellPosition;
             }
         }
+
         public void SetOverLayItem(IBoardItem boardItem)
         {
             _overLayBoardItem = boardItem;
@@ -60,10 +64,12 @@ namespace Scripts
         {
             _isGettingFilled = value;
         }
+
         public void SetIsGettingEmptied(bool value)
         {
             _isGettingEmptied = value;
         }
+
         public void SetIsLocked(bool value)
         {
             _lockCount=value?_lockCount+1:_lockCount-1;

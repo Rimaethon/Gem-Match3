@@ -1,5 +1,4 @@
-﻿using DG.Tweening;
-using Rimaethon.Runtime.UI;
+﻿using Rimaethon.Runtime.UI;
 using Rimaethon.Scripts.Managers;
 using TMPro;
 using UnityEngine;
@@ -29,7 +28,7 @@ namespace _Scripts.UI.Buttons
             if(!_isLevelExist)
                 return;
             base.DoOnClick();
-            
+
             EventManager.Instance.Broadcast(GameEvents.OnLevelButtonPressed, _levelIndex);
         }
     }

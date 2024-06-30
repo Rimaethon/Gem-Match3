@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using _Scripts.Managers;
 using _Scripts.Utility;
 using Rimaethon.Scripts.Managers;
@@ -11,12 +10,13 @@ namespace Scripts.BoosterActions
     //https://youtu.be/juvV9BRF3hI?t=217 as can be seen here when  LB-LB merge destroys everything the other Lightballs get destroyed because there is no item to match.
     public class LightBallBoosterAction : IItemAction
     {
-        private const float ExplosionTime = 0.3f;
         public bool IsFinished { get; set; }
         public int ItemID { get; set; }
         public Board Board { get; set; }
-        private int _boosterID;
         public readonly HashSet<IBoardItem> ItemsToExplode=new HashSet<IBoardItem>();
+
+        private const float ExplosionTime = 0.3f;
+        private int _boosterID;
         private int _matchingItemID;
         private readonly float _noTargetThreshold=0.2f;
         private Vector2Int _position;
@@ -74,6 +74,7 @@ namespace Scripts.BoosterActions
             _unTargetedRays = _lightBallParticleEffectInstance.GetComponent<LightBallParticleEffect>().lightBallRays;
             _chargingParticleEffects.SetActive(true);
         }
+
         private void HighlightLightBall(bool highlight)
         {
             var materialPropertyBlock = new MaterialPropertyBlock();
@@ -99,7 +100,6 @@ namespace Scripts.BoosterActions
             _unTargetedRays.RemoveAt(_unTargetedRays.Count - 1);
         }
 
-
         public void Execute()
         {
             if(_initialWaitTime>0)
@@ -109,7 +109,7 @@ namespace Scripts.BoosterActions
             }
             TryGiveTargetToRays();
             AnimateAndSearchRays();
-            
+
             if (_rayDestinationQueue.Count == 0 && _targetedRays.Count == 0)
             {
                 if(_shouldSpawnBooster)
@@ -127,6 +127,7 @@ namespace Scripts.BoosterActions
                 }
             }
         }
+
         private void AnimateAndSearchRays()
         {
             foreach (var ray in _targetedRays)
@@ -145,6 +146,7 @@ namespace Scripts.BoosterActions
                 _targetedRays.Remove(ray);
             }
         }
+
         private void Search()
         {
             if (_shouldSpawnBooster)
@@ -160,11 +162,12 @@ namespace Scripts.BoosterActions
                 TryGetItemPositionForRay(_matchingItemID);
             }
         }
+
         private void FinishAction()
         {
             if (!_isExplosionInitiated)
             {
-                if(_audioSource!=null) 
+                if(_audioSource!=null)
                     _audioSource.Stop();
                 AudioManager.Instance.PlaySFX(SFXClips.MatchSound);
                 _chargingParticleEffects.SetActive(false);
@@ -200,24 +203,26 @@ namespace Scripts.BoosterActions
             _noTargetCounter = 0;
             EventManager.Instance.Broadcast(GameEvents.OnPlayerInputUnlock);
             if (!_shouldSpawnBooster) LevelManager.Instance.ItemsGettingMatchedByLightBall.Remove(_matchingItemID);
-            
+
         }
+
         private void UnlockBoardAndExplodeItems()
         {
             foreach (var itemPosition in ItemsToExplode)
             {
                 if (itemPosition==null) continue;
                 itemPosition.IsActive=true;
-               
+
                 Board.Cells[itemPosition.Position.x,itemPosition.Position.y].SetIsLocked(false);
                 itemPosition.OnExplode();
                 if (!_shouldSpawnBooster)
-                { 
+                {
                     ExplodeAllDirections(itemPosition.Position);
                 }
 
             }
         }
+
         private void ReturnParticleEffect()
         {
             _targetedRays.ForEach(ray => ray.ResetRay());
@@ -225,6 +230,7 @@ namespace Scripts.BoosterActions
             ObjectPool.Instance.ReturnBoosterParticleEffect(_lightBallParticleEffectInstance,ItemID);
             EventManager.Instance.Broadcast(GameEvents.OnBoardUnlock);
         }
+
         private void TryGetItemPositionForRay(int idToMatch)
         {
             for (var x = 0; x < Board.Width; x++)
@@ -246,13 +252,16 @@ namespace Scripts.BoosterActions
             }
 
         }
+
         private void ExplodeAllDirections(Vector2Int pos)
         {
             foreach (var direction in pos.GetFourDirections())
+            {
                 if (Board.IsInBoundaries(direction) && Board.Cells[direction.x,direction.y].HasItem &&
                     !Board.GetItem(direction).IsExploding && !Board.GetItem(direction).IsMatching &&
                     Board.GetItem(direction).IsExplodeAbleByNearMatches)
                     Board.GetItem(direction).OnExplode();
+            }
         }
     }
 }

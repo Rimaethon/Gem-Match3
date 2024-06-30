@@ -1,5 +1,4 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +9,7 @@ namespace Rimaethon.Runtime.UI
     public class BackgroundFadeEffect:MonoBehaviour
     {
         private Image _image;
-        
+
         private void Awake()
         {
             _image = GetComponent<Image>();

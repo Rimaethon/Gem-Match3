@@ -1,5 +1,4 @@
-﻿using _Scripts.Managers;
-using Rimaethon.Scripts.Managers;
+﻿using Rimaethon.Scripts.Managers;
 using Scripts;
 using Scripts.BoosterActions;
 using UnityEngine;
@@ -20,7 +19,6 @@ namespace _Scripts.Items.ItemActions.MergeActions
 
             _isFinished = false;
         }
-
 
         public void Execute()
         {

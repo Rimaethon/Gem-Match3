@@ -1,6 +1,4 @@
-﻿using DG.Tweening;
-using Rimaethon.Scripts.Managers;
-using Scripts.BoosterActions;
+﻿using Rimaethon.Scripts.Managers;
 using UnityEngine;
 
 namespace Scripts
@@ -22,6 +20,7 @@ namespace Scripts
             _isShuffleAble = true;
             Highlight(0);
         }
+
         public override void OnExplode()
         {
             if(_isExploding||IsMatching||!_isActive)
@@ -31,6 +30,7 @@ namespace Scripts
             EventManager.Instance.Broadcast(GameEvents.OnItemExplosion, _position, _itemID);
 
         }
+
         public override void OnMatch()
         {
             if(_isExploding||!IsMatching)
@@ -38,11 +38,13 @@ namespace Scripts
             _isExploding = true;
             EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,_position,ItemID,0);
         }
+
         public override void OnRemove()
         {
             EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, Position);
             EventManager.Instance.Broadcast(GameEvents.OnItemRemoval, BoardItem);
         }
+
         public override void OnClick(Board board, Vector2Int pos)
         {
         }

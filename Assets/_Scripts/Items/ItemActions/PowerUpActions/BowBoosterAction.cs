@@ -66,6 +66,7 @@ namespace _Scripts.Items.ItemActions
             SetRowLock(false);
 
         }
+
         private void HandleExplosion(Vector2Int cell)
         {
             if (!Board.IsInBoundaries(cell)) return;
@@ -89,6 +90,5 @@ namespace _Scripts.Items.ItemActions
         {
             for (var i = 0; i < Board.Width; i++) Board.Cells[i,_pos.y].SetIsLocked(isLocked);
         }
-
     }
 }

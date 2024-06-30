@@ -1,6 +1,4 @@
-﻿using DG.Tweening;
-using UnityEngine;
-using UnityEngine.Rendering;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Rimaethon.Runtime.UI
@@ -10,7 +8,7 @@ namespace Rimaethon.Runtime.UI
         [SerializeField] private Button _quitButton;
         [SerializeField] private Button _closePanelButton;
         [SerializeField] private GameObject tryAgainPanel;
-        
+
         private void OnEnable()
         {
             _quitButton.onClick.AddListener(HandleQuitButton);

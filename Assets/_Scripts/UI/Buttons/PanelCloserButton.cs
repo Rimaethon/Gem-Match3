@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Rimaethon.Runtime.UI;
+﻿using Rimaethon.Runtime.UI;
 using UnityEngine;
 
 public class PanelCloserButton : UIButton

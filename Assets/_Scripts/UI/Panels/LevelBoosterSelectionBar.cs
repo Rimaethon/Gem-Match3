@@ -11,8 +11,8 @@ namespace _Scripts.Items.ItemActions
     public class LevelBoosterSelectionBar:MonoBehaviour,ITimeDependent
     {
         [SerializeField] private List<UIBoosterButton> _boosters;
-        [SerializeField] Sprite _unclickedBackgroundSprite;
-        [SerializeField] Sprite _clickedBackgroundSprite;
+        [SerializeField] private Sprite _unclickedBackgroundSprite;
+        [SerializeField] private Sprite _clickedBackgroundSprite;
         private void OnEnable()
         {
             EventManager.Instance.AddHandler(GameEvents.OnBoosterAmountChanged, HandleBoosterCounts);
@@ -39,7 +39,7 @@ namespace _Scripts.Items.ItemActions
                     EventManager.Instance.Broadcast<int>(GameEvents.OnBoosterButtonClicked,booster.itemID);
                     if(booster.isClicked)
                     {
-                        
+
                         booster.isClicked = false;
                         booster.boosterBackground.sprite = _unclickedBackgroundSprite;
                         booster.unClickedCounter.SetActive(true);
@@ -70,7 +70,7 @@ namespace _Scripts.Items.ItemActions
             EventManager.Instance.RemoveHandler(GameEvents.OnBoosterAmountChanged, HandleBoosterCounts);
         }
 
-   
+
         private void HandleBoosterCounts()
         {
             foreach (var booster in _boosters)
@@ -80,7 +80,7 @@ namespace _Scripts.Items.ItemActions
                     booster.boosterCounter.text = "∞";
                     continue;
                 }
-                
+
                 booster.boosterCounter.text= SaveManager.Instance.GetBoosterAmount(booster.itemID).ToString();
             }
         }

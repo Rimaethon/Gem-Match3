@@ -20,10 +20,10 @@ namespace _Scripts.Items.ItemActions.MergeActions
             Item2ID = item2ID;
             EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,position2,item1ID,item2ID);
         }
+
         public void Execute()
         {
             IsFinished = true;
         }
-
     }
 }

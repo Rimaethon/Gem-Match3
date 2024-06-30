@@ -1,5 +1,4 @@
 using DG.Tweening;
-using Rimaethon.Scripts.Managers;
 using Scripts;
 using UnityEngine;
 

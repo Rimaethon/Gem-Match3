@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using _Scripts.Utility;
+﻿using _Scripts.Utility;
 using Rimaethon.Scripts.Managers;
 using UnityEngine;
 
@@ -7,21 +6,23 @@ namespace Scripts.BoosterActions.MergeActions
 {
     public class TNTRocketMergeAction : IItemMergeAction
     {
+        public bool IsFinished { get; set; }
+        public int ItemID { get; set; }
+        public Board Board { get; set; }
+        public int Item1ID { get; set; }
+        public int Item2ID { get; set; }
+
         private const float Delay = 1f;
         private const float ParticleEffectDuration = 0.2f;
         private float _counter;
         private GameObject _tntRocketExplosionEffect;
         private TntRocketMergeParticleEffect _tntRocketMergeParticleEffect;
-        private Vector2Int _position1;
         private Board _board;
-        public bool IsFinished { get; set; }
-        public int ItemID { get; set; }
-        public Board Board { get; set; }
-        Vector2Int _position2;
+        private Vector2Int _position1;
+        private Vector2Int _position2;
         private bool _isActionsInitialized;
-        public int Item1ID { get; set; }
-        public int Item2ID { get; set; }
         private AudioSource _audioSource;
+
         public void InitializeMergeAction(Board board, int item1ID, int item2ID, Vector2Int position1, Vector2Int position2)
         {
             _position1 = position1;
@@ -35,6 +36,7 @@ namespace Scripts.BoosterActions.MergeActions
             _board.Cells[_position2.x,_position2.y].SetIsLocked(true);
             _counter = 0.0f;
         }
+
         private void InitializeRockets()
         {
             EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,_position2,101,-1);
@@ -67,7 +69,6 @@ namespace Scripts.BoosterActions.MergeActions
 
         }
 
-
         public void Execute()
         {
             if (_counter < Delay)
@@ -84,8 +85,6 @@ namespace Scripts.BoosterActions.MergeActions
                 _isActionsInitialized = true;
             }
             IsFinished = true;
-
         }
-
     }
 }

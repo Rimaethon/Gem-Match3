@@ -7,13 +7,13 @@ namespace _Scripts.Items.ItemActions
 {
     public class ExplodeAction
     {
+        public bool _isFinished;
+        protected Vector2Int _pos;
+        protected Board _board;
         private const float ExplosionDelay = 0.075f;
         private int _radius=2;
         private float _counter;
         private int _currentExplosionArea = 1;
-        protected Vector2Int _pos;
-        protected Board _board;
-        public bool _isFinished;
 
         protected void InitializeExplode(Board board,int radius, Vector2Int pos)
         {
@@ -49,6 +49,7 @@ namespace _Scripts.Items.ItemActions
                 _isFinished = true;
             }
         }
+
         private void ExpandAndDestroy()
         {
             // Explode cells at the current explosion radius

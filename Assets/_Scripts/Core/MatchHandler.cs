@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using _Scripts.Core;
 using _Scripts.Utility;
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using Scripts;
@@ -14,20 +13,20 @@ namespace _Scripts.Managers.Matching
     {
         private Board _board;
         private Sequence _sequence;
-        private readonly HashSet<MatchData> _matchesToHandle= new HashSet<MatchData>(); 
+        private readonly HashSet<MatchData> _matchesToHandle= new HashSet<MatchData>();
         private List<MatchData> _matchesToHandleThisFrame= new List<MatchData>();
         private List<Vector2Int> _directions = new List<Vector2Int>();
-        private bool isDisabled;
+        private bool _isDisabled;
         public MatchHandler(Board board)
         {
             _board = board;
             EventManager.Instance.AddHandler<MatchData>(GameEvents.AddMatchToHandle, AddMatchToHandle);
         }
-        
+
         public void OnDisable()
         {
             _board = null;
-            isDisabled = true;
+            _isDisabled = true;
             _matchesToHandle.Clear();
             _matchesToHandleThisFrame.Clear();
             _directions.Clear();
@@ -37,7 +36,7 @@ namespace _Scripts.Managers.Matching
         }
         private void AddMatchToHandle(MatchData matchData)
         {
-            if (isDisabled)
+            if (_isDisabled)
             {
                 Debug.LogWarning("MatchHandler is disabled");
                 return;
@@ -48,7 +47,7 @@ namespace _Scripts.Managers.Matching
 
         public bool HandleMatches()
         {
-            if (isDisabled)
+            if (_isDisabled)
             {
                 Debug.LogWarning("MatchHandler is disabled");
                 return false;
@@ -61,7 +60,7 @@ namespace _Scripts.Managers.Matching
             _matchesToHandleThisFrame.Clear();
             return _matchesToHandle.Count > 0;
         }
-        
+
         private void CheckForMatchType(MatchData data)
         {
             if (data.MatchType == MatchType.None)
@@ -141,7 +140,7 @@ namespace _Scripts.Managers.Matching
             }
             matchData.IsInitialized = true;
         }
-            
+
         private void ExplodeAllDirections(Vector2Int pos)
         {
            _directions = pos.GetFourDirections();
@@ -153,6 +152,6 @@ namespace _Scripts.Managers.Matching
                     _board.GetItem(_directions[i]).OnExplode();
             }
         }
-        
+
     }
 }

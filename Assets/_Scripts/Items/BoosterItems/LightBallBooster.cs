@@ -3,14 +3,11 @@ using _Scripts.Managers;
 using _Scripts.Utility;
 using Rimaethon.Scripts.Managers;
 using Scripts;
-using Scripts.BoosterActions;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class LightBallBooster : BoosterBoardItem  
+public class LightBallBooster : BoosterBoardItem
 {
     private int _idToMatch;
-
 
     public override void OnClick(Board board, Vector2Int pos)
     {
@@ -20,6 +17,7 @@ public class LightBallBooster : BoosterBoardItem
         _position = pos;
         OnExplode();
     }
+
     public override void OnSwap(IBoardItem boardItem, IBoardItem otherBoardItem)
     {
         if(IsMoving||IsExploding)
@@ -29,13 +27,14 @@ public class LightBallBooster : BoosterBoardItem
         OnRemove();
 
         EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,_position,_itemID,_idToMatch);
-        
+
     }
+
     public override void OnExplode()
     {
         if(IsExploding||!IsActive)
             return;
-        _isExploding= true; 
+        _isExploding= true;
         FindMostCommonItem(Board);
         OnRemove();
         if (_idToMatch == -1)
@@ -43,11 +42,12 @@ public class LightBallBooster : BoosterBoardItem
         EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,_position,_itemID,_idToMatch);
 
     }
-    
+
     public override void OnRemove()
     {
         EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, Position);
     }
+
     private void FindMostCommonItem(Board board)
     {
         Dictionary<int, int> itemCounter = new Dictionary<int, int>();

@@ -1,5 +1,4 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using TMPro;
 using UnityEngine;
@@ -13,7 +12,7 @@ namespace Rimaethon.Runtime.UI
         [SerializeField] private RectTransform starImageTransform;
         [SerializeField] private ParticleSystem starParticleSystem;
         [SerializeField] private GameObject _continueButtonGameObject;
-        Button _continueButton;
+        private Button _continueButton;
 
         private void OnEnable()
         {
@@ -40,7 +39,7 @@ namespace Rimaethon.Runtime.UI
         private void OnDisable()
         {
             _continueButton.onClick.RemoveAllListeners();
-            
+
         }
 
     }

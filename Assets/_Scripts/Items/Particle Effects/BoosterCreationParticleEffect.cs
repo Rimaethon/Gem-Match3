@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Scripts
 {
@@ -19,6 +18,5 @@ namespace Scripts
             var particleSystem = GetComponent<ParticleSystem>().main;
             particleSystem.stopAction = ParticleSystemStopAction.Callback;
         }
-
     }
 }

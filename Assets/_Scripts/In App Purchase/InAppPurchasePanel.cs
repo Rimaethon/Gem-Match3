@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using Data;
 using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
-using UnityEngine.UI;
 
 namespace Samples.Purchasing.Core.BuyingConsumables
 {
     public class InAppPurchasePanel : MonoBehaviour, IDetailedStoreListener
     {
         [SerializeField] private ItemDatabaseSO itemDatabase;
-        private IStoreController _storeController;
+        private IStoreController storeController;
         [SerializeField] GameObject offerPanelPrefab;
         [SerializeField] List<Bundle> bundles;
-        private List<OfferPanel> offerPanels=new List<OfferPanel>();
+        private readonly List<OfferPanel> offerPanels=new List<OfferPanel>();
 
         private void OnEnable()
         {
@@ -45,7 +43,7 @@ namespace Samples.Purchasing.Core.BuyingConsumables
 
         private void BuyBundle(Bundle bundle)
         {
-            _storeController.InitiatePurchase(bundle.bundleId);
+            storeController.InitiatePurchase(bundle.bundleId);
         }
 
         void InitializePurchasing()
@@ -63,7 +61,7 @@ namespace Samples.Purchasing.Core.BuyingConsumables
         public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
         {
             Debug.Log("In-App Purchasing successfully initialized");
-            _storeController = controller;
+            storeController = controller;
         }
 
         public void OnInitializeFailed(InitializationFailureReason error)

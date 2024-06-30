@@ -1,7 +1,5 @@
 ﻿using System;
 using _Scripts.Core.Interfaces;
-using Data;
-using DG.Tweening;
 using Rimaethon.Runtime.UI;
 using Rimaethon.Scripts.Managers;
 using TMPro;
@@ -12,7 +10,7 @@ namespace _Scripts.UI.Panels
     public class HeartResourceBar:UIButton,ITimeDependent
     {
         [SerializeField] private TMP_Text _heartText;
-        [SerializeField] TMP_Text _heartRefillTimeText;
+        [SerializeField] private TMP_Text _heartRefillTimeText;
         [SerializeField] private GameObject heartPanel;
         private bool _isClickAble;
 
@@ -31,7 +29,7 @@ namespace _Scripts.UI.Panels
             EventManager.Instance.RemoveHandler(GameEvents.OnHeartAmountChanged, UpdateHeartVisual);
         }
 
-        
+
         public void OnTimeUpdate(long currentTime)
         {
             if (SaveManager.Instance.HasUnlimitedHearts())
@@ -43,7 +41,7 @@ namespace _Scripts.UI.Panels
         }
         private void Start()
         {
-            UpdateHeartVisual();  
+            UpdateHeartVisual();
         }
 
         private void UpdateHeartVisual()

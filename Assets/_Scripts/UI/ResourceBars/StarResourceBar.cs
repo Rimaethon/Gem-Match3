@@ -1,6 +1,4 @@
-﻿using Data;
-using DG.Tweening;
-using Rimaethon.Runtime.UI;
+﻿using Rimaethon.Runtime.UI;
 using Rimaethon.Scripts.Managers;
 using TMPro;
 using UnityEngine;

@@ -13,7 +13,7 @@ namespace _Scripts.Managers
     {
         private List<ITimeDependent> _timeDependentObjects = new List<ITimeDependent>();
         private int _numberOfTimeDependentObjects;
-        long _currentTime;
+        private long _currentTime;
         private CancellationTokenSource _cancellationTokenSource;
 
         private void Start()
@@ -48,4 +48,3 @@ namespace _Scripts.Managers
         }
     }
 }
-   

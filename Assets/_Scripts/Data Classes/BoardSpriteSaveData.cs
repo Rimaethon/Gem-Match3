@@ -11,11 +11,13 @@ namespace _Scripts.Data_Classes
         [TableMatrix(DrawElementMethod = "DrawCell", ResizableColumns = true)]
         public CellType[,] CellTypeMatrix;
         public Sprite Sprite;
+
         [Button]
         public void ResetCells()
         {
             CellTypeMatrix = new CellType[Width, Height];
         }
+
         private CellType DrawCell(Rect rect, CellType value)
         {
             if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
@@ -46,6 +48,7 @@ namespace _Scripts.Data_Classes
         }
 
     }
+
     public enum CellType
     {
         NORMAL=0,

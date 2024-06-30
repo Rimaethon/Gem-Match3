@@ -1,10 +1,6 @@
-﻿using System;
-using Data;
-using DG.Tweening;
-using Rimaethon.Runtime.UI;
+﻿using Rimaethon.Runtime.UI;
 using Rimaethon.Scripts.Managers;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace _Scripts.UI.Panels
@@ -14,7 +10,7 @@ namespace _Scripts.UI.Panels
         [SerializeField] private TMP_Text _coinText;
         [SerializeField] private GameObject coinPanel;
         [SerializeField] private bool _isClickAble;
-        
+
 
         protected override void OnEnable()
         {

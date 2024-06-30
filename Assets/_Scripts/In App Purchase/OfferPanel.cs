@@ -7,18 +7,18 @@ namespace Samples.Purchasing.Core.BuyingConsumables
 {
     public class OfferPanel : MonoBehaviour
     {
-        
+
         public Button buyButton;
         public TextMeshProUGUI coinText;
         public TextMeshProUGUI boosterDurationText;
         public List<GameObject> boosterIconHolders;
         public List<GameObject> powerUpIconHolders;
-        private Bundle _bundle;
+        private Bundle bundle;
         private ItemDatabaseSO _itemDatabase;
-        
+
         public void InitializePanel(Bundle bundle,ItemDatabaseSO itemDatabase)
         {
-            _bundle = bundle;
+            this.bundle = bundle;
             _itemDatabase = itemDatabase;
             coinText.text = bundle.coinAmount.ToString();
             int unlimitedDuration = bundle.unlimitedDuration;
@@ -47,6 +47,6 @@ namespace Samples.Purchasing.Core.BuyingConsumables
                 powerUpIconHolders[i].GetComponentInChildren<TextMeshProUGUI>().text = "X"+bundle.powerUpPurchases[i].amount;
             }
         }
-    
+
     }
 }

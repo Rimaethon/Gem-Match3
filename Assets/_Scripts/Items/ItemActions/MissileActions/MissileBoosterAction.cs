@@ -4,7 +4,6 @@ using _Scripts.Utility;
 using DG.Tweening;
 using Rimaethon.Scripts.Managers;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Scripts.BoosterActions
 {
@@ -12,6 +11,8 @@ namespace Scripts.BoosterActions
     {
         public int ItemID { get; set; }
         public Board Board { get; set; }
+        public bool IsFinished => _isFinished;
+
         private const float RotationSpeed = 0.5f;
         private const float MovementSpeed = 2.7f;
         private const float ExplosionDelay = 0.2f;
@@ -33,7 +34,6 @@ namespace Scripts.BoosterActions
         private Vector3 _missileCompanyInitialPos;
         private Vector3 _missileCompanyTargetPos;
         private Vector3 _targetPos;
-        public bool IsFinished => _isFinished;
         private bool _isFinished;
         private AudioSource _audioSource;
 
@@ -169,6 +169,7 @@ namespace Scripts.BoosterActions
             _missileCompanySpriteRenderer=null;
             Board=null;
         }
+
         private void ExplodeAllDirections()
         {
             ObjectPool.Instance.GetMissileExplosionEffect(_itemPosition);
@@ -176,9 +177,9 @@ namespace Scripts.BoosterActions
             {
                 if (Board.GetItem(direction) != null && !Board.GetItem(direction).IsExploding &&
                     !Board.GetItem(direction).IsMatching)
-                    Board.GetItem(direction).OnExplode();  
+                    Board.GetItem(direction).OnExplode();
             }
-               
+
         }
     }
 }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security;
+﻿using System.Collections.Generic;
 using DG.Tweening;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Scripts

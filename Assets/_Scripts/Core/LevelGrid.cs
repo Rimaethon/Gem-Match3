@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Rimaethon.Scripts.Utility;
 using UnityEngine;
 
@@ -12,7 +10,7 @@ public class LevelGrid : Singleton<LevelGrid>
         base.Awake();
         _grid=gameObject.GetComponent<Grid>();
     }
-    
+
     public Vector3 GetCellCenterWorld(Vector2Int position)
     {
         return _grid.GetCellCenterWorld(new Vector3Int(position.x,position.y,0));

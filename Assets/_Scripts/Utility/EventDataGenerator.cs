@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using _Scripts.Data_Classes;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEngine;
 
 public class EventDataGenerator : MonoBehaviour

@@ -2,8 +2,8 @@
 {
     public enum ItemRemovalType
     {
-        Item,
-        UnderlayItem,
-        OverlayItem
+        ITEM,
+        UNDERLAY_ITEM,
+        OVERLAY_ITEM
     }
 }

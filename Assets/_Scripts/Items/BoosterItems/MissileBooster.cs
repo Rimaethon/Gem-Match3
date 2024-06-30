@@ -1,6 +1,4 @@
-﻿using _Scripts.Managers;
-using Rimaethon.Scripts.Managers;
-using Scripts.BoosterActions;
+﻿using Rimaethon.Scripts.Managers;
 using UnityEngine;
 
 namespace Scripts
@@ -21,6 +19,7 @@ namespace Scripts
             _isClicked = true;
             OnExplode();
         }
+
         public override void OnExplode()
         {
             if(IsExploding||!IsActive)
@@ -30,11 +29,12 @@ namespace Scripts
             EventManager.Instance.Broadcast(GameEvents.AddActionToHandle, Position, ItemID, -1);
 
         }
+
         public override void OnRemove()
         {
             EventManager.Instance.Broadcast<Vector2Int>(GameEvents.AddItemToRemoveFromBoard, Position);
         }
     }
-    
+
 
 }

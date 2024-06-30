@@ -1,11 +1,8 @@
 ﻿using _Scripts.Items.ItemActions;
 using _Scripts.Managers;
-using Data;
 using DG.Tweening;
 using Rimaethon.Runtime.UI;
 using Rimaethon.Scripts.Managers;
-using Scripts;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,12 +13,12 @@ public class InGamePowerUpPanel : MonoBehaviour
     [SerializeField] private UIBoosterButton bowBooster;
     [SerializeField] private UIBoosterButton cannonBooster;
     [SerializeField] private UIBoosterButton jesterHatBooster;
-    private UIBoosterButton _currentBooster=null;
     [SerializeField] private Button settingsButton;
     [SerializeField] private GameObject unFadeAbleSettingsButton;
     [SerializeField] private Image fadeEffect;
     [SerializeField] private Button jesterHatShuffleButton;
     [SerializeField] private RectTransform jesterHatVisualTransform;
+    private UIBoosterButton _currentBooster=null;
     //Probably needs to be adjusted for different screen sizes
     private readonly float _jesterHatStartPos=2.7f;
     private readonly Vector3 _hammerRotationAmount = new Vector3(0, 0, -50);

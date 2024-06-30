@@ -1,6 +1,5 @@
 ﻿using Rimaethon.Runtime.UI;
 using Rimaethon.Scripts.Managers;
-using UnityEngine;
 
 namespace _Scripts.UI.Buttons
 {

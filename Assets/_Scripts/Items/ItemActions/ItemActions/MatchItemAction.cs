@@ -11,6 +11,10 @@ namespace Scripts.BoosterActions
 
     public class MatchItemAction : IItemAction
     {
+        public bool IsFinished { get; set; }
+        public int ItemID { get; set; }
+        public Board Board { get; set; }
+
         private IBoardItem _boardItem;
         private Vector2Int _pos;
         private float _explodeTime=0.15f;
@@ -18,9 +22,7 @@ namespace Scripts.BoosterActions
         private float _counter;
         private bool _isExplodeInitiated;
         private MatchState _state=MatchState.Explode;
-        public bool IsFinished { get; set; }
-        public int ItemID { get; set; }
-        public Board Board { get; set; }
+
 
         public void InitializeAction(Board board, Vector2Int pos, int value1, int value2)
         {

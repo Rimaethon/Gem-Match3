@@ -1,8 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
-using Sirenix.OdinInspector;
-using UnityEditor;
 using UnityEngine;
 
 public class LightBallLightBallMergeParticleEffect : MonoBehaviour
@@ -17,7 +14,8 @@ public class LightBallLightBallMergeParticleEffect : MonoBehaviour
     private bool _isExploding;
     private Sequence _scaleLightBall1;
     private Sequence _scaleLightBall2;
-    private float _duration = 0.4f; 
+    private float _duration = 0.4f;
+
     public void InitializeEffect(float duration)
     {
         this._duration = duration;

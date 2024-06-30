@@ -7,6 +7,10 @@ namespace Scripts.BoosterActions
 {
     public class VerticalRocketBoosterAction : IItemAction
     {
+        public bool IsFinished { get; set; }
+        public int ItemID { get; set; }
+        public Board Board { get; set; }
+
         private float _boardDownEdge;
         private float _boardUpEdge;
         private readonly float _rocketOffset = 0.3f;
@@ -16,9 +20,7 @@ namespace Scripts.BoosterActions
         private bool _isLockedSetToFalse;
         private Vector2Int _pos;
         private Transform _upRocket;
-        public bool IsFinished { get; set; }
-        public int ItemID { get; set; }
-        public Board Board { get; set; }
+
         public void InitializeAction(Board board, Vector2Int pos, int value1, int value2)
         {
             Board = board;
@@ -61,8 +63,6 @@ namespace Scripts.BoosterActions
             ObjectPool.Instance.ReturnBoosterParticleEffect(_downRocket.gameObject, ItemID);
             IsFinished = true;
             SetColumnLock(false);
-
-
         }
 
         private void HandleExplosion(Vector2Int cell)

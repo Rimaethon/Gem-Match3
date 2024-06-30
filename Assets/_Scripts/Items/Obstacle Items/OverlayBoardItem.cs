@@ -13,6 +13,7 @@ namespace Scripts
             _isProtectingUnderIt = true;
             _isExplodeAbleByNearMatches = true;
         }
+
         public override void OnExplode()
         {
             if(IsExploding)

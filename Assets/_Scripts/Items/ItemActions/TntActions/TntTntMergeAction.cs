@@ -1,6 +1,4 @@
-﻿using _Scripts.Utility;
-using Rimaethon.Scripts.Managers;
-using Scripts;
+﻿using Scripts;
 using Scripts.BoosterActions;
 using UnityEngine;
 
@@ -8,17 +6,17 @@ namespace _Scripts.Items.ItemActions.MergeActions
 {
     public class TntTntMergeAction : ExplodeAction, IItemMergeAction
     {
-        private const float Delay = 0.55f;
-        private float _counter;
-        private bool _isTntInitialized;
-        private Vector2Int _position;
         public bool IsFinished=>_isFinished;
         public int ItemID { get; set; }
         public Board Board { get; set; }
         public int Item1ID { get; set; }
         public int Item2ID { get; set; }
-
+        private const float Delay = 0.55f;
+        private float _counter;
+        private bool _isTntInitialized;
+        private Vector2Int _position;
         private GameObject _tntExplosionEffect;
+
         public void InitializeMergeAction(Board board, int item1ID, int item2ID, Vector2Int position1,
             Vector2Int position2)
         {
@@ -30,14 +28,11 @@ namespace _Scripts.Items.ItemActions.MergeActions
                 ObjectPool.Instance.tntTntEffect;
             _tntExplosionEffect.transform.position = LevelGrid.Instance.GetCellCenterWorld(_position);
             _tntExplosionEffect.SetActive(true);
-            
+
             _tntExplosionEffect.GetComponent<TntTntMergeParticleEffect>().PlayExplosionEffect();
             _isTntInitialized = false;
             _isFinished = false;
         }
-
-
-
 
         public void Execute()
         {
@@ -54,15 +49,11 @@ namespace _Scripts.Items.ItemActions.MergeActions
                     _isTntInitialized = true;
                 }
                 HandleExplosion();
-                if (_isFinished)
-                {
-                    _board.Cells[_position.x,_position.y].SetIsLocked(false);
-                    _tntExplosionEffect.SetActive(false);
-                    _tntExplosionEffect = null;
-                }
-               
+                if (!_isFinished) return;
+                _board.Cells[_position.x,_position.y].SetIsLocked(false);
+                _tntExplosionEffect.SetActive(false);
+                _tntExplosionEffect = null;
             }
         }
-
     }
 }

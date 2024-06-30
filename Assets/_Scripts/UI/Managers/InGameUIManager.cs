@@ -14,20 +14,21 @@ public class InGameUIManager : Singleton<InGameUIManager>
     [SerializeField] private RectTransform movesAndGoalsPanel;
     [SerializeField] private GameObject goalPrefab;
     [SerializeField] private Transform goalParent;
+    [SerializeField] private float stretchDuration = 0.5f;
+    [SerializeField] private float snapDuration = 0.15f;
     private int _moveCount;
     private List<GameObject> _goals=new List<GameObject>();
-    private  List<Image> _goalSprites=new List<Image>();
-    private  List<TextMeshProUGUI> _goalTexts=new List<TextMeshProUGUI>();
-    private  List<GameObject> _goalCheckMarks=new List<GameObject>();
-    private  Dictionary<int,int> _goalIndexDictionary=new Dictionary<int, int>();
+    private List<Image> _goalSprites=new List<Image>();
+    private List<TextMeshProUGUI> _goalTexts=new List<TextMeshProUGUI>();
+    private List<GameObject> _goalCheckMarks=new List<GameObject>();
+    private Dictionary<int,int> _goalIndexDictionary=new Dictionary<int, int>();
     private Dictionary<int, int> _goalIDGoalCountDictionary;
     private const int MovesAndGoalsYStart = 900;
     private const int MovesAndGoalsYEnd = 410;
     private const int BoosterAndSettingsYStart = -370;
     private const int BoosterAndSettingsYEnd = -150;
     private const int StretchAmount = 100;
-    [SerializeField] private float stretchDuration = 0.5f;
-    [SerializeField] private float snapDuration = 0.15f;
+
     private bool isDisabled;
 
     private void OnEnable()
@@ -78,7 +79,7 @@ public class InGameUIManager : Singleton<InGameUIManager>
         _goals.Clear();
         _goals=new List<GameObject>();
         int index = 0;
-        foreach (var keyValuePair in _goalIDGoalCountDictionary)
+        foreach (KeyValuePair<int, int> keyValuePair in _goalIDGoalCountDictionary)
         {
             GameObject goal = Instantiate(goalPrefab, goalParent);
             _goals.Add(goal);

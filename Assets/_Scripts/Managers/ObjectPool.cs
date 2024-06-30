@@ -4,24 +4,22 @@ using Cysharp.Threading.Tasks;
 using Rimaethon.Scripts.Utility;
 using Scripts;
 using Scripts.BoosterActions;
-using Sirenix.Utilities.Editor;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ObjectPool : Singleton<ObjectPool>
 {
     public ItemDatabaseSO itemDatabase;
-    private readonly Dictionary<int, Stack<GameObject>> _normalItems= new Dictionary<int, Stack<GameObject>>();
-    private readonly Dictionary<int, Stack<GameObject>> _boosters= new Dictionary<int, Stack<GameObject>>();
-    private readonly Dictionary<int, Stack<GameObject>> _normalItemParticleEffects= new Dictionary<int, Stack<GameObject>>();
-    private readonly Dictionary<int, Stack<GameObject>> _boosterParticleEffects= new Dictionary<int, Stack<GameObject>>();
-    private readonly Dictionary<int, Stack<IItemAction>> _itemActions= new Dictionary<int, Stack<IItemAction>>();
-    private List<Tuple<int, int, Stack<IItemMergeAction>>> _boosterMergeAction= new List<Tuple<int, int, Stack<IItemMergeAction>>>();
-    private readonly Stack<GameObject> _boosterCreationEffects = new Stack<GameObject>();
-    private readonly Stack<GameObject> _missileHitEffects = new Stack<GameObject>();
-    private readonly Stack<GameObject> _missileExplosionEffects = new Stack<GameObject>();
-    private readonly Stack<GameObject> _tntRocketMergeParticleEffects = new Stack<GameObject>();
-    private readonly Stack<MainEventUIEffect> _mainEventUIEffects = new Stack<MainEventUIEffect>();
+    private readonly Dictionary<int, Stack<GameObject>> normalItems= new Dictionary<int, Stack<GameObject>>();
+    private readonly Dictionary<int, Stack<GameObject>> boosters= new Dictionary<int, Stack<GameObject>>();
+    private readonly Dictionary<int, Stack<GameObject>> normalItemParticleEffects= new Dictionary<int, Stack<GameObject>>();
+    private readonly Dictionary<int, Stack<GameObject>> boosterParticleEffects= new Dictionary<int, Stack<GameObject>>();
+    private readonly Dictionary<int, Stack<IItemAction>> itemActions= new Dictionary<int, Stack<IItemAction>>();
+    private readonly List<Tuple<int, int, Stack<IItemMergeAction>>> boosterMergeAction= new List<Tuple<int, int, Stack<IItemMergeAction>>>();
+    private readonly Stack<GameObject> boosterCreationEffects = new Stack<GameObject>();
+    private readonly Stack<GameObject> missileHitEffects = new Stack<GameObject>();
+    private readonly Stack<GameObject> missileExplosionEffects = new Stack<GameObject>();
+    private readonly Stack<GameObject> tntRocketMergeParticleEffects = new Stack<GameObject>();
+    private readonly Stack<MainEventUIEffect> mainEventUIEffects = new Stack<MainEventUIEffect>();
     //No more than one will be on board at a time
     public GameObject tntTntEffect;
     public GameObject lightBallLightBallEffect;
@@ -34,41 +32,41 @@ public class ObjectPool : Singleton<ObjectPool>
         _isInitialized = true;
         foreach (var key in itemDatabase.NormalItems.Keys)
         {
-            _normalItems.Add(key, new Stack<GameObject>());
-            _normalItemParticleEffects.Add(key, new Stack<GameObject>());
-            _itemActions.Add(key, new Stack<IItemAction>());
+            normalItems.Add(key, new Stack<GameObject>());
+            normalItemParticleEffects.Add(key, new Stack<GameObject>());
+            itemActions.Add(key, new Stack<IItemAction>());
 
         }
         foreach (int key in spawnAbleItems)
         {
-            await AddItemsToPool(_normalItems, itemDatabase.GetNormalItem, key, itemAmount );
-            await AddItemsToPool(_normalItemParticleEffects, itemDatabase.GetNormalItemParticleEffect, key, itemAmount );
-            await AddItemsToPool(_itemActions, itemDatabase.GetNormalItemAction, key, itemAmount);
+            await AddItemsToPool(normalItems, itemDatabase.GetNormalItem, key, itemAmount );
+            await AddItemsToPool(normalItemParticleEffects, itemDatabase.GetNormalItemParticleEffect, key, itemAmount );
+            await AddItemsToPool(itemActions, itemDatabase.GetNormalItemAction, key, itemAmount);
         }
-        await AddItemsToPool(_boosterCreationEffects, _ => itemDatabase.boosterCreationEffect, 0, boosterAmount);
-        await AddItemsToPool(_missileHitEffects, _ => itemDatabase.missileHitEffect, 0, boosterAmount);
-        await AddItemsToPool(_missileExplosionEffects, _ => itemDatabase.missileExplosionEffect, 0, boosterAmount);
+        await AddItemsToPool(boosterCreationEffects, _ => itemDatabase.boosterCreationEffect, 0, boosterAmount);
+        await AddItemsToPool(missileHitEffects, _ => itemDatabase.missileHitEffect, 0, boosterAmount);
+        await AddItemsToPool(missileExplosionEffects, _ => itemDatabase.missileExplosionEffect, 0, boosterAmount);
         if(SaveManager.Instance.HasMainEvent())
             await AddMainEventUIEffect(itemAmount,SaveManager.Instance.GetMainEventData().eventGoalID);
         foreach (int key in itemDatabase.Boosters.Keys)
         {
             if(key>104)
                 boosterAmount = 1;
-            _boosters.Add(key, new Stack<GameObject>());
-            _boosterParticleEffects.Add(key, new Stack<GameObject>());
-            _itemActions.Add(key, new Stack<IItemAction>());
-            await AddItemsToPool(_boosters, itemDatabase.GetBooster, key, boosterAmount);
-            await AddItemsToPool(_itemActions, itemDatabase.GetBoosterItemAction, key, boosterAmount);
-            await AddItemsToPool(_boosterParticleEffects, itemDatabase.GetBoosterParticleEffect, key, boosterAmount);
+            boosters.Add(key, new Stack<GameObject>());
+            boosterParticleEffects.Add(key, new Stack<GameObject>());
+            itemActions.Add(key, new Stack<IItemAction>());
+            await AddItemsToPool(boosters, itemDatabase.GetBooster, key, boosterAmount);
+            await AddItemsToPool(itemActions, itemDatabase.GetBoosterItemAction, key, boosterAmount);
+            await AddItemsToPool(boosterParticleEffects, itemDatabase.GetBoosterParticleEffect, key, boosterAmount);
         }
 
         foreach (var action in itemDatabase.BoosterMergeAction)
         {
-            _boosterMergeAction.Add(new Tuple<int, int, Stack<IItemMergeAction>>(action.Item1, action.Item2, new Stack<IItemMergeAction>()));
+            boosterMergeAction.Add(new Tuple<int, int, Stack<IItemMergeAction>>(action.Item1, action.Item2, new Stack<IItemMergeAction>()));
             for (int i = 0; i < 3; i++)
             {
                 IItemMergeAction item = Activator.CreateInstance(action.Item3.GetType()) as IItemMergeAction;
-                _boosterMergeAction[^1].Item3.Push(item);
+                boosterMergeAction[^1].Item3.Push(item);
 
             }
         }
@@ -87,7 +85,7 @@ public class ObjectPool : Singleton<ObjectPool>
             MainEventUIEffect item =Instantiate(itemDatabase.mainEventUIEffect,transform).GetComponent<MainEventUIEffect>();
             item.gameObject.SetActive(false);
             item.image.sprite = itemDatabase.NormalItems[mainEventID].ItemSprite;
-            _mainEventUIEffects.Push(item);
+            mainEventUIEffects.Push(item);
         }
         await UniTask.Yield();
 
@@ -127,7 +125,7 @@ public class ObjectPool : Singleton<ObjectPool>
     }
     public IItemMergeAction GetItemMergeAction(int item1ID, int item2ID)
     {
-        foreach (var merge in _boosterMergeAction)
+        foreach (var merge in boosterMergeAction)
         {
             if (merge.Item1 == item1ID && merge.Item2 == item2ID)
             {
@@ -141,7 +139,7 @@ public class ObjectPool : Singleton<ObjectPool>
     }
     public void ReturnItemMergeAction(IItemMergeAction item, int item1ID, int item2ID)
     {
-        foreach (var merge in _boosterMergeAction)
+        foreach (var merge in boosterMergeAction)
         {
             if (merge.Item1 == item1ID && merge.Item2 == item2ID||merge.Item1 == item2ID && merge.Item2 == item1ID)
             {
@@ -151,9 +149,9 @@ public class ObjectPool : Singleton<ObjectPool>
     }
     public MainEventUIEffect GetMainEventUIEffect(int itemID)
     {
-        if (_mainEventUIEffects.Count > 0)
+        if (mainEventUIEffects.Count > 0)
         {
-            MainEventUIEffect item = _mainEventUIEffects.Pop();
+            MainEventUIEffect item = mainEventUIEffects.Pop();
             item.gameObject.SetActive(true);
             return item;
         }
@@ -163,13 +161,13 @@ public class ObjectPool : Singleton<ObjectPool>
     public void ReturnMainEventUIEffect(MainEventUIEffect item)
     {
         item.gameObject.SetActive(false);
-        _mainEventUIEffects.Push(item);
+        mainEventUIEffects.Push(item);
     }
     public IItemAction GetItemActionFromPool( int itemID)
     {
-        if (_itemActions[itemID].Count > 0)
+        if (itemActions[itemID].Count > 0)
         {
-            return _itemActions[itemID].Pop();;
+            return itemActions[itemID].Pop();;
         }
         if(itemDatabase.NormalItems.ContainsKey(itemID))
             return Activator.CreateInstance(itemDatabase.GetNormalItemAction(itemID).GetType()) as IItemAction;
@@ -180,7 +178,7 @@ public class ObjectPool : Singleton<ObjectPool>
 
     public void ReturnItemActionToPool(IItemAction item)
     {
-        _itemActions[item.ItemID].Push(item);
+        itemActions[item.ItemID].Push(item);
     }
 
     private IBoardItem GetItemFromPool(Dictionary<int, Stack<GameObject>> pool, int itemID, Vector3 position,GameObject prefab,Board board)
@@ -239,9 +237,9 @@ public class ObjectPool : Singleton<ObjectPool>
     }
     public GameObject GetBoosterCreationEffect(Vector3 position)
     {
-        if (_boosterCreationEffects.Count > 0)
+        if (boosterCreationEffects.Count > 0)
         {
-            GameObject item = _boosterCreationEffects.Pop();
+            GameObject item = boosterCreationEffects.Pop();
             item.transform.position = position;
             item.SetActive(true);
             return item;
@@ -250,9 +248,9 @@ public class ObjectPool : Singleton<ObjectPool>
     }
     public void GetMissileHitEffect(Vector3 position)
     {
-        if (_missileHitEffects.Count > 0)
+        if (missileHitEffects.Count > 0)
         {
-            GameObject item = _missileHitEffects.Pop();
+            GameObject item = missileHitEffects.Pop();
             item.transform.position = position;
             item.SetActive(true);
             return;
@@ -261,9 +259,9 @@ public class ObjectPool : Singleton<ObjectPool>
     }
     public void GetMissileExplosionEffect(Vector3 position)
     {
-        if (_missileExplosionEffects.Count > 0)
+        if (missileExplosionEffects.Count > 0)
         {
-            GameObject item = _missileExplosionEffects.Pop();
+            GameObject item = missileExplosionEffects.Pop();
             item.transform.position = position;
             item.SetActive(true);
             return;
@@ -277,44 +275,44 @@ public class ObjectPool : Singleton<ObjectPool>
     public void ReturnMissileHitEffect(GameObject item)
     {
         item.SetActive(false);
-        _missileHitEffects.Push(item);
+        missileHitEffects.Push(item);
     }
     public void ReturnMissileExplosionEffect(GameObject item)
     {
         item.SetActive(false);
-        _missileExplosionEffects.Push(item);
+        missileExplosionEffects.Push(item);
     }
 
     public void ReturnBoosterCreationEffect(GameObject item)
     {
         item.SetActive(false);
-        _boosterCreationEffects.Push(item);
+        boosterCreationEffects.Push(item);
     }
     public IBoardItem GetItem(int itemID, Vector3 position,Board board)
     {
-        return GetItemFromPool(_normalItems, itemID, position, itemDatabase.GetNormalItem(itemID),board);
+        return GetItemFromPool(normalItems, itemID, position, itemDatabase.GetNormalItem(itemID),board);
     }
 
     public IBoardItem GetBoosterItem(int itemID, Vector3 position,Board board)
     {
-        return GetItemFromPool(_boosters, itemID, position, itemDatabase.GetBooster(itemID),board);
+        return GetItemFromPool(boosters, itemID, position, itemDatabase.GetBooster(itemID),board);
     }
     public GameObject GetNormalItemGameObject(int itemID, Vector3 position)
     {
-        return GetGameObjectFromPool(_normalItems, itemID, position, itemDatabase.GetNormalItem(itemID));
+        return GetGameObjectFromPool(normalItems, itemID, position, itemDatabase.GetNormalItem(itemID));
     }
     public GameObject GetBoosterGameObject(int itemID, Vector3 position)
     {
-        return GetGameObjectFromPool(_boosters, itemID, position, itemDatabase.GetBooster(itemID));
+        return GetGameObjectFromPool(boosters, itemID, position, itemDatabase.GetBooster(itemID));
     }
     public GameObject GetItemParticleEffect(int itemID, Vector3 position)
     {
-        return GetParticleEffectFromPool(_normalItemParticleEffects, itemID, position, itemDatabase.GetNormalItemParticleEffect(itemID));
+        return GetParticleEffectFromPool(normalItemParticleEffects, itemID, position, itemDatabase.GetNormalItemParticleEffect(itemID));
     }
 
     public GameObject GetBoosterParticleEffect(int itemID, Vector3 position,Quaternion rotation= default)
     {
-        GameObject item = GetParticleEffectFromPool(_boosterParticleEffects, itemID, position, itemDatabase.GetBoosterParticleEffect(itemID),rotation);
+        GameObject item = GetParticleEffectFromPool(boosterParticleEffects, itemID, position, itemDatabase.GetBoosterParticleEffect(itemID),rotation);
         item.SetActive(true);
         return item;
     }
@@ -329,19 +327,19 @@ public class ObjectPool : Singleton<ObjectPool>
     }
     public void ReturnParticleEffect(GameObject item, int itemID)
     {
-        ReturnParticleEffectToPool(_normalItemParticleEffects, item, itemID);
+        ReturnParticleEffectToPool(normalItemParticleEffects, item, itemID);
     }
     public void ReturnBoosterParticleEffect(GameObject item, int itemID)
     {
-        ReturnParticleEffectToPool(_boosterParticleEffects, item, itemID);
+        ReturnParticleEffectToPool(boosterParticleEffects, item, itemID);
     }
 
     public void ReturnItem(IBoardItem boardItem, int itemID)
     {
         if(boardItem.IsBooster)
-            ReturnItemToPool(_boosters, boardItem, itemID);
+            ReturnItemToPool(boosters, boardItem, itemID);
         else
-            ReturnItemToPool(_normalItems, boardItem, itemID);
+            ReturnItemToPool(normalItems, boardItem, itemID);
     }
 
 }

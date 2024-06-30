@@ -22,6 +22,5 @@ namespace Scripts.BoosterActions.MergeActions
         {
             IsFinished = true;
         }
-
     }
 }

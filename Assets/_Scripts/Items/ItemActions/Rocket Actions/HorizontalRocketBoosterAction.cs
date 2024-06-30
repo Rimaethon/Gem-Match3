@@ -9,6 +9,8 @@ namespace Scripts.BoosterActions
     {
         public int ItemID { get; set; }
         public Board Board { get; set; }
+        public bool IsFinished { get; set; }
+
         private float _boardLeftEdge;
         private float _boardRightEdge;
         private readonly float _rocketOffset = 0.1f;
@@ -18,7 +20,7 @@ namespace Scripts.BoosterActions
         private Transform _leftRocket;
         private Vector2Int _pos;
         private Transform _rightRocket;
-        public bool IsFinished { get; set; }
+
         public void InitializeAction(Board board, Vector2Int pos, int value1, int value2)
         {
             _pos = pos;
@@ -82,6 +84,7 @@ namespace Scripts.BoosterActions
             }
             _visitedCells.Add(cell);
         }
+
         private void SetRowLock(bool isLocked)
         {
             for (var i = 0; i < Board.Width; i++) Board.Cells[i,_pos.y].SetIsLocked(isLocked);

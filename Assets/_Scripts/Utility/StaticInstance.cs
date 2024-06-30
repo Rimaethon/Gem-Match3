@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Rimaethon.Scripts.Utility
@@ -66,7 +65,7 @@ namespace Rimaethon.Scripts.Utility
                 {
                     Instance = instance;
                 }
-         
+
             }
             else
             {

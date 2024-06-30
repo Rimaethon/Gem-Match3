@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 namespace _Scripts.Data_Classes
 {
     public class GoalSaveData

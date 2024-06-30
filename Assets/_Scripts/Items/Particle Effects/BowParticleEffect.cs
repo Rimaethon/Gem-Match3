@@ -7,6 +7,5 @@ namespace Scripts
         public GameObject bowSprite;
         public GameObject hitPoint;
         public GameObject bullsEye;
-        
     }
 }

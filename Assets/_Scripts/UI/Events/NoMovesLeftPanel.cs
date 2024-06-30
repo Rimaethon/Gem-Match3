@@ -1,9 +1,5 @@
-﻿using System;
-using _Scripts.Managers;
-using Data;
-using Rimaethon.Scripts.Managers;
+﻿using Rimaethon.Scripts.Managers;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,21 +13,20 @@ namespace Rimaethon.Runtime.UI
         [SerializeField] private TMP_Text addMovesCostText;
         [SerializeField] private GameObject firstAskPanel;
         [SerializeField] private GameObject tryAgainPanel;
-        //Perfect naming right ? :D
         [SerializeField] private GameObject butYouGonnaLoseThesePanel;
         [SerializeField] private GameObject eventProgressUIPrefab;
         [SerializeField] private Button exitButton;
         [SerializeField] private Button playOnButton;
         bool isFirstPanel = true;
         private int movesToAdd= 5;
-        private int cost = 900;
-        private int numberOfTimesAsked = 1;
+        private int _extraMoveCost = 900;
+        private int _numberOfTimesAsked = 1;
 
         private void OnEnable()
         {
             exitButton.onClick.AddListener(OnExitButtonClicked);
             playOnButton.onClick.AddListener(OnContinueButtonClicked);
-            addMovesCostText.text = (cost * numberOfTimesAsked).ToString();
+            addMovesCostText.text = (_extraMoveCost * _numberOfTimesAsked).ToString();
             isFirstPanel = true;
         }
 
@@ -43,10 +38,10 @@ namespace Rimaethon.Runtime.UI
 
         private void OnContinueButtonClicked()
         {
-            if( SaveManager.Instance.GetCoinAmount()< cost * numberOfTimesAsked)
+            if( SaveManager.Instance.GetCoinAmount()< _extraMoveCost * _numberOfTimesAsked)
                 return;
 
-            SaveManager.Instance.AdjustCoinAmount(-cost * numberOfTimesAsked);
+            SaveManager.Instance.AdjustCoinAmount(-_extraMoveCost * _numberOfTimesAsked);
             coinsText.text = SaveManager.Instance.GetCoinAmount().ToString();
             EventManager.Instance.Broadcast<int>(GameEvents.OnMoveCountChanged, movesToAdd);
             EventManager.Instance.Broadcast(GameEvents.OnBoardUnlock);
@@ -56,7 +51,7 @@ namespace Rimaethon.Runtime.UI
             firstAskPanel.SetActive(true);
             butYouGonnaLoseThesePanel.SetActive(false);
             isFirstPanel = true;
-            numberOfTimesAsked++;
+            _numberOfTimesAsked++;
         }
 
         private void OnExitButtonClicked()

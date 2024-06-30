@@ -9,7 +9,7 @@
     "unlimitedHeartStartTime": 0,
     "unlimitedHeartDuration": 0,
     "maxHeartAmount": 5,
-    "firstHeartNotBeingFullUnixTime": 1719764965,
+    "firstHeartNotBeingFullUnixTime": 1719778266,
     "heartRefillTimeInSeconds": 1200,
     "BoosterAmounts": {
         "$id": 1,
@@ -26,9 +26,9 @@
                     "$id": 3,
                     "$type": "3|Data.BoosterData, Assembly-CSharp",
                     "boosterAmount": 40,
-                    "isUnlimited": true,
-                    "unlimitedStartTime": 1719765695,
-                    "unlimitedDuration": 12490
+                    "isUnlimited": false,
+                    "unlimitedStartTime": 0,
+                    "unlimitedDuration": 0
                 }
             },
             {

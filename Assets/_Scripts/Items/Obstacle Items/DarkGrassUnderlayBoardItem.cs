@@ -23,7 +23,6 @@ namespace Scripts
             else
             {
                 int random = Random.Range(0, 1);
-
                 AudioManager.Instance.PlaySFX(random == 1 ? SFXClips.BushSound : SFXClips.GrassSound);
                 EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,_position,_itemID-1,0);
                 OnRemove();

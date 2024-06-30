@@ -1,10 +1,9 @@
-﻿using DG.Tweening;
-using Rimaethon.Runtime.UI;
+﻿using Rimaethon.Runtime.UI;
 using UnityEngine;
 
 public class CanvasChangerButton : UIButton
 {
-    
+
     [SerializeField] private Canvas _canvasToClose;
     [SerializeField] private Canvas _canvasToOpen;
 

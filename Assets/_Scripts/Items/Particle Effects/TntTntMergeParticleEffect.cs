@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
@@ -20,7 +17,7 @@ public class TntTntMergeParticleEffect : MonoBehaviour
           _initialFusePosition = fuseEffect.transform.localPosition;
           _tntSpriteRenderer = GetComponent<SpriteRenderer>();
      }
-     
+
      public void PlayExplosionEffect()
      {
           fuseEffect.SetActive(false);
@@ -44,6 +41,6 @@ public class TntTntMergeParticleEffect : MonoBehaviour
                });
           });
      }
-     
-     
+
+
 }

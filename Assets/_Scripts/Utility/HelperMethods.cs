@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Scripts;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 namespace _Scripts.Utility
@@ -23,10 +22,10 @@ namespace _Scripts.Utility
         {
             return LevelGrid.Instance.GetCellCenterWorld(array[0,0].CellPosition).y-LevelGrid.Grid.cellSize.y;
         }
-  
+
         public static bool IsInBoundaries(this Board board, Vector2Int pos)
         {
-        
+
             return pos.x >= 0 && pos.x < board.Width&& pos.y >= 0 && pos.y < board.Height;
         }
         public static bool IsInBoundaries(this Board board, int x,int y)
@@ -39,7 +38,7 @@ namespace _Scripts.Utility
             {
                 return board.Cells[x,y].BoardItem;
             }
-          
+
             return null;
         }
         public static IBoardItem GetItem(this Board board ,Vector2Int position)

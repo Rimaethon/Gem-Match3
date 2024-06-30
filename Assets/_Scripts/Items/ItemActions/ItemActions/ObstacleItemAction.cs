@@ -5,11 +5,12 @@ namespace Scripts.BoosterActions
 {
     public class ObstacleItemAction : IItemAction
     {
-        private readonly float _explodeTime=0.2f;
-        private float _counter;
         public bool IsFinished { get; set; }
         public int ItemID { get; set; }
         public Board Board { get; set; }
+
+        private readonly float _explodeTime=0.2f;
+        private float _counter;
         private IBoardItem _boardItem;
 
         public void InitializeAction(Board board, Vector2Int pos, int value1, int value2)

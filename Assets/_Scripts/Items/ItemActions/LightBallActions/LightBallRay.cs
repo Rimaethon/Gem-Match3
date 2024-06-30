@@ -1,10 +1,7 @@
 ﻿using System;
 using _Scripts.Utility;
-using Rimaethon.Scripts.Managers;
 using Scripts.BoosterActions;
-using Unity.VisualScripting;
 using UnityEngine;
-using Random = System.Random;
 
 namespace Scripts
 {
@@ -32,7 +29,7 @@ namespace Scripts
             lineRenderer = GetComponent<LineRenderer>();
             _materialPropertyBlock = new MaterialPropertyBlock();
         }
-        
+
         public void AnimateRay()
         {
             if(!isSoundPlayed)
@@ -44,7 +41,7 @@ namespace Scripts
             {
                 return;
             }
-  
+
             _targetCell = _targetItem.Position;
             Vector3 localTargetPosition = transform.InverseTransformPoint(_targetItem.Transform.position);
 
@@ -64,11 +61,11 @@ namespace Scripts
                 {
                     ObjectPool.Instance.ReturnItem(_board.GetItem(_targetCell), _board.GetItem(_targetCell).ItemID);
                 }
-                
+
                 _board.Cells[_targetCell.x,_targetCell.y].SetItem(boardItem);
                 _isTargetRemoved = true;
                 _targetItem = boardItem;
-            } 
+            }
             if (!_isTargetHighlighted)
             {
                 _lightBallBoosterAction.ItemsToExplode.Add(_targetItem);
@@ -100,6 +97,7 @@ namespace Scripts
             isSoundPlayed = false;
             _isTargetRemoved = false;
         }
+
         public void SetTarget(Board board,bool shouldSpawnBooster,int boosterID,IBoardItem item)
         {
             _shouldSpawnBooster = shouldSpawnBooster;
@@ -116,9 +114,6 @@ namespace Scripts
             _materialPropertyBlock.SetFloat("_Emission",15);
             lineRenderer.SetPropertyBlock(_materialPropertyBlock);
             hasTarget = true;
-
         }
-
-     
     }
 }

@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using Rimaethon.Scripts.Managers;
-using Scripts.BoosterActions;
 using UnityEngine;
 namespace Scripts
 {
@@ -19,6 +18,7 @@ namespace Scripts
             _isProtectingUnderIt = true;
             Highlight(0);
         }
+
         public override void OnExplode()
         {
             if(_isExploding)
@@ -26,11 +26,13 @@ namespace Scripts
             _isExploding = true;
             EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,_position,_itemID,0);
         }
+
         public override void OnRemove()
         {
             EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, Position);
             EventManager.Instance.Broadcast(GameEvents.OnItemExplosion, _position, _itemID);
         }
+
         public override void OnClick(Board board, Vector2Int pos)
         {
             if (IsMoving || _isExploding||_isClicked|| IsMatching)

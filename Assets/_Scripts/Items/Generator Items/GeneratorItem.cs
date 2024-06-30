@@ -1,7 +1,6 @@
 ﻿using _Scripts.Managers;
 using DG.Tweening;
 using Rimaethon.Scripts.Managers;
-using Scripts.BoosterActions;
 using UnityEngine;
 
 namespace Scripts.Generator_Items
@@ -10,6 +9,7 @@ namespace Scripts.Generator_Items
     {
         private bool _isJumping;
         private Vector3 _jumpPos = new Vector3(0, 0.1f, 0);
+
         protected override void Awake()
         {
             base.Awake();
@@ -19,6 +19,7 @@ namespace Scripts.Generator_Items
             _isExplodeAbleByNearMatches = true;
             _isGeneratorItem = true;
         }
+
         public override void OnExplode()
         {
             if(LevelManager.Instance.IsGoalReached(_itemID))
@@ -27,6 +28,7 @@ namespace Scripts.Generator_Items
             EventManager.Instance.Broadcast(GameEvents.AddActionToHandle, _position,_itemID,0);
             AudioManager.Instance.PlaySFX(SFXClips.MailBoxSound);
         }
+
         private void DoJumpAndShake()
         {
             if (_isJumping)
@@ -38,6 +40,7 @@ namespace Scripts.Generator_Items
                 _isJumping = false;
             });
         }
+
         public override void OnClick(Board board, Vector2Int pos)
         {
             if (IsMoving || _isExploding||_isClicked|| IsMatching)

@@ -13,17 +13,18 @@ namespace Rimaethon.Runtime.UI
         [SerializeField] private GameObject mainEventGoalExplodedEffect;
         private Canvas _boosterCanvas;
         private Vector2 _boosterCanvasRectTransformSizeDelta;
-        private EventData @event;
+        private EventData _eventData;
         private bool _hasMainEvent;
         private static Camera MainCamera => Camera.main;
         private int _mainEventID;
+
         private void Awake()
         {
             _hasMainEvent = SaveManager.Instance.HasMainEvent();
             if (_hasMainEvent)
             {
-                @event = SaveManager.Instance.GetMainEventData();
-                _mainEventID = @event.eventGoalID;
+                _eventData = SaveManager.Instance.GetMainEventData();
+                _mainEventID = _eventData.eventGoalID;
             }
             _boosterCanvas = GetComponent<Canvas>();
             _boosterCanvasRectTransformSizeDelta= GetComponent<RectTransform>().sizeDelta;
@@ -71,7 +72,7 @@ namespace Rimaethon.Runtime.UI
 
         private void HandleItemMatched(Vector3 item, int itemID,int amount)
         {
-            if (_hasMainEvent&& @event.eventGoalID == itemID)
+            if (_hasMainEvent&& _eventData.eventGoalID == itemID)
             {
                 HandleMainEventGoalRemoved(item, amount);
             }
@@ -79,7 +80,7 @@ namespace Rimaethon.Runtime.UI
 
         private void HandleItemExplosion(Vector2Int itemPos, int itemID)
         {
-            if (_hasMainEvent&& @event.eventGoalID == itemID)
+            if (_hasMainEvent&& _eventData.eventGoalID == itemID)
             {
                 Vector3 item = LevelGrid.Instance.GetCellCenterWorld(itemPos);
                 HandleMainEventGoalRemoved(item, 1);

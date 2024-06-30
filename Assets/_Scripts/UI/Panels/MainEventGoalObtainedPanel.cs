@@ -14,9 +14,9 @@ namespace _Scripts.UI.Panels
         [SerializeField] private GameObject imageGameObject;
         [SerializeField] private TextMeshProUGUI countText;
         [SerializeField] private Image fadeImage;
+        [SerializeField] private GameObject starBombEffect;
         private Image _image;
         private RectTransform _imageTransform;
-        [SerializeField] private GameObject starBombEffect;
         private void Awake()
         {
             _image = imageGameObject.GetComponent<Image>();

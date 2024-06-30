@@ -1,5 +1,4 @@
 ﻿using Rimaethon.Scripts.Managers;
-using Rimaethon.Scripts.Utility;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

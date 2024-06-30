@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using _Scripts.Data_Classes;
+﻿using _Scripts.Data_Classes;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Tilemaps;

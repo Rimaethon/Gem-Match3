@@ -5,9 +5,9 @@ namespace Scripts
    public class CanvasSafeArea : MonoBehaviour
    {
       private RectTransform _rectTransform;
-      Rect safeArea;
-      Vector2 minAnchor;
-      Vector2 maxAnchor;
+      private Rect safeArea;
+      private Vector2 minAnchor;
+      private Vector2 maxAnchor;
 
       private void Awake()
       {

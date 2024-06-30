@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using _Scripts.Managers;
-using Rimaethon.Scripts.Managers;
+﻿using Rimaethon.Scripts.Managers;
 using Scripts;
 using Scripts.BoosterActions;
 using UnityEngine;
@@ -22,7 +20,6 @@ namespace _Scripts.Items.ItemActions.MergeActions
             EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,position2,item1ID,-1);
             _isFinished = false;
         }
-
 
         public void Execute()
         {

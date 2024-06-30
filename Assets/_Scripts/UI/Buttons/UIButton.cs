@@ -13,38 +13,45 @@ namespace Rimaethon.Runtime.UI
         protected Tween ScaleDownTween;
         protected Tween ScaleUpTween;
         protected RectTransform RectTransform;
-        protected virtual void Awake()
-        {
-            Button = GetComponent<Button>();
-            RectTransform = GetComponent<RectTransform>();
-        }
-        protected virtual void OnEnable()
-        {
-            transform.localScale = OriginalScale;
-        }
-        protected virtual void OnDisable()
-        {
-            ScaleDownTween.Kill();
-            ScaleUpTween.Kill();
-        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             if(!Button.isActiveAndEnabled)
                 return;
             DoOnClick();
         }
+
         public void OnPointerDown(PointerEventData eventData)
         {
             if(!Button.isActiveAndEnabled)
                 return;
             DoOnPointerDown();
         }
+
         public void OnPointerUp(PointerEventData eventData)
         {
             if(!Button.isActiveAndEnabled)
                 return;
             DoOnPointerUp();
         }
+
+        protected virtual void Awake()
+        {
+            Button = GetComponent<Button>();
+            RectTransform = GetComponent<RectTransform>();
+        }
+
+        protected virtual void OnEnable()
+        {
+            transform.localScale = OriginalScale;
+        }
+
+        protected virtual void OnDisable()
+        {
+            ScaleDownTween.Kill();
+            ScaleUpTween.Kill();
+        }
+
         protected virtual void DoOnClick()
         {
             ScaleDownTween.Kill();
@@ -52,10 +59,12 @@ namespace Rimaethon.Runtime.UI
             AudioManager.Instance.PlaySFX(SFXClips.UIButtonSound);
             RectTransform.localScale = OriginalScale;
         }
+
         protected virtual void DoOnPointerDown()
         {
             ScaleDownTween=RectTransform.DOScale(OriginalScale * 0.95f, 0.075f).SetUpdate(UpdateType.Fixed);
         }
+
         protected virtual void DoOnPointerUp()
         {
             ScaleUpTween=RectTransform.DOScale(OriginalScale, 0.075f).SetUpdate(UpdateType.Fixed);

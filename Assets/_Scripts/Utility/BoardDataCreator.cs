@@ -10,15 +10,13 @@ namespace _Scripts.Utility
     public class BoardDataCreator:MonoBehaviour
     {
         public int BoardID;
-        private SpriteRenderer _spriteRenderer;
         [SerializeField] private ItemDatabaseSO itemDatabase;
-        [ShowInInspector][ReadOnly]
-        private int _boardWidth;
-        [ShowInInspector][ReadOnly]
-        private int _boardHeight;
         [SerializeField] ItemIDMatrixCreator normalItemIDMatrixCreator;
         [SerializeField] ItemIDMatrixCreator underlayItemIDMatrixCreator;
         [SerializeField] ItemIDMatrixCreator overlayItemIDMatrixCreator;
+        [ShowInInspector][ReadOnly] private int _boardWidth;
+        [ShowInInspector][ReadOnly] private int _boardHeight;
+        private SpriteRenderer _spriteRenderer;
         private BoardSpriteSaveData _boardSpriteSaveData;
         private BoardData _board;
         private void Awake()

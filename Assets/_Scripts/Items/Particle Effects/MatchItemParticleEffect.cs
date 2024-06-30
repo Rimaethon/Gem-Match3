@@ -10,6 +10,7 @@ namespace Scripts
                 return;
             ObjectPool.Instance.ReturnBoosterCreationEffect(gameObject);
         }
+
         private void Awake()
         {
             var particleSystem = GetComponent<ParticleSystem>().main;

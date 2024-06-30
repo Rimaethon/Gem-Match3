@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Scripts
 {
@@ -8,6 +7,5 @@ namespace Scripts
         public GameObject missileShadow;
         public GameObject hitPoint;
         public GameObject missileCompany;
-
     }
 }

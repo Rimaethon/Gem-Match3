@@ -8,17 +8,18 @@ namespace _Scripts.Items.ItemActions.MergeActions
 {
     public class LightBallLightBallMergeAction :ExplodeAction, IItemMergeAction
     {
-        private const float Delay = 2.5f;
-        private const float ParticleEffectDuration = 0.4f;
-        private float _counter;
-        private bool _isTntInitialized;
-        private Vector2Int _position;
+
         public bool IsFinished => _isFinished;
         public int ItemID { get; set; }
         public Board Board { get; set; }
         public int Item1ID { get; set; }
         public int Item2ID { get; set; }
 
+        private const float Delay = 2.5f;
+        private const float ParticleEffectDuration = 0.4f;
+        private float _counter;
+        private bool _isTntInitialized;
+        private Vector2Int _position;
         private GameObject _lightBallExplosionEffect;
         private LightBallLightBallMergeParticleEffect _lightBallLightBallMergeParticleEffect;
         private AudioSource _audioSource;
@@ -41,7 +42,6 @@ namespace _Scripts.Items.ItemActions.MergeActions
             _isFinished = false;
         }
 
-
         public void Execute()
         {
             if (_counter < Delay)
@@ -57,6 +57,5 @@ namespace _Scripts.Items.ItemActions.MergeActions
             }
             HandleExplosion();
         }
-
     }
 }

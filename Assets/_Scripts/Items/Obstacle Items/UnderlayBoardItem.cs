@@ -1,6 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using Rimaethon.Scripts.Managers;
-using UnityEngine;
+﻿using Rimaethon.Scripts.Managers;
 
 namespace Scripts
 {
@@ -13,6 +11,7 @@ namespace Scripts
             _isMatchable = false;
             _isSwappable = false;
         }
+
         public override void OnExplode()
         {
             if(IsExploding)
@@ -30,6 +29,5 @@ namespace Scripts
             Board.Cells[Position.x, Position.y].SetUnderLayItem(null);
 
         }
-
     }
 }
