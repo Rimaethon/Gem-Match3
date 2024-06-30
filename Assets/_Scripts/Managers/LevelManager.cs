@@ -33,6 +33,10 @@ namespace _Scripts.Managers
         private float initialXPos;
         public bool DoesBoardHasThingsToDo;
         private bool isLevelCompleted;
+        private int normalHeight=10;
+        private float _spriteMaskYOffsetForAdditionalHeight=0.5f;
+        private int normalWidth=8;
+        private float _boardXOffsetForAdditionalWidth=0.25f;
 
         protected override void Awake()
         {
@@ -84,11 +88,20 @@ namespace _Scripts.Managers
                 foreach (var  boardData in _levelData.Boards)
                 {
                     GameObject boardInstance=Instantiate(boardPrefab, transform.position, Quaternion.identity);
+
                     boardInstance.transform.SetParent(transform);
                     Board board= new Board(itemDatabase.GetBoardSpriteData(boardData.BoardSpriteID),boardData,boardInstance,_levelData.SpawnAbleFillerItemIds);
+
                     _boards.Add(board);
                     boardInstance.GetComponent<SpriteRenderer>().sprite=itemDatabase.GetBoardSpriteData(boardData.BoardSpriteID).Sprite;
-                    boardInstance.GetComponent<BoardManager>().InitializeBoard(board);
+                    BoardManager boardManager= boardInstance.GetComponent<BoardManager>();
+                    boardManager.InitializeBoard(board);
+                    if(board.Height>normalHeight)
+                        boardManager._spriteMask.transform.localPosition=
+                            new Vector3(boardManager._spriteMask.transform.localPosition.x,boardManager._spriteMask.transform.localPosition.y+_spriteMaskYOffsetForAdditionalHeight*(board.Height-normalHeight),boardManager._spriteMask.transform.localPosition.z);
+                    if(board.Width>normalWidth)
+                        transform.position=new Vector3(transform.position.x-(_boardXOffsetForAdditionalWidth*(board.Width-normalWidth)),transform.position.y,transform.position.z);
+
                     randomLevelGenerator.InitializeGoalDictionaries(board,_levelData.GoalSaveData.GoalIDs.ToList(),_goalPositions,_goalCounts);
                     for(int i=0;i<_levelData.GoalSaveData.GoalAmounts.Length;i++)
                     {
@@ -98,6 +111,7 @@ namespace _Scripts.Managers
                 _moveCount = _levelData.MoveCount;
             }
             Vector3 boardInitialOffset= new Vector3(3f, transform.position.y, transform.position.z);
+
             initialXPos = transform.position.x;
             transform.position=boardInitialOffset;
             await InGameUIManager.Instance.HandleGoalAndPowerUpUI(_goalCounts,_moveCount);
@@ -105,7 +119,7 @@ namespace _Scripts.Managers
         }
         private async UniTask HandleBoardAnimation()
         {
-            await UniTask.Delay(400);
+            await UniTask.Delay(200);
             await transform.DOMoveX(initialXPos + BoardStretchAmount, 0.4f).SetUpdate(UpdateType.Fixed).SetEase(Ease.InOutSine).ToUniTask();
             await transform.DOMoveX(initialXPos, 0.2f).SetUpdate(UpdateType.Fixed).SetEase(Ease.InOutSine).ToUniTask();
             await UniTask.Delay(200);
@@ -131,8 +145,27 @@ namespace _Scripts.Managers
         {
             _moveCount+=valueToAdd;
             if (_moveCount > 0) return;
+            EventManager.Instance.Broadcast(GameEvents.OnPlayerInputLock);
+            EventManager.Instance.Broadcast(GameEvents.OnBoardLock);
+            WaitForBoardToFinish().Forget();
+        }
+        private async UniTask WaitForBoardToFinish()
+        {
+            await UniTask.Delay(300);
+            while (DoesBoardHasThingsToDo)
+            {
+                await UniTask.Delay(300);
+            }
+            await UniTask.Delay(400);
+
+            if (CheckForLevelCompletion())
+            {
+                EventManager.Instance.Broadcast(GameEvents.OnPlayerInputUnlock);
+                return;
+            }
             AudioManager.Instance.PlaySFX(SFXClips.LevelLoseSound);
             EventManager.Instance.Broadcast(GameEvents.OnNoMovesLeft);
+            EventManager.Instance.Broadcast(GameEvents.OnPlayerInputUnlock);
         }
         public bool IsGoalReached(int itemID)
         {
@@ -176,15 +209,18 @@ namespace _Scripts.Managers
             }
 
         }
-        private void CheckForLevelCompletion()
+        private bool CheckForLevelCompletion()
         {
             if(isLevelCompleted)
-                return;
+                return true;
             if (_goalCounts.Values.All(count => count == 0))
             {
                 isLevelCompleted = true;
                 HandleCompletion().Forget();
+                return true;
             }
+
+            return false;
 
         }
         private async UniTask HandleCompletion()
@@ -194,8 +230,9 @@ namespace _Scripts.Managers
             await UniTask.Delay( 500);
             while (DoesBoardHasThingsToDo)
             {
-                await UniTask.Delay( 100);
+                await UniTask.Delay( 200);
             }
+            await UniTask.Delay( 500);
             EventManager.Instance.Broadcast(GameEvents.OnLevelCompleted);
             EventManager.Instance.Broadcast(GameEvents.OnPlayerInputUnlock);
         }

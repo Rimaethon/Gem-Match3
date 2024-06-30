@@ -38,9 +38,18 @@ namespace _Scripts.Core
                     continue;
                 for (int y = _board.Height-1; y>=0; y--)
                 {
-                    if (!_board.Cells[x, y].HasItem)
+
+                    if (_board.Cells[x,y].CellType==CellType.SHIFTER
+                                                   ||_board.Cells[x,y].CellType==CellType.BLANK)
+                    {
+                        continue;
+                    }
+                    if (_board.Cells[x, y].IsGettingFilled || _board.Cells[x, y].IsGettingEmptied||_board.Cells[x,y].IsLocked)
                     {
                         isAnyItemMovingInColumn = true;
+                    }
+                    if (!_board.Cells[x, y].HasItem)
+                    {
                         continue;
                     }
                     if (_board.Cells[x, y].BoardItem.IsSwapping || _board.GetItem(x, y).IsExploding ||
@@ -69,18 +78,17 @@ namespace _Scripts.Core
                         isAnyItemMovingInColumn = true;
                     }
                 }
-
-                if (isAnyItemMovingInColumn)
-                {
-                    isAnyItemMoving = true;
-                    continue;
-                }
                 if (hasObstacle)
                 {
                     if(x>0)
                         _dirtyColumns[x-1]=true;
                     if(x<_board.Width-1)
                         _dirtyColumns[x+1]=true;
+                }
+                if (isAnyItemMovingInColumn)
+                {
+                    isAnyItemMoving = true;
+                    continue;
                 }
                 _dirtyColumns[x] = false;
             }
@@ -125,6 +133,7 @@ namespace _Scripts.Core
                 _board.Cells[target.x, target.y].SetItem(_board.GetItem(x, y));
                 _board.Cells[x, y].SetIsGettingEmptied(false);
                 _board.Cells[target.x, target.y].SetIsGettingFilled(false);
+                _dirtyColumns[target.x] = true;
                 _board.Cells[x, y].SetItem(null);
             }
 
@@ -135,7 +144,7 @@ namespace _Scripts.Core
             _board.GetItem(x, y).TargetToMove = new Vector2Int(targetX, targetY);
             _board.Cells[targetX, targetY].SetIsGettingFilled(true);
             _board.GetItem(x, y).IsMoving = true;
-
+            _dirtyColumns[targetX] = true;
             _board.Cells[x, y].SetIsGettingEmptied(true);
 
         }
@@ -205,6 +214,8 @@ namespace _Scripts.Core
                     return true;
                 if (_board.Cells[x,y].IsGettingEmptied)
                     return true;
+                if (_board.Cells[x,y].HasItem&&_board.Cells[x,y].BoardItem.IsExploding)
+                    return true;
                 if (_board.Cells[x,y].HasItem && !_board.GetItem(x, y).IsFallAble)
                     return false;
                 y--;
@@ -247,49 +258,37 @@ namespace _Scripts.Core
 
         private bool CanFallDiagonally(int x, int y, int targetX)
         {
-            if (_board.Cells[targetX, y - 1].HasItem || _board.Cells[targetX, y - 1].IsLocked)
+            if (_board.Cells[targetX, y - 1].HasItem || _board.Cells[targetX, y - 1].IsLocked
+                                                      ||_board.Cells[targetX,y-1].CellType==CellType.BLANK
+                                                      ||_board.Cells[targetX,y-1].CellType==CellType.SHIFTER)
             {
                 return false;
             }
 
-            int firstObstacleAbove = GetFirstObstacleAbove(targetX, y);
-            if (firstObstacleAbove == _board.Height)
+            bool isFirstItemAboveObstacle = IsFirstItemAboveObstacle(targetX, y);
+            if (!isFirstItemAboveObstacle)
             {
                 return false;
             }
-
-            if (firstObstacleAbove == y && CheckIfFallAble(targetX, firstObstacleAbove))
-            {
+            if(y<_board.Height-1&&_board.Cells[x,y+1].HasItem&&_board.GetItem(x,y+1).IsMoving&&_board.GetItem(x,y+1).TargetToMove.x!=x)
                 return false;
-            }
-
-            if (firstObstacleAbove > y && (CheckIfFallAble(targetX, firstObstacleAbove) ||
-                                           CheckIfFallAble(targetX + 1, firstObstacleAbove) ||
-                                           CheckIfFallAble(targetX - 1, firstObstacleAbove)))
-            {
-                return false;
-            }
-
-            if (firstObstacleAbove > y && ((_board.Cells[x, y+1].HasItem && _board.GetItem(x, y + 1).IsFallAble) ||
-                                           _board.Cells[x, y+1].IsGettingFilled))
-            {
-                return false;
-            }
 
             bool canFall = !_board.Cells[targetX, y-1].HasItem && !_board.Cells[targetX, y-1].IsGettingFilled;
             return canFall;
         }
 
-        private int GetFirstObstacleAbove(int x, int y)
+        private bool IsFirstItemAboveObstacle(int x, int y)
         {
             while (y < _board.Height)
             {
-                if (_board.Cells[x, y].HasItem && !_board.Cells[x, y].BoardItem.IsFallAble)
-                    return y;
+                if (_board.Cells[x, y].HasItem)
+                {
+                    return !_board.Cells[x, y].BoardItem.IsFallAble;
+                }
                 y++;
             }
 
-            return y;
+            return false;
         }
 
         private bool IsItemCloseToTarget(Vector3 currPos, Vector3 targetPos, float maxDistance = 0.05f)

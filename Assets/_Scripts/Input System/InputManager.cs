@@ -5,6 +5,9 @@ using UnityEngine.InputSystem;
 
 namespace Scripts
 {
+    //Sometimes game gives an Argument Out of Range Exception when the game is played on the simulator.
+    //This is a known issue and it is not related to the code.
+    //https://issuetracker.unity3d.com/issues/argumentoutofrangeexception-is-thrown-when-the-input-system-ui-input-module-component-is-disabled-from-the-simulator-using-ui-button-through
     public class InputManager: MonoBehaviour
     {
         [SerializeField] private GameObject _eventSystem;

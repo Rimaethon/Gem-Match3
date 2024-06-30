@@ -11,9 +11,7 @@ namespace Samples.Purchasing.Core.BuyingConsumables
     public class InAppPurchasePanel : MonoBehaviour, IDetailedStoreListener
     {
         [SerializeField] private ItemDatabaseSO itemDatabase;
-        private IStoreController _storeController; // The Unity Purchasing system.
-        //Your products IDs. They should match the ids of your products in your store.
-        [SerializeField] Button closePanelButton;
+        private IStoreController _storeController;
         [SerializeField] GameObject offerPanelPrefab;
         [SerializeField] List<Bundle> bundles;
         private List<OfferPanel> offerPanels=new List<OfferPanel>();
@@ -27,7 +25,6 @@ namespace Samples.Purchasing.Core.BuyingConsumables
                 offerPanels.Add(offerPanel);
                 offerPanel.buyButton.onClick.AddListener(() => BuyBundle(bundle));
             }
-            closePanelButton.onClick.AddListener(() => gameObject.SetActive(false));
         }
 
         private void OnDisable()
@@ -36,15 +33,14 @@ namespace Samples.Purchasing.Core.BuyingConsumables
             {
                 offerPanel.buyButton.onClick.RemoveAllListeners();
             }
-            closePanelButton.onClick.RemoveAllListeners();
         }
 
-    
+
 
         private void Start()
         {
             InitializePurchasing();
-            
+
         }
 
         private void BuyBundle(Bundle bundle)
@@ -57,7 +53,7 @@ namespace Samples.Purchasing.Core.BuyingConsumables
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
             foreach (var bundle in bundles)
             {
-                
+
                 builder.AddProduct(bundle.bundleId, ProductType.Consumable);
             }
 
@@ -131,7 +127,7 @@ namespace Samples.Purchasing.Core.BuyingConsumables
     {
         public string bundleId;
         public List<int> boosterPurchases;
-        public int unlimitedDuration;  
+        public int unlimitedDuration;
         public List<PowerUpPurchase> powerUpPurchases;
         public int coinAmount;
         public int price;

@@ -53,7 +53,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/press"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
