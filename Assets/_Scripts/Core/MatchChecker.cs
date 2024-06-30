@@ -8,25 +8,22 @@ using UnityEngine;
 namespace _Scripts.Managers.Matching
 {
     //First version I made  was  checking shapes but there are some shapes that can happen at runtime and this class is not enough to handle all of them.
-    //Since items are dropping randomly there can be some instances such as + shape or 5+ same items in a row or column 
-    //Such as : https://youtu.be/KjkjjvClTGU?t=230   https://youtu.be/KjkjjvClTGU?t=222  
+    //Since items are dropping randomly there can be some instances such as + shape or 5+ same items in a row or column
+    //Such as : https://youtu.be/KjkjjvClTGU?t=230   https://youtu.be/KjkjjvClTGU?t=222
 
-    // Also sometimes match logic doesn't work as I assumed it would be. such as : https://youtu.be/KjkjjvClTGU?t=280  Which should be a TNT but it merges to a Rocket instead. 
-    /// <summary>
-    /// HOW CAN THIS BE SO HARD
-    /// </summary>
+    // Also sometimes match logic doesn't work as I assumed it would be. such as : https://youtu.be/KjkjjvClTGU?t=280  Which should be a TNT but it merges to a Rocket instead.
 
-    // Max Possible Matches is 14(3.2*10^-9 probability, at least it is more probable than someone looking at this code) and in order to solve allocation i need to somehow manage to create some kind of cache 
-    //   0 0 0 1 0 0 0 0  
-    //   0 0 0 1 0 0 0 0  
-    //   0 0 0 1 0 0 0 0  
-    //   0 0 0 1 0 0 0 0  
-    //   0 1 1 1 1 1 0 0  
-    //   0 0 0 1 0 0 0 0  
-    //   0 0 0 1 0 0 0 0  
-    //   0 0 0 1 0 0 0 0  
-    //   0 0 0 1 0 0 0 0  
-    //   0 0 0 1 0 0 0 0  
+    // Max Possible Matches is 14(3.2*10^-9 probability, at least it is more probable than someone looking at this code) and in order to solve allocation i need to somehow manage to create some kind of cache
+    //   0 0 0 1 0 0 0 0
+    //   0 0 0 1 0 0 0 0
+    //   0 0 0 1 0 0 0 0
+    //   0 0 0 1 0 0 0 0
+    //   0 1 1 1 1 1 0 0
+    //   0 0 0 1 0 0 0 0
+    //   0 0 0 1 0 0 0 0
+    //   0 0 0 1 0 0 0 0
+    //   0 0 0 1 0 0 0 0
+    //   0 0 0 1 0 0 0 0
     public struct Match
     {
         public bool IsMatch;
@@ -41,8 +38,7 @@ namespace _Scripts.Managers.Matching
         private readonly Match[] _verticalMatches;
         List<Vector2Int> matches = new List<Vector2Int>();
         private int _itemID;
-        private HashSet<Vector2Int> _itemsToCheckForMatches = new HashSet<Vector2Int>();
-        private List<Vector2Int> _itemsToCheckForMatchesThisFrame = new List<Vector2Int>();
+        private Queue<Vector2Int> _itemsToCheckForMatches = new Queue<Vector2Int>();
         public MatchChecker(Board board)
         {
             _board = board;
@@ -50,27 +46,36 @@ namespace _Scripts.Managers.Matching
             _horizontalMatches =new Match[10];
             _verticalExtensions = new Match[10];
             _horizontalExtensions =new Match[10];
-            EventManager.Instance.AddHandler<Vector2Int>(GameEvents.OnItemMovementEnd, AddItemToCheckForMatches);            
+            EventManager.Instance.AddHandler<Vector2Int>(GameEvents.OnItemMovementEnd, AddItemToCheckForMatches);
         }
         public void OnDisable()
-        { 
+        {
             if(EventManager.Instance==null)
                 return;
             EventManager.Instance.RemoveHandler<Vector2Int>(GameEvents.OnItemMovementEnd, AddItemToCheckForMatches);
         }
         private void AddItemToCheckForMatches(Vector2Int itemPos)
         {
-            _itemsToCheckForMatches.Add(itemPos); 
+            if(_itemsToCheckForMatches.Contains(itemPos))
+                return;
+            _itemsToCheckForMatches.Enqueue(itemPos);
         }
-        public void CheckForMatches()
+        public bool CheckForMatches()
         {
-            _itemsToCheckForMatchesThisFrame.AddRange(_itemsToCheckForMatches);
-            foreach (Vector2Int pos in _itemsToCheckForMatchesThisFrame)
+            int count = _itemsToCheckForMatches.Count;
+            bool hasMatch = false;
+            while (count > 0)
             {
-                CheckMatch(pos);
-                _itemsToCheckForMatches.Remove(pos);
+                count--;
+                Vector2Int pos = _itemsToCheckForMatches.Dequeue();
+
+                if (CheckMatch(pos))
+                {
+                 hasMatch = true;
+                }
+
             }
-            _itemsToCheckForMatchesThisFrame.Clear();
+            return hasMatch;
         }
 
         public bool  CheckMatch(Vector2Int pos)
@@ -180,7 +185,7 @@ namespace _Scripts.Managers.Matching
             if (CheckForVerticalRocket(horizontalMatchCount)) return MatchType.VerticalRocket;
             if (CheckForMissile(horizontalMatchCount, verticalMatchCount,horizontalExtensionCount,verticalExtensionCount)) return MatchType.Missile;
             if (CheckForNormal(horizontalMatchCount, verticalMatchCount)) return MatchType.Normal;
-            
+
             return MatchType.None;
         }
 
@@ -221,7 +226,7 @@ namespace _Scripts.Managers.Matching
                 ClearAllMatchesAndAddThemToArray(_horizontalExtensions);
             if(_verticalExtensions[0].IsMatch&&_verticalExtensions[1].IsMatch)
                 ClearAllMatchesAndAddThemToArray(_verticalExtensions);
-           
+
             return true;
         }
 
