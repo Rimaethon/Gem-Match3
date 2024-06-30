@@ -26,6 +26,7 @@ namespace Scripts.BoosterActions
         {
             _state = value2==0 ? MatchState.ScaleDown : MatchState.Explode;
             _boardItem = board.GetItem(pos);
+            ItemID = _boardItem.ItemID;
             Board = board;
             _pos = pos;
             IsFinished = false;
@@ -64,10 +65,10 @@ namespace Scripts.BoosterActions
         {
             if (!_isExplodeInitiated)
             {
-               ObjectPool.Instance.GetItemParticleEffect(_boardItem.ItemID, _boardItem.Transform.position);
+               ObjectPool.Instance.GetItemParticleEffect(ItemID, LevelGrid.Instance.GetCellCenterWorld(_pos));
                 _isExplodeInitiated = true;
                 Board.Cells[_pos.x,_pos.y].SetIsLocked(true);
-                _boardItem.OnRemove();
+                _boardItem.Transform.gameObject.SetActive(false);
             }
 
             if (_counter < _explodeTime)
@@ -76,9 +77,10 @@ namespace Scripts.BoosterActions
                 return;
             }
             Board.Cells[_pos.x,_pos.y].SetIsLocked(false);
+            _boardItem.OnRemove();
             IsFinished = true;
         }
 
-      
+
     }
 }

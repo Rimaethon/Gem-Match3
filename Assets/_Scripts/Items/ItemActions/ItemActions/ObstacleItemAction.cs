@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using _Scripts.Utility;
+using UnityEngine;
 
 namespace Scripts.BoosterActions
 {
@@ -9,10 +10,13 @@ namespace Scripts.BoosterActions
         public bool IsFinished { get; set; }
         public int ItemID { get; set; }
         public Board Board { get; set; }
+        private IBoardItem _boardItem;
 
         public void InitializeAction(Board board, Vector2Int pos, int value1, int value2)
         {
             Board = board;
+            _boardItem = board.GetItem(pos);
+            _boardItem.Transform.gameObject.SetActive( false);
             ObjectPool.Instance.GetItemParticleEffect(ItemID, LevelGrid.Instance.GetCellCenterWorld(pos));
         }
 
@@ -29,6 +33,7 @@ namespace Scripts.BoosterActions
                 _counter += Time.deltaTime;
                 return;
             }
+            _boardItem.OnRemove();
 
             IsFinished = true;
         }

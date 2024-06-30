@@ -12,14 +12,14 @@ namespace Scripts.BoosterActions
         public bool IsFinished { get; set; }
         public int ItemID { get; set; }
         public Board Board { get; set; }
-        private float moveDownAndScaleTime = 0.5f;
-        private float moveDownAndScaleCounter;
+        private float moveUpAndScaleTime = 0.4f;
+        private float moveUpAndScaleCounter;
         private float waitTime = 0.1f;
         private float waitCounter;
         private float moveUpTime = 0.5f;
         private float moveUpCounter;
         private Vector3 initalPos;
-        private Vector3 moveDownPos;
+        private Vector3 moveUpPos;
         public void InitializeAction(Board board, Vector2Int pos, int value1, int value2)
         {
             _pos = pos;
@@ -28,20 +28,20 @@ namespace Scripts.BoosterActions
             _particleEffect = null;
             _goalUIPos = InGameUIManager.Instance.GetGoalPosition(value1);
             initalPos = LevelGrid.Instance.GetCellCenterWorld(pos);
-            moveDownPos = initalPos + _moveUpOffset;
+            moveUpPos = initalPos + _moveUpOffset;
             _particleEffect = ObjectPool.Instance.GetItemParticleEffect(value1,initalPos);
             ItemID = value1;
             moveUpCounter = 0;
-            moveDownAndScaleCounter = 0;
+            moveUpAndScaleCounter = 0;
             waitCounter = 0;
         }
         public void Execute()
         {
-            if (moveDownAndScaleCounter < moveDownAndScaleTime)
+            if (moveUpAndScaleCounter < moveUpAndScaleTime)
             {
-                moveDownAndScaleCounter += Time.fixedDeltaTime;
-                _particleEffect.transform.position = Vector3.Lerp(_particleEffect.transform.position, moveDownPos, moveDownAndScaleCounter / moveDownAndScaleTime);
-                _particleEffect.transform.localScale = Vector3.Lerp(_particleEffect.transform.localScale, Vector3.one, moveDownAndScaleCounter / moveDownAndScaleTime);
+                moveUpAndScaleCounter += Time.fixedDeltaTime;
+                _particleEffect.transform.position = Vector3.Lerp(_particleEffect.transform.position, moveUpPos, moveUpAndScaleCounter / moveUpAndScaleTime);
+                _particleEffect.transform.localScale = Vector3.Lerp(_particleEffect.transform.localScale, Vector3.one, moveUpAndScaleCounter / moveUpAndScaleTime);
                 return;
             }
             if(waitCounter<waitTime)
