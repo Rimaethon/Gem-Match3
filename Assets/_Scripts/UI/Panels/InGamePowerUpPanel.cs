@@ -34,7 +34,7 @@ public class InGamePowerUpPanel : MonoBehaviour
         cannonBooster.boosterButton.onClick.AddListener(() => HandleBoosterButtonClick(cannonBooster));
         jesterHatBooster.boosterButton.onClick.AddListener(() => HandleBoosterButtonClick(jesterHatBooster));
         jesterHatShuffleButton.onClick.AddListener(HandleShuffleButtonClick);
-    
+
     }
     private void OnDisable()
     {
@@ -46,7 +46,7 @@ public class InGamePowerUpPanel : MonoBehaviour
            return;
        EventManager.Instance.RemoveHandler<Vector2>(GameEvents.OnScreenTouch, CheckIfValidClick);
     }
-    private void Awake()    
+    private void Awake()
     {
         hammerBooster.boosterCounter.text = SaveManager.Instance.GetPowerUpAmount(hammerBooster.itemID).ToString();
         bowBooster.boosterCounter.text = SaveManager.Instance.GetPowerUpAmount(bowBooster.itemID).ToString();
@@ -143,6 +143,7 @@ public class InGamePowerUpPanel : MonoBehaviour
         worldPos.x -= 0.25f;
         worldPos.y += 0.10f;
         GameObject hammerObject=ObjectPool.Instance.GetBoosterGameObject(hammerBooster.itemID,worldPos);
+        hammerObject.SetActive(true);
         hammerObject.transform.DORotate(-1.25f*_hammerRotationAmount, 0.8f).SetUpdate(UpdateType.Fixed).SetEase(Ease.InOutSine).onComplete +=
             () =>
             {
@@ -159,14 +160,16 @@ public class InGamePowerUpPanel : MonoBehaviour
             };
         HandleBoosterButtonClick(hammerBooster);
     }
-    
-       
+
+
     private void HandleBoosterButtonClick(UIBoosterButton booster)
     {
+        if(LevelManager.Instance.DoesBoardHasThingsToDo)
+            return;
         if (booster.isClicked)
         {
             UnClickBooster(booster);
-            EventManager.Instance.Broadcast(GameEvents.OnBoardUnlock); 
+            EventManager.Instance.Broadcast(GameEvents.OnBoardUnlock);
             _isAnyBoosterClicked = false;
             booster.isClicked = false;
         }
@@ -175,7 +178,7 @@ public class InGamePowerUpPanel : MonoBehaviour
             if (SaveManager.Instance.GetPowerUpAmount(booster.itemID) <= 0)
                 return;
             HandlePowerUpClick(booster);
-            
+
             _isAnyBoosterClicked = true;
             EventManager.Instance.Broadcast(GameEvents.OnBoardLock);
         }
@@ -184,10 +187,10 @@ public class InGamePowerUpPanel : MonoBehaviour
             Debug.Log("Current Booster is not null");
             _currentBooster.isClicked = false;
             _isAnyBoosterClicked = false;
-            EventManager.Instance.Broadcast(GameEvents.OnBoardUnlock); 
+            EventManager.Instance.Broadcast(GameEvents.OnBoardUnlock);
             UnClickBooster(_currentBooster);
         }
-        
+
     }
     private void UnClickBooster(UIBoosterButton booster)
     {
@@ -208,7 +211,7 @@ public class InGamePowerUpPanel : MonoBehaviour
     private void ClickBooster(UIBoosterButton booster)
     {
         EventManager.Instance.Broadcast(GameEvents.OnBoardUnlock);
-        canvas.sortingOrder = 30;
+        canvas.sortingOrder = 0;
         booster.isClicked = true;
         booster.unClickedCounter.SetActive(false);
         booster.clickedCounter.SetActive(true);

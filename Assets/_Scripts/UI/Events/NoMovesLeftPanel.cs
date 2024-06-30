@@ -16,6 +16,7 @@ namespace Rimaethon.Runtime.UI
         [SerializeField] private TMP_Text addMovesExplanationText;
         [SerializeField] private TMP_Text addMovesCostText;
         [SerializeField] private GameObject firstAskPanel;
+        [SerializeField] private GameObject tryAgainPanel;
         //Perfect naming right ? :D
         [SerializeField] private GameObject butYouGonnaLoseThesePanel;
         [SerializeField] private GameObject eventProgressUIPrefab;
@@ -39,17 +40,23 @@ namespace Rimaethon.Runtime.UI
             playOnButton.onClick.RemoveListener(OnContinueButtonClicked);
             exitButton.onClick.RemoveListener(OnExitButtonClicked);
         }
-        
+
         private void OnContinueButtonClicked()
         {
-            Debug.Log("Continue button clicked"+SaveManager.Instance.GetCoinAmount());
             if( SaveManager.Instance.GetCoinAmount()< cost * numberOfTimesAsked)
                 return;
-            
+
             SaveManager.Instance.AdjustCoinAmount(-cost * numberOfTimesAsked);
             coinsText.text = SaveManager.Instance.GetCoinAmount().ToString();
             EventManager.Instance.Broadcast<int>(GameEvents.OnMoveCountChanged, movesToAdd);
+            EventManager.Instance.Broadcast(GameEvents.OnBoardUnlock);
+            EventManager.Instance.Broadcast(GameEvents.OnPlayerInputUnlock);
             gameObject.SetActive(false);
+            AudioManager.Instance.PlaySFX(SFXClips.UIButtonSound);
+            firstAskPanel.SetActive(true);
+            butYouGonnaLoseThesePanel.SetActive(false);
+            isFirstPanel = true;
+            numberOfTimesAsked++;
         }
 
         private void OnExitButtonClicked()
@@ -57,14 +64,18 @@ namespace Rimaethon.Runtime.UI
             if (isFirstPanel)
             {
                 firstAskPanel.SetActive(false);
-                butYouGonnaLoseThesePanel.SetActive(true); 
+                butYouGonnaLoseThesePanel.SetActive(true);
+                AudioManager.Instance.PlaySFX(SFXClips.UIButtonSound);
                 isFirstPanel = false;
             }
             else
             {
                 gameObject.SetActive(false);
+                AudioManager.Instance.PlaySFX(SFXClips.UIButtonSound);
                 firstAskPanel.SetActive(true);
                 butYouGonnaLoseThesePanel.SetActive(false);
+                tryAgainPanel.SetActive(true);
+                isFirstPanel = true;
             }
         }
 
@@ -73,8 +84,8 @@ namespace Rimaethon.Runtime.UI
             coinsText.text = SaveManager.Instance.GetCoinAmount().ToString();
             movesToOffer.text = movesToAdd.ToString();
             addMovesExplanationText.text = "Add " + movesToAdd + " moves to keep playing!";
-   
-            
+
+
         }
 
     }

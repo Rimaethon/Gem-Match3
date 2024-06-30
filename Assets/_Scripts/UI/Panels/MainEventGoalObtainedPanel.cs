@@ -24,7 +24,7 @@ namespace _Scripts.UI.Panels
             particleEffect.gameObject.SetActive(false);
         }
 
-        public async UniTask HandleMainEventGoalObtained(int count,Sprite sprite,Vector3 goalPos,GameObject reachedEffect=null)
+        public async UniTask StartGoalObtainedAnimation(int count,Sprite sprite,Vector3 goalPos,GameObject reachedEffect=null)
         {
             var fadeImageTask = fadeImage.DOFade(0.6f, 0.5f).SetUpdate(UpdateType.Fixed).ToUniTask();
             _image.sprite = sprite;
@@ -58,6 +58,6 @@ namespace _Scripts.UI.Panels
             ParticleSystem particleEffect = Instantiate(starBombEffect, _imageTransform.position, Quaternion.identity).GetComponent<ParticleSystem>();
             particleEffect.Play();
         }
-        
+
     }
 }

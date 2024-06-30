@@ -11,7 +11,7 @@ namespace _Scripts.UI.Panels
         [SerializeField] private GameObject progressGainedThisLevel;
         [SerializeField] private GameObject eventProgressUIPrefab;
         public Dictionary<int, int> itemsCollectedThisLevel;
-
+        private List<GameObject> progressGainedThisLevelList = new List<GameObject>();
         private void OnEnable()
         {
             itemsCollectedThisLevel = SceneController.Instance.CollectedItems;
@@ -20,9 +20,17 @@ namespace _Scripts.UI.Panels
                 GameObject progress = Instantiate(eventProgressUIPrefab, progressGainedThisLevel.transform);
                 progress.GetComponent<Image>().sprite=ObjectPool.Instance.GetItemSprite(item.Key);
                 progress.GetComponentInChildren<TextMeshProUGUI>().text = item.Value.ToString();
+                progressGainedThisLevelList.Add(progress);
             }
         }
-        
-        
+        private void OnDisable()
+        {
+            foreach (var progress in progressGainedThisLevelList)
+            {
+                Destroy(progress);
+            }
+        }
+
+
     }
 }

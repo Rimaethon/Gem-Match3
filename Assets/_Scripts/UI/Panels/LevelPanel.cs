@@ -9,6 +9,7 @@ namespace Rimaethon.Runtime.UI
     {
         [SerializeField] private GameObject _panel;
         [SerializeField] private Sprite _noNewLevelSprite;
+        [SerializeField] private Sprite _hasNewLevelSprite;
         [SerializeField] private Button _openLevelPanelButton;
         [SerializeField] private Button _startLevelButton;
         [SerializeField] private TextMeshProUGUI levelButtonText;
@@ -19,23 +20,32 @@ namespace Rimaethon.Runtime.UI
         {
             _startLevelButton.onClick.AddListener(InitializeLevel);
             _openLevelPanelButton.onClick.AddListener(OpenPanel);
-            _hasNewLevel=  SaveManager.Instance.HasNewLevel();
+            EventManager.Instance.AddHandler(GameEvents.OnLevelDownloaded, HandleLevelButton);
         }
         private void OnDisable()
         {
             _startLevelButton.onClick.RemoveAllListeners();
             _openLevelPanelButton.onClick.RemoveAllListeners();
+            if(EventManager.Instance!=null)
+                EventManager.Instance.RemoveHandler(GameEvents.OnLevelDownloaded, HandleLevelButton);
         }
         private void Awake()
+        {
+           HandleLevelButton();
+        }
+        private void HandleLevelButton()
         {
             _hasNewLevel = SaveManager.Instance.HasNewLevel();
             if (!_hasNewLevel)
             {
                 levelButtonText.color = Color.grey;
                 _openLevelPanelButton.gameObject.GetComponent<Image>().sprite = _noNewLevelSprite;
+                levelButtonText.text = LevelName + SaveManager.Instance.GetCurrentLevelName();
             }
             else
             {
+                levelButtonText.color = Color.white;
+                _openLevelPanelButton.gameObject.GetComponent<Image>().sprite = _hasNewLevelSprite;
                 levelButtonText.text = LevelName+SaveManager.Instance.GetCurrentLevelName();
                 levelBannerText.text = LevelName+SaveManager.Instance.GetCurrentLevelName();
             }
@@ -54,6 +64,6 @@ namespace Rimaethon.Runtime.UI
         {
             _panel.SetActive(false);
         }
-       
+
     }
 }

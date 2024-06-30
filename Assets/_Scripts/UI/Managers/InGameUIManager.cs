@@ -21,8 +21,8 @@ public class InGameUIManager : Singleton<InGameUIManager>
     private  List<GameObject> _goalCheckMarks=new List<GameObject>();
     private  Dictionary<int,int> _goalIndexDictionary=new Dictionary<int, int>();
     private Dictionary<int, int> _goalIDGoalCountDictionary;
-    private const int MovesAndGoalsYStart = 250;
-    private const int MovesAndGoalsYEnd = -125;
+    private const int MovesAndGoalsYStart = 900;
+    private const int MovesAndGoalsYEnd = 410;
     private const int BoosterAndSettingsYStart = -370;
     private const int BoosterAndSettingsYEnd = -150;
     private const int StretchAmount = 100;
@@ -108,13 +108,13 @@ public class InGameUIManager : Singleton<InGameUIManager>
     }
     private void HandleLevelFailed()
     {
-        
+
     }
     private void HandleRemainingMovesText(int valueToAdd)
     {
         _moveCount+=valueToAdd;
         if(_moveCount>=0)
-            remainingMovesText.text =_moveCount.ToString(); 
+            remainingMovesText.text =_moveCount.ToString();
     }
 
 }
