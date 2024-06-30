@@ -9,7 +9,7 @@ namespace Scripts.BoosterActions
     {
         private float _boardDownEdge;
         private float _boardUpEdge;
-        private readonly float _rocketOffset = 0.1f;
+        private readonly float _rocketOffset = 0.3f;
         private readonly float _speed = 6f;
         private readonly HashSet<Vector2Int> _visitedCells=new HashSet<Vector2Int>();
         private Transform _downRocket;
@@ -28,8 +28,8 @@ namespace Scripts.BoosterActions
             _boardDownEdge = Board.Cells.GetBoardBoundaryBottomY() - 0.2f;
             var upRocketPos = LevelGrid.Instance.GetCellCenterWorld(_pos);
             var downRocketPos = LevelGrid.Instance.GetCellCenterWorld(_pos);
-            upRocketPos.y -= _rocketOffset;
-            downRocketPos.y += _rocketOffset;
+            upRocketPos.y += _rocketOffset;
+            downRocketPos.y -= _rocketOffset;
             _upRocket = ObjectPool.Instance.GetBoosterParticleEffect(ItemID, upRocketPos, Quaternion.Euler(0, 0, -90))
                 .transform;
             _downRocket = ObjectPool.Instance
@@ -51,33 +51,8 @@ namespace Scripts.BoosterActions
                 {
                     var upRocketCell = LevelGrid.Instance.WorldToCellVector2Int(_upRocket.position);
                     var downRocketCell = LevelGrid.Instance.WorldToCellVector2Int(_downRocket.position);
-                    if (Board.IsInBoundaries(upRocketCell) && Board.Cells[upRocketCell.x,upRocketCell.y].HasItem &&
-                        !Board.GetItem(upRocketCell).IsExploding)
-                    {
-                        if (!_visitedCells.Contains(upRocketCell) ||!Board.GetItem(upRocketCell).IsGeneratorItem)
-                        {
-                            Board.GetItem(upRocketCell).OnExplode();
-                        }
-                        if (!_visitedCells.Contains(upRocketCell))
-                        {
-                            Board.Cells[upRocketCell.x,upRocketCell.y].SetIsLocked(true);
-                            _visitedCells.Add(upRocketCell);
-                        }
-                    }
-
-                    if (Board.IsInBoundaries(downRocketCell) && Board.Cells[downRocketCell.x,downRocketCell.y].HasItem &&
-                        !Board.GetItem(downRocketCell).IsExploding)
-                    {
-                        if (!_visitedCells.Contains(downRocketCell) ||!Board.GetItem(downRocketCell).IsGeneratorItem)
-                        {
-                            Board.GetItem(downRocketCell).OnExplode();
-                        }
-                        if (!_visitedCells.Contains(downRocketCell))
-                        {
-                            Board.Cells[downRocketCell.x,downRocketCell.y].SetIsLocked(true);
-                            _visitedCells.Add(downRocketCell);
-                        }
-                    }
+                    HandleExplosion(upRocketCell);
+                    HandleExplosion(downRocketCell);
                 }
 
                 return;
@@ -87,6 +62,27 @@ namespace Scripts.BoosterActions
             IsFinished = true;
             SetColumnLock(false);
 
+
+        }
+
+        private void HandleExplosion(Vector2Int cell)
+        {
+            if (!Board.IsInBoundaries(cell)) return;
+            if(_visitedCells.Contains(cell)) return;
+            if (Board.Cells[cell.x, cell.y].HasItem )
+            {
+                if (!Board.GetItem(cell).IsGeneratorItem && !Board.GetItem(cell).IsExploding)
+                {
+                    Board.GetItem(cell).OnExplode();
+                }
+
+            }
+            else
+            {
+                EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, cell);
+            }
+            Board.Cells[cell.x,cell.y].SetIsLocked(true);
+            _visitedCells.Add(cell);
         }
 
         private void SetColumnLock(bool isLocked)

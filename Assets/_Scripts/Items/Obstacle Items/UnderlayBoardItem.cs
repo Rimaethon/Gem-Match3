@@ -27,8 +27,9 @@ namespace Scripts
             EventManager.Instance.Broadcast(GameEvents.OnItemExplosion, _position, _itemID);
 
             ObjectPool.Instance.ReturnItem(BoardItem, _itemID);
-            
+            Board.Cells[Position.x, Position.y].SetUnderLayItem(null);
+
         }
-   
+
     }
 }

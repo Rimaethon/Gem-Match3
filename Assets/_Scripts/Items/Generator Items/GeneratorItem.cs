@@ -20,11 +20,12 @@ namespace Scripts.Generator_Items
             _isGeneratorItem = true;
         }
         public override void OnExplode()
-        { 
+        {
             if(LevelManager.Instance.IsGoalReached(_itemID))
                 return;
             DoJumpAndShake();
             EventManager.Instance.Broadcast(GameEvents.AddActionToHandle, _position,_itemID,0);
+            AudioManager.Instance.PlaySFX(SFXClips.MailBoxSound);
         }
         private void DoJumpAndShake()
         {
@@ -46,8 +47,8 @@ namespace Scripts.Generator_Items
                 OnComplete(() =>
                 {
                     _isClicked = false;
-                });            
-            
+                });
+
         }
     }
 }

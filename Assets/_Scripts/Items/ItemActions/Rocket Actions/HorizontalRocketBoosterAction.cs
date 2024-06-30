@@ -51,22 +51,8 @@ namespace Scripts.BoosterActions
                 {
                     var leftRocketCell = LevelGrid.Instance.WorldToCellVector2Int(_leftRocket.position);
                     var rightRocketCell = LevelGrid.Instance.WorldToCellVector2Int(_rightRocket.position);
-                    if (Board.IsInBoundaries(leftRocketCell) && Board.Cells[leftRocketCell.x,leftRocketCell.y].HasItem &&!Board.GetItem(leftRocketCell).IsExploding)
-                    {
-                        if (!_visitedCells.Contains(leftRocketCell) ||!Board.GetItem(leftRocketCell).IsGeneratorItem)
-                        {
-                            Board.GetItem(leftRocketCell).OnExplode();
-                            _visitedCells.Add(leftRocketCell);
-                        }
-                    }
-                    if (Board.IsInBoundaries(rightRocketCell) && Board.Cells[rightRocketCell.x,rightRocketCell.y].HasItem && !Board.GetItem(rightRocketCell).IsExploding)
-                    {
-                        if (!_visitedCells.Contains(rightRocketCell) ||!Board.GetItem(rightRocketCell).IsGeneratorItem)
-                        {
-                            Board.GetItem(rightRocketCell).OnExplode();
-                            _visitedCells.Add(rightRocketCell);
-                        }
-                    }
+                    HandleExplosion(leftRocketCell);
+                    HandleExplosion(rightRocketCell);
                 }
 
                 return;
@@ -78,6 +64,24 @@ namespace Scripts.BoosterActions
 
         }
 
+        private void HandleExplosion(Vector2Int cell)
+        {
+            if (!Board.IsInBoundaries(cell)) return;
+            if(_visitedCells.Contains(cell)) return;
+            if (Board.Cells[cell.x, cell.y].HasItem )
+            {
+                if (!Board.GetItem(cell).IsGeneratorItem && !Board.GetItem(cell).IsExploding)
+                {
+                    Board.GetItem(cell).OnExplode();
+                }
+
+            }
+            else
+            {
+                EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, cell);
+            }
+            _visitedCells.Add(cell);
+        }
         private void SetRowLock(bool isLocked)
         {
             for (var i = 0; i < Board.Width; i++) Board.Cells[i,_pos.y].SetIsLocked(isLocked);

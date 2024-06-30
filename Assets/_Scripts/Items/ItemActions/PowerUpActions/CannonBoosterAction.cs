@@ -50,18 +50,7 @@ namespace _Scripts.Items.ItemActions
                 particleEffect.cannonBallSprite.transform.position += Vector3.up * (_speed * Time.fixedDeltaTime);
 
                 var ballCell = LevelGrid.Instance.WorldToCellVector2Int(particleEffect.hitPoint.transform.position);
-                if (Board.IsInBoundaries(ballCell) && Board.Cells[ballCell.x,ballCell.y].HasItem &&!Board.GetItem(ballCell).IsExploding)
-                {
-                    if (!_visitedCells.Contains(ballCell) ||!Board.GetItem(ballCell).IsGeneratorItem)
-                    {
-                        Board.GetItem(ballCell).OnExplode();
-                    }
-                    if (!_visitedCells.Contains(ballCell))
-                    {
-                        Board.Cells[ballCell.x,ballCell.y].SetIsLocked(true);
-                        _visitedCells.Add(ballCell);
-                    }
-                }
+                HandleExplosion(ballCell);
                 return;
             }
             if(_afterFiringTimer < _afterFiringWait)
@@ -75,7 +64,25 @@ namespace _Scripts.Items.ItemActions
             _isFinished = true;
             SetColumnLock(false);
         }
+        private void HandleExplosion(Vector2Int cell)
+        {
+            if (!Board.IsInBoundaries(cell)) return;
+            if(_visitedCells.Contains(cell)) return;
+            if (Board.Cells[cell.x, cell.y].HasItem )
+            {
+                if (!Board.GetItem(cell).IsGeneratorItem && !Board.GetItem(cell).IsExploding)
+                {
+                    Board.GetItem(cell).OnExplode();
+                }
 
+            }
+            else
+            {
+                EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, cell);
+            }
+            Board.Cells[cell.x,cell.y].SetIsLocked(true);
+            _visitedCells.Add(cell);
+        }
         private void SetColumnLock(bool isLocked)
         {
             for (var i = 0; i < Board.Height; i++) Board.Cells[_pos.x,i].SetIsLocked(isLocked);

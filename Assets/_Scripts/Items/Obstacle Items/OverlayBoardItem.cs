@@ -11,7 +11,7 @@ namespace Scripts
             _isMatchable = false;
             _isSwappable = false;
             _isProtectingUnderIt = true;
-            _isExplodeAbleByNearMatches = true;            
+            _isExplodeAbleByNearMatches = true;
         }
         public override void OnExplode()
         {
@@ -26,7 +26,7 @@ namespace Scripts
         {
             EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, Position);
             EventManager.Instance.Broadcast(GameEvents.OnItemRemoval, BoardItem);
-            
+            Board.Cells[Position.x, Position.y].SetOverLayItem(null);
         }
     }
 }

@@ -49,16 +49,9 @@ namespace _Scripts.Items.ItemActions
             if (particleEffect.hitPoint.transform.position.x < _endWorldPos.x)
             {
                 particleEffect.gameObject.transform.position += Vector3.right * (_speed * Time.fixedDeltaTime);
-        
+
                 var arrowCell = LevelGrid.Instance.WorldToCellVector2Int(particleEffect.hitPoint.transform.position);
-                if (Board.IsInBoundaries(arrowCell) && Board.Cells[arrowCell.x,arrowCell.y].HasItem &&!Board.GetItem(arrowCell).IsExploding)
-                {
-                    if (!_visitedCells.Contains(arrowCell) ||!Board.GetItem(arrowCell).IsGeneratorItem)
-                    {
-                        Board.GetItem(arrowCell).OnExplode();
-                        _visitedCells.Add(arrowCell);
-                    }
-                }
+                HandleExplosion(arrowCell);
                 return;
             }
             if(_afterFiringTimer < _afterFiringWait)
@@ -66,12 +59,30 @@ namespace _Scripts.Items.ItemActions
                 _afterFiringTimer += Time.fixedDeltaTime;
                 return;
             }
-      
+
             ObjectPool.Instance.ReturnBoosterParticleEffect(particleEffect.gameObject, ItemID);
             EventManager.Instance.Broadcast(GameEvents.OnPlayerInputUnlock);
             _isFinished = true;
             SetRowLock(false);
 
+        }
+        private void HandleExplosion(Vector2Int cell)
+        {
+            if (!Board.IsInBoundaries(cell)) return;
+            if(_visitedCells.Contains(cell)) return;
+            if (Board.Cells[cell.x, cell.y].HasItem )
+            {
+                if (!Board.GetItem(cell).IsGeneratorItem && !Board.GetItem(cell).IsExploding)
+                {
+                    Board.GetItem(cell).OnExplode();
+                }
+
+            }
+            else
+            {
+                EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, cell);
+            }
+            _visitedCells.Add(cell);
         }
 
         private void SetRowLock(bool isLocked)

@@ -6,7 +6,6 @@ namespace Scripts
 {
     public class ObstacleBoardItem:BoardItemBase
     {
-        private ObstacleItemAction _action;
         private void OnEnable()
         {
             transform.localScale = Vector3.one;
@@ -26,7 +25,6 @@ namespace Scripts
                 return;
             _isExploding = true;
             EventManager.Instance.Broadcast(GameEvents.AddActionToHandle,_position,_itemID,0);
-            OnRemove();
         }
         public override void OnRemove()
         {

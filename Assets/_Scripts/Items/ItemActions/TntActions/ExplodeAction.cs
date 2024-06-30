@@ -66,8 +66,13 @@ namespace _Scripts.Items.ItemActions
 
         private void ExplodeCell(Vector2Int explosionPos)
         {
-            if (_board.IsInBoundaries(explosionPos) && _board.Cells[explosionPos.x,explosionPos.y].HasItem &&
-                !_board.GetItem(explosionPos).IsExploding)
+            if (!_board.IsInBoundaries(explosionPos)) return;
+            if (!_board.Cells[explosionPos.x, explosionPos.y].HasItem)
+            {
+                EventManager.Instance.Broadcast(GameEvents.AddItemToRemoveFromBoard, explosionPos);
+                return;
+            }
+            if (!_board.GetItem(explosionPos).IsExploding)
             {
                 _board.GetItem(explosionPos).OnExplode();
             }

@@ -19,10 +19,10 @@ public abstract class BoardItemBase : MonoBehaviour, IBoardItem
     public bool IsActive
     {
         get => _isActive;
-        set=> _isActive=value; 
+        set=> _isActive=value;
     }
-    public bool IsFallAble 
-    { 
+    public bool IsFallAble
+    {
         get=> isFallAble;
         set=> isFallAble=value;
     }
@@ -37,7 +37,7 @@ public abstract class BoardItemBase : MonoBehaviour, IBoardItem
         get=> _isMatchable;
         set=> _isMatchable=value;
     }
-  
+
     public bool IsSwappable
     {
         get=> _isSwappable;
@@ -45,7 +45,7 @@ public abstract class BoardItemBase : MonoBehaviour, IBoardItem
     }
     public bool IsSwapping
     {
-        get; 
+        get;
         set;
     }
     public Vector2Int SwappingFrom
@@ -55,8 +55,8 @@ public abstract class BoardItemBase : MonoBehaviour, IBoardItem
     }
     public bool IsMoving
     {
-        get;
-        set;
+        get=> _isMoving;
+        set=> _isMoving=value;
     }
     public Vector2Int TargetToMove
     {
@@ -82,7 +82,7 @@ public abstract class BoardItemBase : MonoBehaviour, IBoardItem
     public bool IsMatching { get; set; }
 
     #endregion
-    
+
     #region Fields
     public Vector2Int _position;
 
@@ -98,12 +98,13 @@ public abstract class BoardItemBase : MonoBehaviour, IBoardItem
     [SerializeField] protected bool _isExplodeAbleByNearMatches = false;
     [SerializeField] protected bool _isGeneratorItem = false;
     [SerializeField] protected bool _isShuffleAble;
+    [SerializeField] protected bool _isMoving;
     protected bool _isProtectingUnderIt=false;
     protected bool _isBooster = false;
     protected Color _unTouchedColor= new Color(1f,1f,1f,1f);
     private Material _material;
     private MaterialPropertyBlock _materialPropertyBlock;
-    private SpriteRenderer _spriteRenderer;
+    protected SpriteRenderer _spriteRenderer;
     protected IBoardItem BoardItem;
     protected bool _isClicked;
     private Tween _highlightShake;
@@ -158,5 +159,3 @@ public abstract class BoardItemBase : MonoBehaviour, IBoardItem
     {
     }
 }
-
-
