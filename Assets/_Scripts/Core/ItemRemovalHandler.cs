@@ -11,8 +11,7 @@ namespace _Scripts.Core
     //Since there is a delay between the explosion visual and the actual removal of the item from the board, it needs to be handled separately.
     public class ItemRemovalHandler
     {
-        private readonly HashSet<Vector2Int> _itemsToRemoveFromBoard = new HashSet<Vector2Int>();
-        private readonly List<Vector2Int> _itemsToRemoveFromBoardThisFrame = new List<Vector2Int>();
+        private readonly Queue<Vector2Int> _itemsToRemoveFromBoard = new Queue<Vector2Int>();
         private Board _board;
         private bool[] _dirtyColumns;
         public ItemRemovalHandler (Board board,bool[] dirtyColumns)
@@ -29,17 +28,19 @@ namespace _Scripts.Core
         }
         private void AddItemToRemoveFromBoard(Vector2Int itemPos)
         {
-            _itemsToRemoveFromBoard.Add(itemPos);
-
+            if(_itemsToRemoveFromBoard.Contains(itemPos))
+                return;
+            _itemsToRemoveFromBoard.Enqueue(itemPos);
         }
 
         public bool HandleItemRemoval()
         {
-            _itemsToRemoveFromBoardThisFrame.AddRange(_itemsToRemoveFromBoard);
+            int count = _itemsToRemoveFromBoard.Count;
 
-            foreach (Vector2Int itemPos in _itemsToRemoveFromBoardThisFrame)
+            while (count > 0)
             {
-                _itemsToRemoveFromBoard.Remove(itemPos);
+                count--;
+                Vector2Int itemPos = _itemsToRemoveFromBoard.Dequeue();
                 Cell cell = _board.Cells[itemPos.x,itemPos.y];
                 cell.SetIsGettingEmptied(false);
                 cell.SetIsGettingFilled(false);
@@ -73,11 +74,8 @@ namespace _Scripts.Core
                 if (cell.HasUnderLayItem)
                 {
                     cell.UnderLayBoardItem.OnExplode();
-                    cell.SetUnderLayItem(null);
                 }
-
             }
-            _itemsToRemoveFromBoardThisFrame.Clear();
             return _itemsToRemoveFromBoard.Count > 0;
         }
     }

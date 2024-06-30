@@ -39,8 +39,9 @@ namespace _Scripts.Core
         {
             if(!_itemsToAddToBoard.TryAdd(itemPos, itemID)) return;
         }
-        public void HandleBoosterSpawn()
+        public bool HandleBoosterSpawn()
         {
+            bool isThereBoosterToSpawn = false;
             foreach (KeyValuePair<Vector2Int,int> itemData in _itemsToAddToBoard)
             {
                 _board.Cells[itemData.Key.x,itemData.Key.y].SetIsLocked(true);
@@ -61,8 +62,10 @@ namespace _Scripts.Core
                 boardItem.Transform.DOScale(Vector3.one * 1.4f, 0.15f)
                     .SetLoops(2, LoopType.Yoyo)
                     .SetUpdate(UpdateType.Fixed);
+                isThereBoosterToSpawn = true;
             }
             _itemsToAddToBoard.Clear();
+            return isThereBoosterToSpawn;
         }
         public bool HandleFillSpawn()
         {
@@ -76,10 +79,10 @@ namespace _Scripts.Core
                 _board.GetItem(cell.x, cell.y).Transform.parent = _boardInstance.transform;
                 _board.GetItem(cell.x, cell.y).TargetToMove = new Vector2Int(cell.x, cell.y);
                  _board.GetItem(cell.x, cell.y).IsMoving = true;
+                 _dirtyColumns[cell.x] = true;
                 _board.Cells[cell.x,cell.y].SetIsGettingEmptied(false);
-                _board.Cells[cell.x,cell.y].SetIsGettingFilled(false);
+                _board.Cells[cell.x,cell.y].SetIsGettingFilled(true);
                 isAnyCellEmpty = true;
-
             }
             return isAnyCellEmpty;
         }
