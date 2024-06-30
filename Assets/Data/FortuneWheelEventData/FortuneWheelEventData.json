@@ -1,8 +1,10 @@
 {
     "$id": 0,
     "$type": "0|_Scripts.UI.Events.FortuneWheelEventData, Assembly-CSharp",
-    "userSpinAmount": 26,
-    "eventStartTime": 1716650162,
-    "eventDuration": 7500,
+    "eventGoalID": 0,
+    "eventStartUnixTime": 1719725840,
+    "eventDuration": 17199,
+    "eventProgressCount": 400,
+    "userSpinAmount": 11,
     "prizes": null
 }

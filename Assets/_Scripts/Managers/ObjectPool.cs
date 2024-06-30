@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Rimaethon.Scripts.Utility;
 using Scripts;
 using Scripts.BoosterActions;
+using Sirenix.Utilities.Editor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,7 +26,7 @@ public class ObjectPool : Singleton<ObjectPool>
     public GameObject tntTntEffect;
     public GameObject lightBallLightBallEffect;
     private bool _isInitialized;
-    
+
     public async UniTask InitializeStacks(HashSet<int> spawnAbleItems,int itemAmount,int boosterAmount)
     {
         if (_isInitialized)
@@ -48,7 +49,7 @@ public class ObjectPool : Singleton<ObjectPool>
         await AddItemsToPool(_missileHitEffects, _ => itemDatabase.missileHitEffect, 0, boosterAmount);
         await AddItemsToPool(_missileExplosionEffects, _ => itemDatabase.missileExplosionEffect, 0, boosterAmount);
         if(SaveManager.Instance.HasMainEvent())
-            await AddMainEventUIEffect(itemAmount,SaveManager.Instance.GetMainEventData().eventObjectiveID);
+            await AddMainEventUIEffect(itemAmount,SaveManager.Instance.GetMainEventData().eventGoalID);
         foreach (int key in itemDatabase.Boosters.Keys)
         {
             if(key>104)
@@ -68,7 +69,7 @@ public class ObjectPool : Singleton<ObjectPool>
             {
                 IItemMergeAction item = Activator.CreateInstance(action.Item3.GetType()) as IItemMergeAction;
                 _boosterMergeAction[^1].Item3.Push(item);
-                
+
             }
         }
         tntTntEffect= Instantiate(itemDatabase.TntTntExplosionEffect);
@@ -78,7 +79,7 @@ public class ObjectPool : Singleton<ObjectPool>
         tntTntEffect.transform.parent= gameObject.transform;
         lightBallLightBallEffect.transform.parent= gameObject.transform;
     }
-    
+
     private async UniTask AddMainEventUIEffect(int itemAmount, int mainEventID)
     {
         for (int i = 0; i < itemAmount; i++)
@@ -96,9 +97,9 @@ public class ObjectPool : Singleton<ObjectPool>
     {
         for (int i = 0; i < amount; i++)
         {
+            getItem(key).SetActive(false);
             GameObject item =Instantiate(getItem(key));
             item.transform.parent= gameObject.transform;
-            item.SetActive(false);
             pool[key].Push(item);
         }
         await UniTask.Yield();
@@ -187,13 +188,15 @@ public class ObjectPool : Singleton<ObjectPool>
         if (pool[itemID].Count > 0)
         {
             IBoardItem boardItem = pool[itemID].Pop().GetComponent<IBoardItem>();
-            
+
             boardItem.Transform.position = position;
             boardItem.Transform.gameObject.SetActive(true);
             boardItem.Board = board;
             return boardItem;
         }
-        IBoardItem newBoardItem = Instantiate(prefab, position, prefab.transform.rotation).GetComponent<IBoardItem>();
+        GameObject Item = Instantiate(prefab, position, prefab.transform.rotation);
+        Item.SetActive(true);
+        IBoardItem newBoardItem = Item.GetComponent<IBoardItem>();
         newBoardItem.Board = board;
         return newBoardItem;
     }
@@ -218,7 +221,9 @@ public class ObjectPool : Singleton<ObjectPool>
             item.SetActive(true);
             return item;
         }
-        return Instantiate(prefab, position,rotation);
+        GameObject particleEffect = Instantiate(prefab, position,rotation);
+        particleEffect.SetActive(true);
+        return particleEffect;
     }
     private void ReturnItemToPool(Dictionary<int, Stack<GameObject>> pool, IBoardItem boardItem, int itemID)
     {
@@ -289,7 +294,7 @@ public class ObjectPool : Singleton<ObjectPool>
     {
         return GetItemFromPool(_normalItems, itemID, position, itemDatabase.GetNormalItem(itemID),board);
     }
-    
+
     public IBoardItem GetBoosterItem(int itemID, Vector3 position,Board board)
     {
         return GetItemFromPool(_boosters, itemID, position, itemDatabase.GetBooster(itemID),board);
@@ -306,7 +311,7 @@ public class ObjectPool : Singleton<ObjectPool>
     {
         return GetParticleEffectFromPool(_normalItemParticleEffects, itemID, position, itemDatabase.GetNormalItemParticleEffect(itemID));
     }
-   
+
     public GameObject GetBoosterParticleEffect(int itemID, Vector3 position,Quaternion rotation= default)
     {
         GameObject item = GetParticleEffectFromPool(_boosterParticleEffects, itemID, position, itemDatabase.GetBoosterParticleEffect(itemID),rotation);
@@ -338,5 +343,5 @@ public class ObjectPool : Singleton<ObjectPool>
         else
             ReturnItemToPool(_normalItems, boardItem, itemID);
     }
-    
+
 }

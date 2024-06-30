@@ -1,0 +1,11 @@
+{
+    "$id": 0,
+    "$type": "0|_Scripts.Data_Classes.EventRewardData, Assembly-CSharp",
+    "isRewardUnlimitedUseForSpecificTime": true,
+    "rewardUnlimitedUseTimeInSeconds": 3600,
+    "eventRewardID": 0,
+    "isRewardBooster": true,
+    "isRewardCoin": false,
+    "rewardAmount": 0,
+    "eventGoalAmount": 250
+}

@@ -25,7 +25,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
     private readonly string Extension = ".json";
     private UserData _userData;
     private GameData _gameData;
-    private EventData _mainEvent;
+    private EventData mainEventData;
     private LevelData _currentLevelData;
     private bool _hasMainEvent;
     private bool _hasNewLevel;
@@ -48,7 +48,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
         EventManager.Instance.RemoveHandler(GameEvents.OnGameSceneLoaded, CheckAndCreateData);
         EventManager.Instance.RemoveHandler(GameEvents.OnMenuSceneLoaded, CheckAndCreateData);
     }
- 
+
     private void CheckAndCreateData()
     {
         if (!File.Exists(userDataPath+Extension))
@@ -82,7 +82,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
         }
         if(File.Exists(eventDataFolder+eventDataName+Extension))
         {
-            _mainEvent=LoadFromJson<EventData>(eventDataFolder+eventDataName+Extension);
+            mainEventData=LoadFromJson<EventData>(eventDataFolder+eventDataName+Extension);
             _hasMainEvent = true;
         }else
         {
@@ -101,7 +101,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
             }
         }
 #endif
-      
+
         if(File.Exists(levelDataFolder+_userData.currentLevel+Extension))
         {
             var data = File.ReadAllBytes(levelDataFolder + _userData.currentLevel + Extension);
@@ -113,7 +113,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
             _hasNewLevel = false;
         }
         _isDataInitialized = true;
-        
+
 
     }
 
@@ -130,7 +130,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
         EventManager.Instance.Broadcast(GameEvents.OnCoinAmountChanged);
         SaveToJson<UserData>( _userData,userDataPath);
     }
-    
+
     public int GetHeartAmount()
     {
         return _userData.heartAmount;
@@ -206,7 +206,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
             _userData.BoosterAmounts[boosterId].boosterAmount += count;
         }
         EventManager.Instance.Broadcast(GameEvents.OnBoosterAmountChanged);
-       
+
         SaveToJson<UserData>( _userData,userDataPath);
     }
     public void AdjustPowerUpAmount(int powerUpId, int count)
@@ -254,7 +254,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
         return "";
     }
     #endregion
-    
+
     #region Settings
     public bool IsMusicOn()
     {
@@ -296,12 +296,12 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
         SaveToJson<UserData>( _userData,userDataPath);
     }
 
-    
+
 
     #endregion
-  
+
     #endregion
-   
+
     #region Level Data Getters and Setters
     public int GetCurrentLevelName()
     {
@@ -317,6 +317,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
     }
     public bool HasNewLevel()
     {
+        CheckAndCreateData();
         return _hasNewLevel;
     }
     public int GetLevelIndex()
@@ -339,7 +340,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
 
     public EventData GetMainEventData()
     {
-        return _mainEvent;
+        return mainEventData;
     }
     public bool HasMainEvent()
     {
@@ -347,12 +348,12 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
     }
     public void SaveMainEventData(EventData eventData)
     {
-        _mainEvent = eventData;
-        SaveToJson(_mainEvent, eventDataFolder + eventDataName );
+        mainEventData = eventData;
+        SaveToJson(mainEventData, eventDataFolder + eventDataName );
     }
 
     #endregion
-    
+
     #region Game Data Getters and Setters
     public string GetVersion()
     {
@@ -394,7 +395,7 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
             NumberOfLevels = GetNumberOfFilesInFolder(levelDataFolder)
         };
     }
-    
+
     #endregion
 
     #region Helpers
@@ -402,12 +403,12 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
     {
         return Directory.GetFiles(folderPath).Length;
     }
-    private void SaveToJson<T>(T data, string path)
+    public void SaveToJson<T>(T data, string path)
     {
         var serializedData = SerializationUtility.SerializeValue(data, DataFormat.JSON);
         File.WriteAllBytes(path + Extension, serializedData);
     }
-    private T LoadFromJson<T>(string path)
+    public T LoadFromJson<T>(string path)
     {
         var bytes = File.ReadAllBytes(path);
         return SerializationUtility.DeserializeValue<T>(bytes, DataFormat.JSON);
@@ -441,11 +442,11 @@ public class SaveManager : PersistentSingleton<SaveManager>,ITimeDependent
 
         if (_hasMainEvent)
         {
-            if (_mainEvent.eventStartUnixTime + _mainEvent.eventDuration <= currentTime)
+            if (mainEventData.eventStartUnixTime + mainEventData.eventDuration <= currentTime)
             {
                 _hasMainEvent = false;
             }
-            SaveMainEventData(_mainEvent);
+            SaveMainEventData(mainEventData);
         }
         SaveToJson<UserData>(_userData,userDataPath);
     }

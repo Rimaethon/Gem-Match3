@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5435682584797881532
 MonoBehaviour:
@@ -48,9 +48,9 @@ MonoBehaviour:
   boardPosition: {x: 0, y: 0, z: 0}
   boardSprite: {fileID: 21300000, guid: 8d4143eaffcbd3a46be481f71da33711, type: 3}
   backgroundSprite: {fileID: 21300000, guid: 255d0f70cd77df7428523c5ef88204a3, type: 3}
-  normalItemTypesToSpawn: 00000000010000000200000009000000
+  normalItemTypesToSpawn: 000000000100000002000000050000000300000004000000
   totalOverlayItemCount: 0
   overlayItemTypesToSpawn: 
   totalUnderlayItemCount: 50
   underlayItemTypesToSpawn: 06000000
-  goalIds: 0600000009000000
+  goalIds: 0600000005000000
