@@ -1,7 +1,7 @@
 {
     "$id": 0,
     "$type": "0|Data.UserData, Assembly-CSharp",
-    "currentLevel": 8,
+    "currentLevel": 1,
     "coinAmount": 14100,
     "heartAmount": 5,
     "starAmount": 16,
@@ -9,7 +9,7 @@
     "unlimitedHeartStartTime": 0,
     "unlimitedHeartDuration": 0,
     "maxHeartAmount": 5,
-    "firstHeartNotBeingFullUnixTime": 1719778266,
+    "firstHeartNotBeingFullUnixTime": 1719821088,
     "heartRefillTimeInSeconds": 1200,
     "BoosterAmounts": {
         "$id": 1,
