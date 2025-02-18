@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace Rimaethon.Runtime.UI
 {
-    // just make things look clicky and I don't care if they do anything or not
     public class UIButton : MonoBehaviour,IPointerClickHandler,IPointerDownHandler,IPointerUpHandler
     {
         protected Button Button;

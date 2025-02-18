@@ -38,12 +38,6 @@ namespace _Scripts.Managers
         private int normalWidth=8;
         private float _boardXOffsetForAdditionalWidth=0.25f;
 
-        protected override void Awake()
-        {
-            base.Awake();
-            GC.Collect();
-        }
-
         private void OnEnable()
         {
             EventManager.Instance.AddHandler<Vector2Int,int>(GameEvents.OnItemExplosion, HandleItemExplosion);

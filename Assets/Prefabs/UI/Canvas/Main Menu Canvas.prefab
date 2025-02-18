@@ -6555,6 +6555,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Coin Purchase Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 5145585720483816041, guid: 84f6e8b6a13eb4b44b9c5019c9580016, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5599113324067304546, guid: 84f6e8b6a13eb4b44b9c5019c9580016, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

@@ -29,10 +29,10 @@ namespace _Scripts.UI.Events
         private float _totalChance;
         private const float AngleBetweenPrizes = 51.5f;
         private bool _isSpinning;
-
+    Nullable<int> someInt = null;
         private void OnEnable()
         {
-            EventManager.Instance.AddHandler(GameEvents.OnEventCurrencyAmountChanged,ChangeAmount );
+            EventManager.Instance.AddHandler(GameEvents.OnEventCurrencyAmountChanged, ChangeAmount);
             button.onClick.AddListener(SpinWheel);
         }
         private void OnDisable()

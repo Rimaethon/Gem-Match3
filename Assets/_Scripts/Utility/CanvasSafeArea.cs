@@ -23,7 +23,5 @@ namespace Scripts
          _rectTransform.anchorMin = minAnchor;
          _rectTransform.anchorMax = maxAnchor;
       }
-
-
    }
 }

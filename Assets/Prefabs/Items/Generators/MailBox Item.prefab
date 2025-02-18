@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3393113500354519422
 Transform:
   m_ObjectHideFlags: 0
@@ -110,3 +110,4 @@ MonoBehaviour:
   _isExplodeAbleByNearMatches: 0
   _isGeneratorItem: 0
   _isShuffleAble: 0
+  _isMoving: 0

@@ -50,7 +50,7 @@ namespace Rimaethon.Scripts.Managers
                 if(_actionHandlers[gameEvent].Count == 1)
                     _actionHandlers[gameEvent] = new HashSet<Action>();
                 _actionHandlers[gameEvent].Remove(handler);
-                
+
             }
         }
 
@@ -63,7 +63,7 @@ namespace Rimaethon.Scripts.Managers
                     _actionHandlersWithOneArg[gameEvent] = new HashSet<Action<object>>();
                 }
                 _actionHandlersWithOneArg[gameEvent].Remove(arg => handler((T)arg));
-             
+
             }
         }
 

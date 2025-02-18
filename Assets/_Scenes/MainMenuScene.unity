@@ -465,10 +465,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1330460392}
     m_Modifications:
-    - target: {fileID: 164350200061919625, guid: d824eaad81754b94f9915909e03485de, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 981111671291000426, guid: d824eaad81754b94f9915909e03485de, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -625,10 +621,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6776083532099520375, guid: d824eaad81754b94f9915909e03485de, type: 3}
-      propertyPath: _canvasToClose
-      value: 
-      objectReference: {fileID: 1212195169}
     - target: {fileID: 6846653595409441233, guid: d824eaad81754b94f9915909e03485de, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -651,10 +643,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6846653595409441233, guid: d824eaad81754b94f9915909e03485de, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6871701193584699329, guid: d824eaad81754b94f9915909e03485de, type: 3}
-      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7461807282247938332, guid: d824eaad81754b94f9915909e03485de, type: 3}
